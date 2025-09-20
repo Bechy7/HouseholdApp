@@ -1,31 +1,47 @@
-import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, serverTimestamp } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { Button, FlatList, StyleSheet, Text, TextInput, View } from "react-native";
 import { auth, db } from "../../firebaseConfig";
 
+type Note = {
+  id: string;
+  title: string;
+  authorId: string;
+};
+
 export default function NotesScreen() {
-  const [notes, setNotes] = useState<{ id: string; title: string; author: string }[]>([]);
+  const [notes, setNotes] = useState<Note[]>([]);
   const [newNote, setNewNote] = useState("");
 
   useEffect(() => {
+    // Listen to all notes, ordered by createdAt
     const q = query(collection(db, "notes"), orderBy("createdAt", "desc"));
+
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const notesData = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as { id: string; title: string; author: string }[];
+      const notesData: Note[] = snapshot.docs.map((doc) => {
+        const data = doc.data() as { title: string; authorId: string; createdAt?: any };
+        return {
+          id: doc.id,
+          title: data.title,
+          authorId: data.authorId,
+        };
+      });
       setNotes(notesData);
     });
+
     return () => unsubscribe();
   }, []);
 
   const addNote = async () => {
-    if (!newNote.trim()) return;
+    const user = auth.currentUser;
+    if (!user || !newNote.trim()) return;
+
     await addDoc(collection(db, "notes"), {
-      title: newNote,
-      createdAt: new Date(),
-      author: auth.currentUser?.email,
+      title: newNote.trim(),
+      authorId: user.uid,
+      createdAt: serverTimestamp(),
     });
+
     setNewNote("");
   };
 
@@ -37,7 +53,7 @@ export default function NotesScreen() {
     await auth.signOut();
   };
 
-  const currentUserEmail = auth.currentUser?.email;
+  const currentUserId = auth.currentUser?.uid;
 
   return (
     <View style={styles.container}>
@@ -61,11 +77,9 @@ export default function NotesScreen() {
         renderItem={({ item }) => (
           <View style={styles.noteRow}>
             <Text style={styles.note}>
-              {item.author ? `${item.author}: ` : ""}• {item.title}
+              {item.title}
             </Text>
-            {item.author === currentUserEmail && (
-              <Button title="Delete" onPress={() => deleteNote(item.id)} />
-            )}
+            <Button title="Delete" onPress={() => deleteNote(item.id)} />
           </View>
         )}
       />
@@ -78,6 +92,6 @@ const styles = StyleSheet.create({
   header: { fontSize: 24, fontWeight: "bold", marginBottom: 20 },
   inputRow: { flexDirection: "row", marginBottom: 20 },
   input: { flex: 1, borderWidth: 1, borderColor: "#ccc", borderRadius: 8, padding: 10, marginRight: 10 },
-  noteRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
-  note: { fontSize: 18, paddingVertical: 5 },
+  noteRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 5 },
+  note: { fontSize: 18 },
 });
