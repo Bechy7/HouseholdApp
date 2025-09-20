@@ -1,24 +1,23 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
+import React, { useEffect, useState } from "react";
+import { Slot } from "expo-router";
+import { auth } from "../firebaseConfig";
+import LoginScreen from "./login";
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const [user, setUser] = useState<null | any>(null);
+  const [loading, setLoading] = useState(true);
 
-  return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-  );
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((u) => {
+      setUser(u);
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  if (loading) return null; // optional: add spinner
+
+  if (!user) return <LoginScreen />;
+
+  return <Slot />; // user is logged in → render tabs
 }
