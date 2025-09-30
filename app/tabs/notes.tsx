@@ -9,7 +9,7 @@ type Note = {
   authorId: string;
 };
 
-export default function NotesScreen() {
+export default function NotesPage() {
   const [notes, setNotes] = useState<Note[]>([]);
   const [newNote, setNewNote] = useState("");
 
@@ -49,16 +49,8 @@ export default function NotesScreen() {
     await deleteDoc(doc(db, "notes", id));
   };
 
-  const handleLogout = async () => {
-    await auth.signOut();
-  };
-
-  const currentUserId = auth.currentUser?.uid;
-
   return (
     <View style={styles.container}>
-      <Button title="Logout" onPress={handleLogout} />
-
       <Text style={styles.header}>📝 Shared Notes</Text>
 
       <View style={styles.inputRow}>

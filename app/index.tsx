@@ -1,6 +1,17 @@
-import * as React from "react";
-import NotesScreen from "./tabs/notes";
+import { Redirect } from "expo-router";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../firebaseConfig";
 
-export default function App() {
-  return <NotesScreen />;
+export default function Index() {
+  const [user, loading] = useAuthState(auth);
+
+  if (loading) {
+    return null; // or a loading spinner
+  }
+
+  if (user) {
+    return <Redirect href="/tabs/home" />;
+  }
+
+  return <Redirect href="/login" />;
 }

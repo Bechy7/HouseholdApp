@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
 import { Slot } from "expo-router";
+import React, { useEffect, useState } from "react";
 import { auth } from "../firebaseConfig";
-import LoginScreen from "./login";
+import LoginPage from "./login";
 
 export default function RootLayout() {
   const [user, setUser] = useState<null | any>(null);
@@ -17,7 +17,7 @@ export default function RootLayout() {
 
   if (loading) return null; // optional: add spinner
 
-  if (!user) return <LoginScreen />;
+  if (!user) return <LoginPage />;
 
   return <Slot />; // user is logged in → render tabs
 }
