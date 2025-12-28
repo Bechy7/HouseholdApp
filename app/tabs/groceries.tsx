@@ -4,6 +4,18 @@ import { Button, FlatList, StyleSheet, Text, TextInput, View } from "react-nativ
 import { auth, db } from "../../firebaseConfig";
 import useHousehold from "../context/householdContext";
 
+const DEFAULT_SUGGESTIONS = [
+  { label: "Milk", emoji: "🥛" },
+  { label: "Eggs", emoji: "🥚" },
+  { label: "Apples", emoji: "🍎" },
+  { label: "Bananas", emoji: "🍌" },
+  { label: "Bread", emoji: "🍞" },
+  { label: "Butter", emoji: "🧈" },
+  { label: "Cheese", emoji: "🧀" },
+  { label: "Tomatoes", emoji: "🍅" },
+];
+
+
 type Grocery = {
     id: string;
     title: string;
@@ -14,6 +26,10 @@ export default function GroceriesPage() {
     const [groceries, setGroceries] = useState<Grocery[]>([]);
     const [newGrocery, setNewGrocery] = useState("");
     const { householdId } = useHousehold();
+    const [showSuggestions, setShowSuggestions] = useState(false);
+    const filteredSuggestions = DEFAULT_SUGGESTIONS.filter((item) =>
+        item.label.toLowerCase().includes(newGrocery.toLowerCase())
+    );
 
     useEffect(() => {
         // Listen to all groceries, ordered by createdAt
@@ -36,17 +52,17 @@ export default function GroceriesPage() {
         return () => unsubscribe();
     }, []);
 
-    const addGrocery = async () => {
+    const addGrocery = async (item: string) => {
+        setNewGrocery("");
         const user = auth.currentUser;
-        if (!user || !newGrocery.trim()) return;
+        if (!user || !item.trim()) return;
 
         await addDoc(collection(db, "groceries"), {
-            title: newGrocery.trim(),
+            title: item.trim(),
             householdId: householdId,
             createdAt: serverTimestamp(),
         });
 
-        setNewGrocery("");
     };
 
     const deleteGrocery = async (id: string) => {
@@ -63,9 +79,27 @@ export default function GroceriesPage() {
                     placeholder="Type a grocery..."
                     value={newGrocery}
                     onChangeText={setNewGrocery}
+                    onFocus={() => setShowSuggestions(true)}
                 />
-                <Button title="Add" onPress={addGrocery} />
+                <Button title="Add" onPress={() => addGrocery(newGrocery)} />
             </View>
+
+            {showSuggestions && filteredSuggestions.length > 0 && newGrocery.length > 0 && (
+                <View style={styles.suggestions}>
+                    {filteredSuggestions.map((item) => (
+                        <Text
+                            key={item.label}
+                            style={styles.suggestion}
+                            onPress={() => {
+                                addGrocery(item.label);
+                                setShowSuggestions(false);
+                            }}
+                        >
+                            {item.emoji} {item.label}
+                        </Text>
+                    ))}
+                </View>
+            )}
 
             <FlatList
                 data={groceries}
@@ -73,7 +107,7 @@ export default function GroceriesPage() {
                 renderItem={({ item }) => (
                     <View style={styles.groceryRow}>
                         <Text style={styles.grocery}>
-                            {item.title}
+                            {DEFAULT_SUGGESTIONS.find((s) => s.label === item.title)?.emoji || "🛒"} {item.title}
                         </Text>
                         <Button title="Delete" onPress={() => deleteGrocery(item.id)} />
                     </View>
@@ -90,4 +124,6 @@ const styles = StyleSheet.create({
     input: { flex: 1, borderWidth: 1, borderColor: "#ccc", borderRadius: 8, padding: 10, marginRight: 10 },
     groceryRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 5 },
     grocery: { fontSize: 18 },
+    suggestions: { backgroundColor: "#f5f5f5", borderRadius: 8, padding: 10, marginBottom: 10, },
+    suggestion: { paddingVertical: 8, fontSize: 16, borderBottomWidth: 1, borderBottomColor: "#ddd", },
 });

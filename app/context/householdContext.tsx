@@ -13,7 +13,8 @@ export function HouseholdProvider({ children }: { children: React.ReactNode }) {
   const [householdId, setHouseholdId] = useState<string>("");
 
   return (
-    <HouseholdContext.Provider value={{ householdId, setHouseholdId }}>
+    //TODO: Remove hardcoded householdId
+    <HouseholdContext.Provider value={{ householdId: "0yk1JltfuCqUQkcQizPQ", setHouseholdId }}>
       {children}
     </HouseholdContext.Provider>
   );
