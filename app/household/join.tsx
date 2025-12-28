@@ -1,16 +1,16 @@
 import { router } from "expo-router";
 import { arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
-import { useState } from "react";
 import { Button, StyleSheet, Text, TextInput, View } from "react-native";
 import { auth, db } from "../../firebaseConfig";
+import useHousehold from "../context/householdContext";
 
 export default function JoinHousehold() {
-    const [householdId, setHouseholdId] = useState("");
+    const { householdId, setHouseholdId } = useHousehold();
 
     const handleJoin = async () => {
         const user = auth.currentUser;
         if (!user) return;
-        
+
         const householdRef = doc(db, "households", householdId);
 
         const householdSnap = await getDoc(householdRef);

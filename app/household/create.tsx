@@ -3,12 +3,13 @@ import { addDoc, collection } from "firebase/firestore";
 import { useState } from "react";
 import { Alert, Button, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { auth, db } from "../../firebaseConfig";
+import useHousehold from "../context/householdContext";
 
 export default function CreateHouseholdScreen() {
     const [name, setName] = useState("");
-    const [id, setId] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
     const router = useRouter();
+    const { householdId, setHouseholdId } = useHousehold();
 
     const handleCreate = async () => {
         if (!name.trim()) {
@@ -32,7 +33,7 @@ export default function CreateHouseholdScreen() {
             });
 
             // Show invite code (household ID = docRef.id)
-            setId(docRef.id);
+            setHouseholdId(docRef.id);
             setModalVisible(true);
         } catch (err: any) {
             Alert.alert("Error", err.message);
@@ -59,7 +60,7 @@ export default function CreateHouseholdScreen() {
                     <Text style={styles.title}>Invite Your Household members</Text>
                     <Text style={styles.text}>Share your household code with members so they can join your household and access shared plans, tasks, and events.</Text>
                     <Text style={styles.text}>Your household code</Text>
-                    <Text style={{ fontSize: 18, marginVertical: 20, textAlign: "center", fontWeight: "bold" }}>{id}</Text>
+                    <Text style={{ fontSize: 18, marginVertical: 20, textAlign: "center", fontWeight: "bold" }}>{householdId}</Text>
                     <TouchableOpacity style={styles.addButton} onPress={() => router.replace("/tabs/home")}><Text>Done</Text></TouchableOpacity>
                     <Text style={{ textAlign: "center", marginBottom: 20 }}>You can share your household code anytime manage members permissions from Household Settings.</Text>
                 </View>

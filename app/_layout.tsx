@@ -1,4 +1,5 @@
-import { Slot } from "expo-router";
+import { HouseholdProvider } from "@/app/context/householdContext";
+import { Stack } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { auth } from "../firebaseConfig";
 import LoginPage from "./login";
@@ -19,5 +20,9 @@ export default function RootLayout() {
 
   if (!user) return <LoginPage />;
 
-  return <Slot />; // user is logged in → render tabs
+  return (
+    <HouseholdProvider>
+      <Stack screenOptions={{ headerShown: false }} />
+    </HouseholdProvider>
+  );
 }
