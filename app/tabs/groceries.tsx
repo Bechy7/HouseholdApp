@@ -1,7 +1,8 @@
 import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, serverTimestamp, where } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { Button, FlatList, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { Button, FlatList, ScrollView, Text, TextInput, View } from "react-native";
 import { auth, db } from "../../firebaseConfig";
+import styles from "../../styles/style";
 import useHousehold from "../context/householdContext";
 import defaultGroceries from "../helpers/grocerySuggestion";
 
@@ -103,7 +104,7 @@ export default function GroceriesPage() {
                         <option key={store} value={store}>{store}</option>
                     ))}
                 </select>
-                <View style={styles.addButton}>
+                <View style={styles.addGroceryButton}>
                     <Button title="Add" onPress={() => addGrocery(newGrocery)} />
                 </View>
             </View>
@@ -130,18 +131,3 @@ export default function GroceriesPage() {
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    addButton: { margin: 3 },
-    container: { flex: 1, padding: 20, backgroundColor: "#fff" },
-    header: { fontSize: 24, fontWeight: "bold", marginBottom: 20 },
-    inputRow: { flexDirection: "row", marginBottom: 20 },
-    input: { flex: 1, borderWidth: 1, borderColor: "#ccc", borderRadius: 8, padding: 10, marginRight: 10 },
-    groceryRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 5 },
-    grocery: { fontSize: 18 },
-    scrollView: { paddingRight: 10 },
-    select: { width: 75, marginRight: 10 },
-    storeTitle: { fontSize: 20, fontWeight: "bold", marginTop: 20, marginBottom: 10 },
-    suggestions: { backgroundColor: "#f5f5f5", borderRadius: 8, padding: 10, marginBottom: 10, },
-    suggestion: { paddingVertical: 8, fontSize: 16, borderBottomWidth: 1, borderBottomColor: "#ddd", },
-});

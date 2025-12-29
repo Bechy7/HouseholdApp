@@ -1,7 +1,7 @@
 import React from "react";
-import styles from "../../style/style"
-import { Button, StyleSheet, Text, View } from "react-native";
+import { Button, Text, View } from "react-native";
 import { auth } from "../../firebaseConfig";
+import styles from "../../styles/style";
 
 export default function HomePage() {
     const handleLogout = async () => {

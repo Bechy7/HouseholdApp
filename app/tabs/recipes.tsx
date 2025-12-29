@@ -3,7 +3,7 @@ import { addDoc, collection } from "firebase/firestore";
 import React, { useState } from "react";
 import { Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { auth, db } from "../../firebaseConfig";
-import styles from "../../style/style";
+import styles from "../../styles/style";
 
 
 export default function RecipesPage() {
@@ -12,9 +12,7 @@ export default function RecipesPage() {
 
     const addRecipe = async () => {
         const user = auth.currentUser;
-        console.log(newRecipe.trim());
         if (!user || !newRecipe.trim()) return;
-        console.log("here");
         await addDoc(collection(db, "recipes"), {
             title: newRecipe.trim(),
         });
@@ -25,7 +23,7 @@ export default function RecipesPage() {
         <View style={styles.container}>
             <View style={styles.one_row}>
                 <Text style={styles.header}>Recipes</Text>
-                <TouchableOpacity style={styles.addButton} onPress={() => setModalVisible(true)}><Ionicons name="add" size={24} /></TouchableOpacity>
+                <TouchableOpacity style={styles.addRecipeButton} onPress={() => setModalVisible(true)}><Ionicons name="add" size={24} /></TouchableOpacity>
             </View>
             <Modal style={styles.modal}
                 visible={modalVisible}
@@ -39,11 +37,9 @@ export default function RecipesPage() {
                         placeholder="Enter recipe name"
                         onChangeText={setNewRecipe}
                         style={{ borderWidth: 1, borderColor: '#ccc', padding: 10, marginVertical: 10 }} />
-                    <TouchableOpacity style={styles.addButton} onPress={addRecipe}><Text>Save recipe</Text></TouchableOpacity>
+                    <TouchableOpacity style={styles.addRecipeButton} onPress={addRecipe}><Text>Save recipe</Text></TouchableOpacity>
                 </View>
-
             </Modal>
-
         </View>
 
 
