@@ -6,9 +6,9 @@ import styles from "../../styles/style";
 import useHousehold from "../context/householdContext";
 import defaultGroceries from "../helpers/grocerySuggestion";
 
-const stores = ["Default", "Netto", "Lidl", "Rema"];
+export const stores = ["Default", "Netto", "Lidl", "Rema"];
 
-type Grocery = {
+export type Grocery = {
     id: string;
     title: string;
     householdId: string;
@@ -32,7 +32,7 @@ export default function GroceriesPage() {
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
             const groceriesData: Grocery[] = snapshot.docs.map((doc) => {
-                const data = doc.data() as { title: string; householdId: string; createdAt?: any, storePref: string };
+                const data = doc.data() as { title: string; householdId: string; storePref: string; createdAt?: any };
                 return {
                     id: doc.id,
                     title: data.title,
@@ -54,10 +54,9 @@ export default function GroceriesPage() {
         await addDoc(collection(db, "groceries"), {
             title: item.trim(),
             householdId: householdId,
-            createdAt: serverTimestamp(),
             storePref: selectedStore,
+            createdAt: serverTimestamp(),
         });
-
     };
 
     const deleteGrocery = async (id: string) => {
@@ -68,7 +67,7 @@ export default function GroceriesPage() {
         const items = groceries.filter(grocery => grocery.storePref === storePref);
         if (items.length === 0) return;
         return (
-            <View>
+            <View key={storePref}>
                 <Text style={styles.storeTitle}>{storePref}</Text>
                 <FlatList
                     data={items}
@@ -83,7 +82,6 @@ export default function GroceriesPage() {
                     )}
                 />
             </View>
-
         )
     }
 
