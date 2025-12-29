@@ -115,7 +115,7 @@ export default function GroceriesPage() {
                             key={item.label}
                             style={styles.suggestion}
                             onPress={() => {
-                                addGrocery(item.label);
+                                setNewGrocery(item.label);
                                 setShowSuggestions(false);
                             }}
                         >
