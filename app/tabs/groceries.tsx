@@ -68,7 +68,7 @@ export default function GroceriesPage() {
         if (items.length === 0) return;
         return (
             <View key={storePref}>
-                <Text style={styles.storeTitle}>{storePref}</Text>
+                <Text style={styles.title}>{storePref}</Text>
                 <FlatList
                     data={items}
                     keyExtractor={(item) => item.id}

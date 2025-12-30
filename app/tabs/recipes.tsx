@@ -11,15 +11,15 @@ type Recipe = {
     id: string;
     title: string;
     householdId: string;
-    groceries: { title: string; storePref: string }[];
+    ingredients: { title: string; storePref: string }[];
 };
 
 export default function RecipesPage() {
     const [shouldUpdate, setShouldUpdate] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [recipes, setRecipes] = useState<Recipe[]>([]);
-    const [newRecipe, setNewRecipe] = useState<Recipe>({ id: "", title: "", householdId: "", groceries: [] });
-    const [newGrocery, setNewGrocery] = useState("");
+    const [newRecipe, setNewRecipe] = useState<Recipe>({ id: "", title: "", householdId: "", ingredients: [] });
+    const [newIngredient, setNewIngredient] = useState("");
     const [selectedStore, setSelectedStore] = useState("Default");
     const { householdId } = useHousehold();
 
@@ -30,12 +30,12 @@ export default function RecipesPage() {
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
             const recipesData: Recipe[] = snapshot.docs.map((doc) => {
-                const data = doc.data() as { title: string; householdId: string; groceries: { title: string; storePref: string }[]; createdAt?: any };
+                const data = doc.data() as { title: string; householdId: string; ingredients: { title: string; storePref: string }[]; createdAt?: any };
                 return {
                     id: doc.id,
                     title: data.title,
                     householdId: data.householdId,
-                    groceries: data.groceries,
+                    ingredients: data.ingredients,
                 };
             });
             console.log("Fetched recipes:", recipesData);
@@ -51,12 +51,12 @@ export default function RecipesPage() {
         await addDoc(collection(db, "recipes"), {
             title: newRecipe.title.trim(),
             householdId,
-            groceries: newRecipe.groceries,
+            ingredients: newRecipe.ingredients,
             createdAt: serverTimestamp(),
         });
 
         setModalVisible(false);
-        setNewRecipe({ id: "", title: "", householdId: "", groceries: [] });
+        setNewRecipe({ id: "", title: "", householdId: "", ingredients: [] });
     };
 
     const deleteRecipe = async (id: string) => {
@@ -66,25 +66,25 @@ export default function RecipesPage() {
     const updateRecipe = async () => {
         await updateDoc(doc(db, "recipes", newRecipe.id), {
             title: newRecipe.title.trim(),
-            groceries: newRecipe.groceries,
+            ingredients: newRecipe.ingredients,
         });
         setModalVisible(false);
-        setNewRecipe({ id: "", title: "", householdId: "", groceries: [] });
+        setNewRecipe({ id: "", title: "", householdId: "", ingredients: [] });
     };
 
-    const addGrocery = async () => {
-        newRecipe.groceries.push({
-            title: newGrocery.trim(),
+    const addIngredient = async () => {
+        newRecipe.ingredients.push({
+            title: newIngredient.trim(),
             storePref: selectedStore,
         });
         setNewRecipe({ ...newRecipe });
-        setNewGrocery("");
+        setNewIngredient("");
     }
 
-    const deleteGrocery = (title: string) => {
+    const deleteIngredient = (title: string) => {
         setNewRecipe({
             ...newRecipe,
-            groceries: newRecipe.groceries.filter((item) => item.title !== title),
+            ingredients: newRecipe.ingredients.filter((item) => item.title !== title),
         });
     };
 
@@ -93,7 +93,7 @@ export default function RecipesPage() {
             <View style={styles.one_row}>
                 <Text style={styles.header}>Recipes</Text>
                 <TouchableOpacity style={styles.openRecipeModuleButton} onPress={() => {
-                    setNewRecipe({ id: "", title: "", householdId: "", groceries: [] });
+                    setNewRecipe({ id: "", title: "", householdId: "", ingredients: [] });
                     setModalVisible(true)
                     setShouldUpdate(false);
                 }}><Ionicons name="add" size={24} /></TouchableOpacity>
@@ -131,27 +131,28 @@ export default function RecipesPage() {
                     <View style={styles.inputRow}>
                         <TextInput
                             style={styles.input}
-                            placeholder="Type a grocery..."
-                            value={newGrocery}
-                            onChangeText={setNewGrocery}
+                            placeholder="Type an ingredient..."
+                            value={newIngredient}
+                            onChangeText={setNewIngredient}
                         />
                         <select style={styles.select} value={selectedStore} onChange={(e) => setSelectedStore(e.target.value)}>
                             {stores.map((store) => (
                                 <option key={store} value={store}>{store}</option>
                             ))}
                         </select>
-                        <View style={styles.addGroceryButton}>
-                            <Button title="Add" onPress={() => addGrocery()} />
+                        <View style={styles.addIngredientButton}>
+                            <Button title="Add" onPress={() => addIngredient()} />
                         </View>
                     </View>
+                    <Text style={styles.title}>Ingredients</Text>
                     <View>
                         <FlatList
-                            data={newRecipe.groceries}
+                            data={newRecipe.ingredients}
                             keyExtractor={(item) => item.title}
                             renderItem={({ item }) => (
-                                <View style={styles.groceryRow}>
-                                    <Text style={styles.grocery}>{item.title}</Text>
-                                    <Button title="Delete" onPress={() => deleteGrocery(item.title)} />
+                                <View style={styles.ingredientRow}>
+                                    <Text style={styles.ingredient}>{item.title}</Text>
+                                    <Button title="Delete" onPress={() => deleteIngredient(item.title)} />
                                 </View>
                             )}
                         />
