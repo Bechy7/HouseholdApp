@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, serverTimestamp, updateDoc, where, writeBatch } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { Button, FlatList, Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { auth, db } from "../../firebaseConfig";
@@ -17,6 +17,7 @@ type Recipe = {
 export default function RecipesPage() {
     const [shouldUpdate, setShouldUpdate] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
+    const [toastMessage, setToastMessage] = useState<string | null>(null);
     const [recipes, setRecipes] = useState<Recipe[]>([]);
     const [newRecipe, setNewRecipe] = useState<Recipe>({ id: "", title: "", householdId: "", ingredients: [] });
     const [newIngredient, setNewIngredient] = useState("");
@@ -38,12 +39,21 @@ export default function RecipesPage() {
                     ingredients: data.ingredients,
                 };
             });
-            console.log("Fetched recipes:", recipesData);
             setRecipes(recipesData);
         });
 
         return () => unsubscribe();
     }, []);
+
+    useEffect(() => {
+        if (!toastMessage) return;
+
+        const timer = setTimeout(() => {
+            setToastMessage(null);
+        }, 2000);
+
+        return () => clearTimeout(timer);
+    }, [toastMessage]);
 
     const addRecipe = async () => {
         const user = auth.currentUser;
@@ -54,7 +64,6 @@ export default function RecipesPage() {
             ingredients: newRecipe.ingredients,
             createdAt: serverTimestamp(),
         });
-
         setModalVisible(false);
         setNewRecipe({ id: "", title: "", householdId: "", ingredients: [] });
     };
@@ -68,11 +77,13 @@ export default function RecipesPage() {
             title: newRecipe.title.trim(),
             ingredients: newRecipe.ingredients,
         });
+        setToastMessage(`${newRecipe.title} updated successfully!`);
         setModalVisible(false);
         setNewRecipe({ id: "", title: "", householdId: "", ingredients: [] });
     };
 
     const addIngredient = async () => {
+        if (!newIngredient.trim()) return;
         newRecipe.ingredients.push({
             title: newIngredient.trim(),
             storePref: selectedStore,
@@ -88,8 +99,28 @@ export default function RecipesPage() {
         });
     };
 
+    const addToGroceryList = async () => {
+        const batch = writeBatch(db);
+        newRecipe.ingredients.forEach((ingredient) => {
+            const groceryRef = doc(collection(db, "groceries"));
+            batch.set(groceryRef, {
+                title: ingredient.title,
+                householdId: householdId,
+                storePref: ingredient.storePref,
+                createdAt: serverTimestamp(),
+            });
+        });
+        await batch.commit();
+        setToastMessage("Added ingredients to grocery list!");
+    }
+
     return (
         <View style={styles.container}>
+            {toastMessage && (
+                <View style={styles.toast}>
+                    <Text style={styles.toastText}>{toastMessage}</Text>
+                </View>
+            )}
             <View style={styles.one_row}>
                 <Text style={styles.header}>Recipes</Text>
                 <TouchableOpacity style={styles.openRecipeModuleButton} onPress={() => {
@@ -122,6 +153,11 @@ export default function RecipesPage() {
                 onRequestClose={() => setModalVisible(false)}
             >
                 <View style={styles.modal_container}>
+                    {toastMessage && (
+                        <View style={styles.toast}>
+                            <Text style={styles.toastText}>{toastMessage}</Text>
+                        </View>
+                    )}
                     <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}><Ionicons name="close" size={24} /></TouchableOpacity>
                     <TextInput
                         placeholder="Enter recipe name"
@@ -131,7 +167,7 @@ export default function RecipesPage() {
                     <View style={styles.inputRow}>
                         <TextInput
                             style={styles.input}
-                            placeholder="Type an ingredient..."
+                            placeholder="Enter ingredient name"
                             value={newIngredient}
                             onChangeText={setNewIngredient}
                         />
@@ -162,7 +198,10 @@ export default function RecipesPage() {
                     ) : !shouldUpdate ? (
                         <TouchableOpacity style={styles.addRecipeButtonDisabled} disabled={true} onPress={addRecipe}><Text>Save recipe</Text></TouchableOpacity>
                     ) : (
-                        <TouchableOpacity style={styles.addRecipeButtonEnabled} onPress={updateRecipe}><Text>Update recipe</Text></TouchableOpacity>
+                        <View>
+                            <TouchableOpacity style={styles.addRecipeButtonEnabled} onPress={updateRecipe}><Text>Update recipe</Text></TouchableOpacity>
+                            <TouchableOpacity style={styles.addRecipeButtonEnabled} onPress={addToGroceryList}><Text>Add Ingredients to Grocery List</Text></TouchableOpacity>
+                        </View>
                     )}
                 </View>
             </Modal>
