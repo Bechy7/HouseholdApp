@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, serverTimestamp, updateDoc, where, writeBatch } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { Button, FlatList, Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Button, FlatList, Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { auth, db } from "../../firebaseConfig";
 import styles from "../../styles/style";
 import useHousehold from "../context/householdContext";
@@ -12,6 +12,7 @@ type Recipe = {
     title: string;
     householdId: string;
     ingredients: { title: string; storePref: string }[];
+    description?: string;
 };
 
 export default function RecipesPage() {
@@ -22,21 +23,23 @@ export default function RecipesPage() {
     const [newRecipe, setNewRecipe] = useState<Recipe>({ id: "", title: "", householdId: "", ingredients: [] });
     const [newIngredient, setNewIngredient] = useState("");
     const [selectedStore, setSelectedStore] = useState("Default");
+    const [descriptionHeight, setDescriptionHeight] = useState(100);
     const { householdId } = useHousehold();
 
     useEffect(() => {
         const q = query(collection(db, "recipes"),
             where("householdId", "==", householdId),
-            orderBy("createdAt", "desc"));
+            orderBy("createdAt", "asc"));
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
             const recipesData: Recipe[] = snapshot.docs.map((doc) => {
-                const data = doc.data() as { title: string; householdId: string; ingredients: { title: string; storePref: string }[]; createdAt?: any };
+                const data = doc.data() as { title: string; householdId: string; ingredients: { title: string; storePref: string }[]; description: string; createdAt?: any };
                 return {
                     id: doc.id,
                     title: data.title,
                     householdId: data.householdId,
                     ingredients: data.ingredients,
+                    description: data.description,
                 };
             });
             setRecipes(recipesData);
@@ -62,10 +65,10 @@ export default function RecipesPage() {
             title: newRecipe.title.trim(),
             householdId,
             ingredients: newRecipe.ingredients,
+            description: newRecipe.description || "",
             createdAt: serverTimestamp(),
         });
         setModalVisible(false);
-        setNewRecipe({ id: "", title: "", householdId: "", ingredients: [] });
     };
 
     const deleteRecipe = async (id: string) => {
@@ -76,10 +79,10 @@ export default function RecipesPage() {
         await updateDoc(doc(db, "recipes", newRecipe.id), {
             title: newRecipe.title.trim(),
             ingredients: newRecipe.ingredients,
+            description: newRecipe.description || "",
         });
         setToastMessage(`${newRecipe.title} updated successfully!`);
         setModalVisible(false);
-        setNewRecipe({ id: "", title: "", householdId: "", ingredients: [] });
     };
 
     const addIngredient = async () => {
@@ -129,82 +132,108 @@ export default function RecipesPage() {
                     setShouldUpdate(false);
                 }}><Ionicons name="add" size={24} /></TouchableOpacity>
             </View>
-            <FlatList
-                data={recipes}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                    <View style={styles.noteRow}>
-                        <TouchableOpacity style={styles.noteRow} onPress={() => {
-                            setNewRecipe(item);
-                            setModalVisible(true);
-                            setShouldUpdate(true);
-                        }}>
-                            <Text style={styles.note}>{item.title}</Text>
-                        </TouchableOpacity>
-                        <Button title="Delete" onPress={() => deleteRecipe(item.id)} />
-                    </View>
-                )}>
-
-            </FlatList>
-            <Modal style={styles.modal}
-                visible={modalVisible}
-                transparent={true}
-                animationType="slide"
-                onRequestClose={() => setModalVisible(false)}
-            >
-                <View style={styles.modal_container}>
-                    {toastMessage && (
-                        <View style={styles.toast}>
-                            <Text style={styles.toastText}>{toastMessage}</Text>
+            <ScrollView style={styles.scrollView} keyboardShouldPersistTaps="handled">
+                <FlatList
+                    data={recipes}
+                    keyExtractor={(item) => item.id}
+                    renderItem={({ item }) => (
+                        <View style={styles.recipeRow}>
+                            <TouchableOpacity style={styles.recipeRow} onPress={() => {
+                                setNewRecipe(item);
+                                setModalVisible(true);
+                                setShouldUpdate(true);
+                            }}>
+                                <Text style={styles.recipe}>{item.title}</Text>
+                            </TouchableOpacity>
+                            <Button title="Delete" onPress={() => deleteRecipe(item.id)} />
                         </View>
-                    )}
-                    <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}><Ionicons name="close" size={24} /></TouchableOpacity>
-                    <TextInput
-                        placeholder="Enter recipe name"
-                        value={newRecipe.title}
-                        onChangeText={(text) => setNewRecipe({ ...newRecipe, title: text })}
-                        style={{ borderWidth: 1, borderColor: '#ccc', padding: 10, marginVertical: 10 }} />
-                    <View style={styles.inputRow}>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Enter ingredient name"
-                            value={newIngredient}
-                            onChangeText={setNewIngredient}
-                        />
-                        <select style={styles.select} value={selectedStore} onChange={(e) => setSelectedStore(e.target.value)}>
-                            {stores.map((store) => (
-                                <option key={store} value={store}>{store}</option>
-                            ))}
-                        </select>
-                        <View style={styles.addIngredientButton}>
-                            <Button title="Add" onPress={() => addIngredient()} />
-                        </View>
-                    </View>
-                    <Text style={styles.title}>Ingredients</Text>
-                    <View>
-                        <FlatList
-                            data={newRecipe.ingredients}
-                            keyExtractor={(item) => item.title}
-                            renderItem={({ item }) => (
-                                <View style={styles.ingredientRow}>
-                                    <Text style={styles.ingredient}>{item.title}</Text>
-                                    <Button title="Delete" onPress={() => deleteIngredient(item.title)} />
+                    )}>
+                </FlatList>
+                <Modal style={styles.modal}
+                    visible={modalVisible}
+                    transparent={true}
+                    animationType="slide"
+                    onRequestClose={() => setModalVisible(false)}
+                >
+                    <View style={styles.modal_container}>
+                        {toastMessage && (
+                            <View style={styles.toast}>
+                                <Text style={styles.toastText}>{toastMessage}</Text>
+                            </View>
+                        )}
+                        <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}><Ionicons name="close" size={24} /></TouchableOpacity>
+                        <ScrollView style={styles.scrollView} keyboardShouldPersistTaps="handled">
+                            <TextInput
+                                placeholder="Enter recipe name"
+                                value={newRecipe.title}
+                                onChangeText={(text) => setNewRecipe({ ...newRecipe, title: text })}
+                                style={{ borderWidth: 1, borderColor: '#ccc', padding: 10, marginVertical: 10 }} />
+                            <View style={styles.inputRow}>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder="Enter ingredient name"
+                                    value={newIngredient}
+                                    onChangeText={setNewIngredient}
+                                />
+                                <select style={styles.select} value={selectedStore} onChange={(e) => setSelectedStore(e.target.value)}>
+                                    {stores.map((store) => (
+                                        <option key={store} value={store}>{store}</option>
+                                    ))}
+                                </select>
+                                <View style={styles.addIngredientButton}>
+                                    <Button title="Add" onPress={() => addIngredient()} />
+                                </View>
+                            </View>
+                            <Text style={styles.title}>Ingredients</Text>
+                            <View>
+                                <FlatList
+                                    data={newRecipe.ingredients}
+                                    keyExtractor={(item) => item.title}
+                                    renderItem={({ item }) => (
+                                        <View style={styles.ingredientRow}>
+                                            <Text style={styles.ingredient}>{item.title}</Text>
+                                            <Button title="Delete" onPress={() => deleteIngredient(item.title)} />
+                                        </View>
+                                    )}
+                                />
+                            </View>
+                            <Text style={styles.title}>Description</Text>
+                            <TextInput
+                                value={newRecipe.description}
+                                onChangeText={(text) => setNewRecipe({ ...newRecipe, description: text })}
+                                placeholder="Add a description"
+                                multiline
+                                textAlignVertical="top"
+                                scrollEnabled={false}
+                                onContentSizeChange={(e) => {
+                                    setDescriptionHeight(Math.max(100, e.nativeEvent.contentSize.height))
+                                }
+                                }
+                                style={{
+                                    borderWidth: 1,
+                                    borderColor: "#ccc",
+                                    borderRadius: 8,
+                                    padding: 12,
+                                    height: descriptionHeight,
+                                    overflow: "hidden",
+                                    marginBottom: 16,
+                                    fontSize: 16,
+                                    backgroundColor: "#fff",
+                                }} />
+                            {newRecipe.title.trim() && !shouldUpdate ? (
+                                <TouchableOpacity style={styles.addRecipeButtonEnabled} onPress={addRecipe}><Text>Save recipe</Text></TouchableOpacity>
+                            ) : !shouldUpdate ? (
+                                <TouchableOpacity style={styles.addRecipeButtonDisabled} disabled={true} onPress={addRecipe}><Text>Save recipe</Text></TouchableOpacity>
+                            ) : (
+                                <View>
+                                    <TouchableOpacity style={styles.addRecipeButtonEnabled} onPress={updateRecipe}><Text>Update recipe</Text></TouchableOpacity>
+                                    <TouchableOpacity style={styles.addRecipeButtonEnabled} onPress={addToGroceryList}><Text>Add Ingredients to Grocery List</Text></TouchableOpacity>
                                 </View>
                             )}
-                        />
+                        </ScrollView>
                     </View>
-                    {newRecipe.title.trim() && !shouldUpdate ? (
-                        <TouchableOpacity style={styles.addRecipeButtonEnabled} onPress={addRecipe}><Text>Save recipe</Text></TouchableOpacity>
-                    ) : !shouldUpdate ? (
-                        <TouchableOpacity style={styles.addRecipeButtonDisabled} disabled={true} onPress={addRecipe}><Text>Save recipe</Text></TouchableOpacity>
-                    ) : (
-                        <View>
-                            <TouchableOpacity style={styles.addRecipeButtonEnabled} onPress={updateRecipe}><Text>Update recipe</Text></TouchableOpacity>
-                            <TouchableOpacity style={styles.addRecipeButtonEnabled} onPress={addToGroceryList}><Text>Add Ingredients to Grocery List</Text></TouchableOpacity>
-                        </View>
-                    )}
-                </View>
-            </Modal>
+                </Modal>
+            </ScrollView>
         </View>
 
 

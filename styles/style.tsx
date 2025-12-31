@@ -2,8 +2,8 @@ import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
     text: { fontSize: 16, marginBottom: 10 },
-    noteRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 5 },
-    note: { fontSize: 18 },
+    recipeRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 5 },
+    recipe: { fontSize: 18, backgroundColor: "#cececeff", padding: 10, borderRadius: 10 },
     one_row: { display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
     modal: { backgroundColor: "#ffffffff", padding: 24 },
     closeButton: { padding: 12 },

@@ -28,7 +28,7 @@ export default function GroceriesPage() {
     useEffect(() => {
         const q = query(collection(db, "groceries"),
             where("householdId", "==", householdId),
-            orderBy("createdAt", "desc"));
+            orderBy("createdAt", "asc"));
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
             const groceriesData: Grocery[] = snapshot.docs.map((doc) => {
