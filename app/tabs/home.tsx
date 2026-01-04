@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Text, View } from "react-native";
 import { auth } from "../../firebaseConfig";
-import styles from "../../styles/style";
+import styles from "../../styles";
 
 export default function HomePage() {
     const handleLogout = async () => {
@@ -12,7 +12,7 @@ export default function HomePage() {
         <View style={styles.container}>
             <Button title="Logout" onPress={handleLogout} />
             <Text style={styles.header}>Home</Text>
-            <Text style={styles.text}>Welcome to Luciepoo and Svenjapoo's Household App. Hope it will bring you comfort and joy to your household!</Text>
+            <Text style={{fontSize: 16, marginBottom: 10}}>Welcome to Luciepoo and Svenjapoo's Household App. Hope it will bring you comfort and joy to your household!</Text>
         </View>
     )
 }

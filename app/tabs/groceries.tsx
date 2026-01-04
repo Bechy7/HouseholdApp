@@ -2,7 +2,7 @@ import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, serverT
 import React, { useEffect, useState } from "react";
 import { Button, FlatList, ScrollView, Text, TextInput, View } from "react-native";
 import { auth, db } from "../../firebaseConfig";
-import styles from "../../styles/style";
+import styles from "../../styles";
 import useHousehold from "../context/householdContext";
 import defaultGroceries from "../helpers/grocerySuggestion";
 
@@ -74,7 +74,7 @@ export default function GroceriesPage() {
                     keyExtractor={(item) => item.id}
                     renderItem={({ item }) => (
                         <View style={styles.groceryRow}>
-                            <Text style={styles.grocery}>
+                            <Text style={{ fontSize: 18 }}>
                                 {defaultGroceries.find((s) => s.label === item.title)?.emoji || "🛒"} {item.title}
                             </Text>
                             <Button title="Delete" onPress={() => deleteGrocery(item.id)} />
@@ -102,7 +102,7 @@ export default function GroceriesPage() {
                         <option key={store} value={store}>{store}</option>
                     ))}
                 </select>
-                <View style={styles.addGroceryButton}>
+                <View style={{ margin: 3 }}>
                     <Button title="Add" onPress={() => addGrocery(newGrocery)} />
                 </View>
             </View>

@@ -1,9 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
 import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, serverTimestamp, updateDoc, where, writeBatch } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { Button, FlatList, Image, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Button, FlatList, Image, Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { auth, db } from "../../firebaseConfig";
-// import styles from "../../styles/style";
+import styles from "../../styles";
 import useHousehold from "../context/householdContext";
 import sortOptions, { sortMethod } from "../helpers/sortOptions";
 import { stores } from "./groceries";
@@ -22,7 +22,6 @@ export default function RecipesPage() {
     const [addRecipeModalVisible, setAddRecipeModalVisible] = useState(false);
     const [sortModalVisible, setSortModalVisible] = useState(false);
     const [filterModalVisible, setFilterModalVisible] = useState(false);
-    const [sortingTitle, setSortingTitle] = useState<string>(sortOptions[0].title);
     const [toastMessage, setToastMessage] = useState<string | null>(null);
     const [searchRecipe, setSearchRecipe] = useState("");
     const [recipes, setRecipes] = useState<Recipe[]>([]);
@@ -127,7 +126,7 @@ export default function RecipesPage() {
     return (
         <View>
             {sortModalVisible && (
-                <div style={{ width: "100%", height: "100%", backgroundColor: "black", position: "absolute", opacity: 0.5, zIndex: 3 }}/>
+                <div style={{ width: "100%", height: "100%", backgroundColor: "black", position: "absolute", opacity: 0.5, zIndex: 3 }} />
             )}
             <View style={styles.container}>
                 {toastMessage && (
@@ -209,7 +208,7 @@ export default function RecipesPage() {
                 animationType="slide"
                 onRequestClose={() => setAddRecipeModalVisible(false)}
             >
-                <View style={styles.modal_container}>
+                <View style={styles.modalContainer}>
                     {toastMessage && (
                         <View style={styles.toast}>
                             <Text style={styles.toastText}>{toastMessage}</Text>
@@ -234,7 +233,7 @@ export default function RecipesPage() {
                                     <option key={store} value={store}>{store}</option>
                                 ))}
                             </select>
-                            <View style={styles.addIngredientButton}>
+                            <View style={{ margin: 3 }}>
                                 <Button title="Add" onPress={() => addIngredient()} />
                             </View>
                         </View>
@@ -245,7 +244,7 @@ export default function RecipesPage() {
                                 keyExtractor={(item) => item.title}
                                 renderItem={({ item }) => (
                                     <View style={styles.ingredientRow}>
-                                        <Text style={styles.ingredient}>{item.title}</Text>
+                                        <Text style={{ fontSize: 18 }}>{item.title}</Text>
                                         <Button title="Delete" onPress={() => deleteIngredient(item.title)} />
                                     </View>
                                 )}
@@ -305,7 +304,6 @@ export default function RecipesPage() {
                             keyExtractor={(item) => item.title}
                             renderItem={({ item }) => (
                                 <TouchableOpacity style={styles.sortRow} onPress={() => {
-                                    setSortingTitle(item.title);
                                     setRecipes(sortMethod(item.title, recipes) || recipes);
                                     setSortModalVisible(false);
                                 }}>
@@ -326,67 +324,5 @@ export default function RecipesPage() {
     )
 }
 
-const styles = StyleSheet.create({
 
-    sortContainer: {
-        backgroundColor: "#fff",
-        padding: 24,
-        borderTopLeftRadius: 12,
-        borderTopRightRadius: 12,
-    },
-    text: { fontSize: 16, marginBottom: 10 },
-    recipeRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 5, backgroundColor: "white", marginBottom: 12, borderRadius: 16, boxShadow: "2px 2px 2px lightgray", height: 75 },
-    one_row: { display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
-    modal: { backgroundColor: "#ffffffff", padding: 24, justifyContent: "flex-end", flex: 1 },
-    closeButton: { alignSelf: "flex-end", borderWidth: 1, borderColor: "#ccc", borderRadius: 16, boxShadow: "2px 2px 2px lightgray", width: 32, height: 32, alignItems: "center", justifyContent: "center", },
-    modal_container: { width: '100%', height: "100%", backgroundColor: '#ffffffff', padding: 24 },
-    sortTitle: { fontSize: 24, fontWeight: "bold", marginBottom: 20, alignSelf: "center" },
-    sortRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 5, marginBottom: 12 },
-    checkbox: { borderWidth: 1, borderColor: "black", borderRadius: 12, width: 24, height: 24, alignItems: "center", justifyContent: "center", marginRight: 12 },
-    addIngredientButton: { margin: 3 },
-    addGroceryButton: { margin: 3 },
-    addToCalenderButton: { margin: 16, backgroundColor: "lightgray", alignItems: "center", borderRadius: 24, boxShadow: "2px 2px 2px lightgray", width: 24, height: 24, justifyContent: "center", },
-    openRecipeModuleButton: { padding: 12, backgroundColor: "#ffffffff", alignItems: "center", borderRadius: 20, boxShadow: "2px 2px 2px lightgray", width: 40, height: 40, justifyContent: "center", },
-    addRecipeButtonDisabled: { padding: 12, backgroundColor: "#E0E0E0", alignItems: "center", marginTop: 5 },
-    addRecipeButtonEnabled: { padding: 12, backgroundColor: "#2289ffff", alignItems: "center", marginTop: 5 },
-    sortAndFilterRow: { display: "flex", flexDirection: "row", justifyContent: "space-between", marginLeft: -8, marginRight: -8, alignItems: "center", marginTop: 16 },
-    sortAndFilterButton: { display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", backgroundColor: "lightgray", marginLeft: 8, marginRight: 8, flex: 1, borderRadius: 16, height: 40, boxShadow: "2px 2px 2px lightgray" },
-    container: { flex: 1, padding: 24, backgroundColor: "#f4f6f7", paddingTop: 50 },
-    header: { fontSize: 28, fontWeight: "bold", marginBottom: 20 },
-    inputRow: { flexDirection: "row", marginBottom: 20 },
-    searchRecipe: { flexDirection: "row", marginTop: 16, borderWidth: 1, borderColor: "#ccc", borderRadius: 16, boxShadow: "2px 2px 2px lightgray", paddingLeft: 8, height: 40 },
-    input: { flex: 1, borderWidth: 1, borderColor: "#ccc", borderRadius: 8, padding: 10, marginRight: 10 },
-    groceryRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 5 },
-    ingredientRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 5 },
-    grocery: { fontSize: 18 },
-    ingredient: { fontSize: 18 },
-    scrollView: { marginTop: 16 },
-    select: { width: 75, marginRight: 10 },
-    title: { fontSize: 20, fontWeight: "bold", marginTop: 20, marginBottom: 10 },
-    suggestions: { backgroundColor: "#f5f5f5", borderRadius: 8, padding: 10, marginBottom: 10, },
-    suggestion: { paddingVertical: 8, fontSize: 16, borderBottomWidth: 1, borderBottomColor: "#ddd", },
-
-    toast: {
-        position: "absolute",
-        top: 50,
-        left: 20,
-        right: 20,
-        backgroundColor: "#2e7d32",
-        padding: 12,
-        borderRadius: 10,
-        zIndex: 1000,
-        alignItems: "center",
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.3,
-        shadowRadius: 4,
-        elevation: 5,
-    },
-
-    toastText: {
-        color: "#fff",
-        fontSize: 16,
-        fontWeight: "600",
-    },
-});
 
