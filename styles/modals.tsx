@@ -13,6 +13,14 @@ export default StyleSheet.create({
         backgroundColor: '#ffffffff',
         padding: 24
     },
+    blurredBackground: {
+        width: "100%",
+        height: "100%",
+        backgroundColor: "black",
+        position: "absolute",
+        opacity: 0.5,
+        zIndex: 3
+    },
 
     //Sort and filter
     sortContainer: {

@@ -11,7 +11,7 @@ export default StyleSheet.create({
         justifyContent: "center",
         marginRight: 12
     },
-    one_row: {
+    row: {
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",
