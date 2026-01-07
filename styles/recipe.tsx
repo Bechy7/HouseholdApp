@@ -42,13 +42,13 @@ export default StyleSheet.create({
         height: 40,
         justifyContent: "center",
     },
-    addRecipeButtonDisabled: {
+    addRecipeNextButtonDisabled: {
         padding: 12,
         backgroundColor: "#E0E0E0",
         alignItems: "center",
         marginTop: 5
     },
-    addRecipeButtonEnabled: {
+    addRecipeNextButtonEnabled: {
         padding: 12,
         backgroundColor: "#2289ffff",
         alignItems: "center",
@@ -60,4 +60,20 @@ export default StyleSheet.create({
         alignItems: "center",
         paddingVertical: 5
     },
+    RecipeListImage: {
+        width: 75,
+        height: 75,
+        marginRight: 12,
+        backgroundColor: "lightgray",
+        borderTopLeftRadius: 16,
+        borderBottomLeftRadius: 16
+    },
+    addRecipeImage: {
+        width: "100%",
+        // height: 224,
+        height: 100,
+        borderRadius: 16,
+        backgroundColor: "lightgray",
+        marginVertical: 12
+    }
 });

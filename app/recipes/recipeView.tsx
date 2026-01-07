@@ -121,23 +121,12 @@ export default function RecipeView({ recipeData, onClose }: { recipeData: Recipe
                     scrollEnabled={false}
                     onContentSizeChange={(e) => {
                         setDescriptionHeight(Math.max(100, e.nativeEvent.contentSize.height))
-                    }
-                    }
-                    style={{
-                        borderWidth: 1,
-                        borderColor: "#ccc",
-                        borderRadius: 8,
-                        padding: 12,
-                        height: descriptionHeight,
-                        overflow: "hidden",
-                        marginBottom: 16,
-                        fontSize: 16,
-                        backgroundColor: "#fff",
-                    }} />
+                    }}
+                    style={{ ...styles.textInput, height: descriptionHeight }} />
                 {newRecipe.title.trim() ? (
-                    <TouchableOpacity style={styles.addRecipeButtonEnabled} onPress={addRecipe}><Text>Save recipe</Text></TouchableOpacity>
+                    <TouchableOpacity style={styles.addRecipeNextButtonEnabled} onPress={addRecipe}><Text>Save recipe</Text></TouchableOpacity>
                 ) : (
-                    <TouchableOpacity style={styles.addRecipeButtonDisabled} disabled={true} onPress={addRecipe}><Text>Save recipe</Text></TouchableOpacity>
+                    <TouchableOpacity style={styles.addRecipeNextButtonDisabled} disabled={true} onPress={addRecipe}><Text>Save recipe</Text></TouchableOpacity>
                 )}
             </ScrollView>
         </View>

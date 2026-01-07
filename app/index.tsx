@@ -10,7 +10,9 @@ export default function Index() {
   }
 
   if (user) {
-    return <Redirect href="../household" />;
+    //TODO: Uncomment
+    // return <Redirect href="../household" />;
+    return <Redirect href="../recipes/newRecipe" />;
   }
 
   return <Redirect href="/login" />;

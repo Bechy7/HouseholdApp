@@ -7,7 +7,7 @@ import styles from "../../styles";
 import useHousehold from "../context/householdContext";
 import sortOptions, { sortMethod } from "../helpers/sortOptions";
 import { Recipe } from "../tabs/recipes";
-import RecipeView from "./recipeView";
+import NewRecipe from "./newRecipe";
 
 export default function RecipesList() {
     const [addRecipeModalVisible, setAddRecipeModalVisible] = useState(false);
@@ -116,7 +116,7 @@ export default function RecipesList() {
                 <View style={styles.searchRecipe}>
                     <Ionicons name="search" size={18} style={{ alignContent: "center" }} />
                     <TextInput
-                        style={{ paddingLeft: 8, flex:1 }}
+                        style={{ paddingLeft: 8, flex: 1 }}
                         placeholder="Search here"
                         placeholderTextColor={"gray"}
                         value={searchRecipe}
@@ -137,8 +137,7 @@ export default function RecipesList() {
                             }}>
                                 <Image
                                     source={{ uri: "" }}
-                                    style={{ width: 75, height: 75, marginRight: 12, backgroundColor: "lightgray", borderTopLeftRadius: 16, borderBottomLeftRadius: 16 }}>
-                                </Image>
+                                    style={styles.RecipeListImage} />
                                 <View style={{ flex: 1 }}>
                                     <Text style={{ fontSize: 16, marginTop: 16, marginBottom: 8 }}>{item.title}</Text>
                                     <Ionicons name="stopwatch" size={16} style={{ marginBottom: 16 }}>
@@ -162,8 +161,18 @@ export default function RecipesList() {
                 animationType="slide"
                 onRequestClose={() => setAddRecipeModalVisible(false)}
             >
-                <RecipeView recipeData={recipeData} onClose={() => setAddRecipeModalVisible(false)} />
+                <NewRecipe onClose={() => setAddRecipeModalVisible(false)} />
             </Modal>
+
+            {/* View Recipe Modal */}
+            {/* <Modal style={styles.modal}
+                visible={addRecipeModalVisible}
+                transparent={true}
+                animationType="slide"
+                onRequestClose={() => setAddRecipeModalVisible(false)}
+            >
+                <RecipeView recipeData={recipeData} onClose={() => setAddRecipeModalVisible(false)} />
+            </Modal> */}
 
             {sortingModal()}
         </View>

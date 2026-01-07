@@ -35,13 +35,10 @@ export default StyleSheet.create({
         paddingTop: 50
     },
     header: {
-        fontSize: 28,
-        fontWeight: "bold",
-        marginBottom: 20
+        fontSize: 24,
     },
     inputRow: {
         flexDirection: "row",
-        marginBottom: 20
     },
     input: {
         flex: 1,
@@ -55,8 +52,37 @@ export default StyleSheet.create({
         marginTop: 16
     },
     select: {
-        width: 75,
-        marginRight: 10
+        flex: 1,
+        borderWidth: 1,
+        borderColor: "#000000ff",
+        borderRadius: 24,
+        overflow: "hidden",
+        fontSize: 16,
+        backgroundColor: "#fff",
+        padding: 12,
+        width: "100%",
+        marginRight: 0,
+        marginLeft: 12,
+        marginBottom: 11,
+        marginTop: 10
+    },
+    textInput: {
+        flex: 1,
+        borderWidth: 1,
+        borderColor: "#000000ff",
+        borderRadius: 20,
+        padding: 12,
+        overflow: "hidden",
+        marginBottom: 16,
+        fontSize: 16,
+        backgroundColor: "#fff",
+        marginVertical: 12,
+        width: "100%",
+        height: 40
+    },
+    textMedium: {
+        fontSize: 16,
+        fontWeight: 600
     },
     title: {
         fontSize: 20,

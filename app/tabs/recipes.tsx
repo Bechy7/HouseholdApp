@@ -8,6 +8,9 @@ export type Recipe = {
     householdId: string;
     ingredients: { title: string; storePref: string }[];
     description?: string;
+    cookingTime?: string;
+    portions?: string;
+    calories?: string;
 };
 
 export default function RecipesPage() {
