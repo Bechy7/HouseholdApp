@@ -9,7 +9,7 @@ const steps = [
     "Nodes",
     "Tags",
 ];
-export default function progressBar({
+export default function ProgressBar({
     currentStep,
 }: {
     currentStep: number;

@@ -9,7 +9,7 @@ import sortOptions, { sortMethod } from "../helpers/sortOptions";
 import { Recipe } from "../tabs/recipes";
 import NewRecipe from "./newRecipe";
 
-export default function RecipesList() {
+export default function RecipeList() {
     const [addRecipeModalVisible, setAddRecipeModalVisible] = useState(false);
     const [sortModalVisible, setSortModalVisible] = useState(false);
     const [filterModalVisible, setFilterModalVisible] = useState(false);
@@ -29,7 +29,7 @@ export default function RecipesList() {
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
             const recipesData: Recipe[] = snapshot.docs.map((doc) => {
-                const data = doc.data() as { title: string; householdId: string; ingredients: { title: string; storePref: string }[]; description: string; createdAt?: any };
+                const data = doc.data() as { title: string; householdId: string; ingredients: { title: string; storePref: string, quantity: number, unit: string }[]; description: string; createdAt?: any };
                 return {
                     id: doc.id,
                     title: data.title,

@@ -42,16 +42,6 @@ export default function RecipeView({ recipeData, onClose }: { recipeData: Recipe
         onClose();
     };
 
-    const addIngredient = async () => {
-        if (!newIngredient.trim()) return;
-        newRecipe.ingredients.push({
-            title: newIngredient.trim(),
-            storePref: selectedStore,
-        });
-        setNewRecipe({ ...newRecipe });
-        setNewIngredient("");
-    }
-
     const deleteIngredient = (title: string) => {
         setNewRecipe({
             ...newRecipe,
@@ -95,7 +85,7 @@ export default function RecipeView({ recipeData, onClose }: { recipeData: Recipe
                         ))}
                     </select>
                     <View style={{ margin: 3 }}>
-                        <Button title="Add" onPress={() => addIngredient()} />
+                        <Button title="Add" />
                     </View>
                 </View>
                 <Text style={styles.title}>Ingredients</Text>
@@ -123,11 +113,6 @@ export default function RecipeView({ recipeData, onClose }: { recipeData: Recipe
                         setDescriptionHeight(Math.max(100, e.nativeEvent.contentSize.height))
                     }}
                     style={{ ...styles.textInput, height: descriptionHeight }} />
-                {newRecipe.title.trim() ? (
-                    <TouchableOpacity style={styles.addRecipeNextButtonEnabled} onPress={addRecipe}><Text>Save recipe</Text></TouchableOpacity>
-                ) : (
-                    <TouchableOpacity style={styles.addRecipeNextButtonDisabled} disabled={true} onPress={addRecipe}><Text>Save recipe</Text></TouchableOpacity>
-                )}
             </ScrollView>
         </View>
     )

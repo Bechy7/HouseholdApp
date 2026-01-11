@@ -6,12 +6,19 @@ export type Recipe = {
     createdAt?: any;
     title: string;
     householdId: string;
-    ingredients: { title: string; storePref: string }[];
+    ingredients: Ingredient[];
     description?: string;
     cookingTime?: string;
     portions?: string;
     calories?: string;
 };
+
+export type Ingredient = {
+    title: string;
+    storePref?: string;
+    quantity?: number;
+    unit?: string
+}
 
 export default function RecipesPage() {
     return <RecipesList />;

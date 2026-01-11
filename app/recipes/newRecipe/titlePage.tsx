@@ -1,23 +1,23 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useRoute } from "@react-navigation/native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import React, { useState } from "react";
 import { Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { auth, db } from "../../firebaseConfig";
-import styles from "../../styles";
-import useHousehold from "../context/householdContext";
-import { Recipe } from "../tabs/recipes";
-import ProgressBar from "./progressBar";
+import { auth, db } from "../../../firebaseConfig";
+import styles from "../../../styles";
+import useHousehold from "../../context/householdContext";
+import { Recipe } from "../../tabs/recipes";
+import ProgressBar from "../progressBar";
 
-const cookingTimes = ["min", "hours"];
+type Props = NativeStackScreenProps<any>;
 
-export default function newRecipe({ onClose }: { onClose: () => void }) {
-    const [selectedStore, setSelectedStore] = useState("Default");
+export default function TitlePage({ navigation }: Props) {
+    const route = useRoute();
+    const { onClose } = (route.params as { onClose: () => void }) || { onClose: () => { } };
     const [newRecipe, setNewRecipe] = useState<Recipe>({ id: "", title: "", ingredients: [], householdId: "" });
-    const [newIngredient, setNewIngredient] = useState("");
     const { householdId } = useHousehold();
-    const [descriptionHeight, setDescriptionHeight] = useState(100);
     const requiredFieldsFilled = newRecipe.title.trim().length > 0;
-    const [currentStep, setCurrentStep] = useState(0);
 
     const addRecipe = async () => {
         const user = auth.currentUser;
@@ -32,23 +32,6 @@ export default function newRecipe({ onClose }: { onClose: () => void }) {
         onClose();
     };
 
-    const addIngredient = async () => {
-        if (!newIngredient.trim()) return;
-        newRecipe.ingredients.push({
-            title: newIngredient.trim(),
-            storePref: selectedStore,
-        });
-        setNewRecipe({ ...newRecipe });
-        setNewIngredient("");
-    }
-
-    const deleteIngredient = (title: string) => {
-        setNewRecipe({
-            ...newRecipe,
-            ingredients: newRecipe.ingredients.filter((item) => item.title !== title),
-        });
-    };
-
     return (
         <View style={styles.modalContainer}>
             <ScrollView style={styles.scrollView} keyboardShouldPersistTaps="handled">
@@ -56,7 +39,7 @@ export default function newRecipe({ onClose }: { onClose: () => void }) {
                     <Text style={styles.header}>Create a new recipe</Text>
                     <TouchableOpacity style={styles.closeButton} onPress={() => onClose()}><Ionicons name="close" size={24} /></TouchableOpacity>
                 </View>
-                <ProgressBar currentStep={currentStep} />
+                <ProgressBar currentStep={0} />
                 <View>
                     <Text style={styles.textMedium}> Name of the recipe</Text>
                     <Image
@@ -73,20 +56,13 @@ export default function newRecipe({ onClose }: { onClose: () => void }) {
                         style={styles.textInput} />
                 </View>
 
-                <Text style={styles.textMedium}> Cooking time</Text>
-                <View style={styles.inputRow}>
-                    <TextInput
-                        placeholder="23"
-                        placeholderTextColor="gray"
-                        value={newRecipe.cookingTime}
-                        onChangeText={(text) => setNewRecipe({ ...newRecipe, cookingTime: text })}
-                        style={styles.textInput} />
-                    <select style={styles.select} value={selectedStore} onChange={(e) => setSelectedStore(e.target.value)}>
-                        {cookingTimes.map((time) => (
-                            <option key={time} value={time}>{time}</option>
-                        ))}
-                    </select>
-                </View>
+                <Text style={styles.textMedium}> Cooking time (min)</Text>
+                <TextInput
+                    placeholder="23"
+                    placeholderTextColor="gray"
+                    value={newRecipe.cookingTime}
+                    onChangeText={(text) => setNewRecipe({ ...newRecipe, cookingTime: text })}
+                    style={styles.textInput} />
 
                 <View style={styles.inputRow}>
                     <Text style={{ ...styles.textMedium, flex: 1, marginRight: 12 }}> Portions</Text>
@@ -107,24 +83,12 @@ export default function newRecipe({ onClose }: { onClose: () => void }) {
                         style={styles.textInput} />
                 </View>
 
-
-                {/* <View>
-                    <FlatList
-                        data={newRecipe.ingredients}
-                        keyExtractor={(item) => item.title}
-                        renderItem={({ item }) => (
-                            <View style={styles.ingredientRow}>
-                                <Text style={{ fontSize: 18 }}>{item.title}</Text>
-                                <Button title="Delete" onPress={() => deleteIngredient(item.title)} />
-                            </View>
-                        )}
-                    />
-                </View> */}
-
                 <TouchableOpacity
-                    style={[styles.addRecipeNextButtonDisabled, requiredFieldsFilled && styles.addRecipeNextButtonEnabled]}
+                    style={[styles.addRecipeNextButton, requiredFieldsFilled && { ...styles.addRecipeNextButton, backgroundColor: "#4e4e4e" }]}
                     disabled={!requiredFieldsFilled}
-                    onPress={() => {setCurrentStep(currentStep + 1)}}><Text>Next</Text></TouchableOpacity>
+                    onPress={() => navigation.navigate("Step2")}>
+                    <Text style={styles.textNextButton}>Next</Text>
+                </TouchableOpacity>
 
             </ScrollView>
         </View>

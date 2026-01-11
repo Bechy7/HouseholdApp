@@ -42,18 +42,33 @@ export default StyleSheet.create({
         height: 40,
         justifyContent: "center",
     },
-    addRecipeNextButtonDisabled: {
+    addRecipeNextButton: {
+        flex: 1,
         padding: 12,
-        backgroundColor: "#E0E0E0",
+        backgroundColor: "gray",
         alignItems: "center",
-        marginTop: 5
+        marginTop: 48,
+        borderRadius: 16
     },
-    addRecipeNextButtonEnabled: {
+    addRecipeBackButton: {
+        flex: 1,
         padding: 12,
-        backgroundColor: "#2289ffff",
         alignItems: "center",
-        marginTop: 5
+        marginTop: 48,
+        borderRadius: 16,
+        borderWidth: 1,
+        marginRight: 8
     },
+    addIngredientButton: {
+        flex: 1,
+        padding: 12,
+        alignItems: "center",
+        borderRadius: 16,
+        borderWidth: 1,
+        marginRight: 8,
+        backgroundColor: "#806752"
+    },
+
     ingredientRow: {
         flexDirection: "row",
         justifyContent: "space-between",
@@ -70,8 +85,7 @@ export default StyleSheet.create({
     },
     addRecipeImage: {
         width: "100%",
-        // height: 224,
-        height: 100,
+        height: 224,
         borderRadius: 16,
         backgroundColor: "lightgray",
         marginVertical: 12

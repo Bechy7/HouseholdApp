@@ -84,6 +84,11 @@ export default StyleSheet.create({
         fontSize: 16,
         fontWeight: 600
     },
+    textNextButton: {
+        fontSize: 16,
+        fontWeight: 600,
+        color: "white"
+    },
     title: {
         fontSize: 20,
         fontWeight: "bold",
