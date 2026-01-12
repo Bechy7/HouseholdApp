@@ -18,8 +18,6 @@ export default function RecipeList() {
     const filteredRecipes = recipes.filter((recipe) =>
         recipe.title.toLowerCase().includes(searchRecipe.toLowerCase())
     );
-    const emptyRecipe: Recipe = { id: "", title: "", householdId: "", ingredients: [] };
-    const [recipeData, setRecipeData] = useState<Recipe>(emptyRecipe);
     const { householdId } = useHousehold();
 
     useEffect(() => {
@@ -29,7 +27,7 @@ export default function RecipeList() {
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
             const recipesData: Recipe[] = snapshot.docs.map((doc) => {
-                const data = doc.data() as { title: string; householdId: string; ingredients: { title: string; storePref: string, quantity: number, unit: string }[]; description: string; createdAt?: any };
+                const data = doc.data() as { title: string; householdId: string; ingredients: { title: string; storePref: string, quantity: string, unit: string }[]; description: string; createdAt?: any };
                 return {
                     id: doc.id,
                     title: data.title,
@@ -106,7 +104,6 @@ export default function RecipeList() {
                 <View style={styles.row}>
                     <Text style={styles.header}>All recipes</Text>
                     <TouchableOpacity style={styles.openRecipeModuleButton} onPress={() => {
-                        setRecipeData(emptyRecipe);
                         setAddRecipeModalVisible(true);
                     }}>
                         <Ionicons name="add" size={24} />
@@ -132,7 +129,6 @@ export default function RecipeList() {
                         keyExtractor={(item) => item.id}
                         renderItem={({ item }) => (
                             <TouchableOpacity style={styles.recipeRow} onPress={() => {
-                                setRecipeData(item);
                                 setAddRecipeModalVisible(true);
                             }}>
                                 <Image

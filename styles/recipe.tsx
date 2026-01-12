@@ -65,15 +65,21 @@ export default StyleSheet.create({
         alignItems: "center",
         borderRadius: 16,
         borderWidth: 1,
-        marginRight: 8,
         backgroundColor: "#806752"
     },
 
     ingredientRow: {
+        flex: 1,
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        paddingVertical: 5
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+        backgroundColor: "white",
+        marginVertical: 8,
+        borderRadius: 16,
+        boxShadow: "5px 5px 5px lightgray",
+        height: 75
     },
     RecipeListImage: {
         width: 75,

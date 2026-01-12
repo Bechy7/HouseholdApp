@@ -2,20 +2,23 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import { Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { auth, db } from "../../../firebaseConfig";
 import styles from "../../../styles";
 import useHousehold from "../../context/householdContext";
-import { Recipe } from "../../tabs/recipes";
 import ProgressBar from "../progressBar";
+import { RecipeContext } from "./recipeContext";
 
 type Props = NativeStackScreenProps<any>;
 
 export default function TitlePage({ navigation }: Props) {
+    const recipeContext = useContext(RecipeContext);
+    if (!recipeContext) return null;
+    const {newRecipe, setNewRecipe} = recipeContext;
+
     const route = useRoute();
     const { onClose } = (route.params as { onClose: () => void }) || { onClose: () => { } };
-    const [newRecipe, setNewRecipe] = useState<Recipe>({ id: "", title: "", ingredients: [], householdId: "" });
     const { householdId } = useHousehold();
     const requiredFieldsFilled = newRecipe.title.trim().length > 0;
 
@@ -86,7 +89,7 @@ export default function TitlePage({ navigation }: Props) {
                 <TouchableOpacity
                     style={[styles.addRecipeNextButton, requiredFieldsFilled && { ...styles.addRecipeNextButton, backgroundColor: "#4e4e4e" }]}
                     disabled={!requiredFieldsFilled}
-                    onPress={() => navigation.navigate("Step2")}>
+                    onPress={() => navigation.navigate("ingredientsPage")}>
                     <Text style={styles.textNextButton}>Next</Text>
                 </TouchableOpacity>
 

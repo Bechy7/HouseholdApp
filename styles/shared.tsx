@@ -48,6 +48,14 @@ export default StyleSheet.create({
         padding: 10,
         marginRight: 10
     },
+    roundDeleteButton: {
+        backgroundColor: "lightgray",
+        borderRadius: 16,
+        width: 32,
+        height: 32,
+        alignItems: "center",
+        justifyContent: "center",
+    },
     scrollView: {
         marginTop: 16
     },

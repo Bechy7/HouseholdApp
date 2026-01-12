@@ -2,21 +2,25 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { FlatList, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { auth, db } from "../../../firebaseConfig";
 import styles from "../../../styles";
 import useHousehold from "../../context/householdContext";
-import { Ingredient, Recipe } from "../../tabs/recipes";
+import { Ingredient } from "../../tabs/recipes";
 import ProgressBar from "../progressBar";
+import { RecipeContext } from "./recipeContext";
 
 type Props = NativeStackScreenProps<any>;
 
 export default function IngredientsPage({ navigation }: Props) {
+    const recipeContext = useContext(RecipeContext);
+    if (!recipeContext) return null;
+    const { newRecipe, setNewRecipe } = recipeContext;
+
     const route = useRoute();
     const { onClose } = (route.params as { onClose: () => void }) || { onClose: () => { } };
-    const [newRecipe, setNewRecipe] = useState<Recipe>({ id: "", title: "", ingredients: [], householdId: "" });
-    const [newIngredient, setNewIngredient] = useState<Ingredient>({title: "", quantity: 0, unit: ""});
+    const [newIngredient, setNewIngredient] = useState<Ingredient>({ title: "", quantity: "", unit: "" });
     const { householdId } = useHousehold();
 
     const addRecipe = async () => {
@@ -36,11 +40,12 @@ export default function IngredientsPage({ navigation }: Props) {
         if (!newIngredient.title.trim()) return;
         newRecipe.ingredients.push({
             title: newIngredient.title.trim(),
-            quantity: Number(newIngredient.quantity),
+            quantity: newIngredient.quantity,
             unit: newIngredient.unit,
         });
         setNewRecipe({ ...newRecipe });
-        setNewIngredient({title: "", quantity: 0, unit: "", storePref: ""});
+        setNewIngredient({ title: "", quantity: "", unit: "", storePref: "" });
+        console.log(newRecipe);
     }
 
     const deleteIngredient = (title: string) => {
@@ -71,13 +76,13 @@ export default function IngredientsPage({ navigation }: Props) {
                     <TextInput
                         placeholder="Quantity"
                         placeholderTextColor="gray"
-                        value={newRecipe.portions}
-                        onChangeText={(text) => setNewIngredient({ ...newIngredient, quantity: Number(text) })}
+                        value={newIngredient.quantity?.toString()}
+                        onChangeText={(text) => setNewIngredient({ ...newIngredient, quantity: text })}
                         style={{ ...styles.textInput, marginRight: 12 }} />
                     <TextInput
                         placeholder="Name of unit"
                         placeholderTextColor="gray"
-                        value={newRecipe.calories}
+                        value={newIngredient.unit}
                         onChangeText={(text) => setNewIngredient({ ...newIngredient, unit: text })}
                         style={styles.textInput} />
                 </View>
@@ -87,18 +92,25 @@ export default function IngredientsPage({ navigation }: Props) {
                     <Text style={{ ...styles.textMedium, color: "white" }}>Add ingredient</Text>
                 </TouchableOpacity>
 
-
+                {newRecipe.ingredients.length > 0 && (
+                    <View style={{ paddingTop: 16 }}>
+                        <Text style={styles.textMedium}> Added ingredients</Text>
+                    </View>
+                )}
                 <View>
                     <FlatList
                         data={newRecipe.ingredients}
                         keyExtractor={(item) => item.title}
                         renderItem={({ item }) => (
                             <View style={styles.ingredientRow}>
-                                <Text style={{ fontSize: 18 }}>{item.title}</Text>
+                                <View style={{ flex: 1 }}>
+                                    <Text style={{ fontSize: 18 }}>{item.title}</Text>
+                                    <Text style={{ fontWeight: "light", fontSize: 12, color: "gray" }}>{item.quantity} {item.unit}</Text>
+                                </View>
                                 <TouchableOpacity
-                                    style={styles.addRecipeBackButton}
+                                    style={styles.roundDeleteButton}
                                     onPress={() => deleteIngredient(item.title)}>
-                                    <Ionicons name="trash" size={24} style={{ marginRight: 8 }} />
+                                    <Ionicons name="trash" size={16} />
                                 </TouchableOpacity>
                             </View>
                         )}
@@ -114,7 +126,7 @@ export default function IngredientsPage({ navigation }: Props) {
 
                     <TouchableOpacity
                         style={{ ...styles.addRecipeNextButton, backgroundColor: "#2289ffff" }}
-                        onPress={() => navigation.navigate("Step2")}>
+                        onPress={() => navigation.navigate("titlePage")}>
                         <Text style={styles.textNextButton}>Next</Text>
                     </TouchableOpacity>
                 </View>
