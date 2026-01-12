@@ -11,6 +11,7 @@ export type Recipe = {
     cookingTime?: string;
     portions?: string;
     calories?: string;
+    preparationSteps: string[];
 };
 
 export type Ingredient = {

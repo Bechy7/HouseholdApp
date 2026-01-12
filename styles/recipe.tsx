@@ -68,7 +68,7 @@ export default StyleSheet.create({
         backgroundColor: "#806752"
     },
 
-    ingredientRow: {
+    listRow: {
         flex: 1,
         flexDirection: "row",
         justifyContent: "space-between",
@@ -79,7 +79,8 @@ export default StyleSheet.create({
         marginVertical: 8,
         borderRadius: 16,
         boxShadow: "5px 5px 5px lightgray",
-        height: 75
+        height: 75,
+        marginRight: 16
     },
     RecipeListImage: {
         width: 75,

@@ -1,12 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import React, { useContext } from "react";
 import { Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { auth, db } from "../../../firebaseConfig";
 import styles from "../../../styles";
-import useHousehold from "../../context/householdContext";
 import ProgressBar from "../progressBar";
 import { RecipeContext } from "./recipeContext";
 
@@ -19,21 +16,7 @@ export default function TitlePage({ navigation }: Props) {
 
     const route = useRoute();
     const { onClose } = (route.params as { onClose: () => void }) || { onClose: () => { } };
-    const { householdId } = useHousehold();
     const requiredFieldsFilled = newRecipe.title.trim().length > 0;
-
-    const addRecipe = async () => {
-        const user = auth.currentUser;
-        if (!user || !newRecipe.title.trim()) return;
-        await addDoc(collection(db, "recipes"), {
-            title: newRecipe.title.trim(),
-            householdId,
-            ingredients: newRecipe.ingredients,
-            description: newRecipe.description || "",
-            createdAt: serverTimestamp(),
-        });
-        onClose();
-    };
 
     return (
         <View style={styles.modalContainer}>

@@ -55,6 +55,16 @@ export default StyleSheet.create({
         height: 32,
         alignItems: "center",
         justifyContent: "center",
+        alignSelf: "flex-start"
+    },
+    roundStepCounter: {
+        backgroundColor: "lightgray",
+        borderRadius: 16,
+        width: 24,
+        height: 24,
+        alignItems: "center",
+        justifyContent: "center",
+        alignSelf: "flex-start"
     },
     scrollView: {
         marginTop: 16
@@ -75,7 +85,6 @@ export default StyleSheet.create({
         marginTop: 10
     },
     textInput: {
-        flex: 1,
         borderWidth: 1,
         borderColor: "#000000ff",
         borderRadius: 20,
@@ -86,7 +95,7 @@ export default StyleSheet.create({
         backgroundColor: "#fff",
         marginVertical: 12,
         width: "100%",
-        height: 40
+        height: 44
     },
     textMedium: {
         fontSize: 16,

@@ -4,36 +4,31 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useContext, useState } from "react";
 import { FlatList, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import styles from "../../../styles";
-import { Ingredient } from "../../tabs/recipes";
 import ProgressBar from "../progressBar";
 import { RecipeContext } from "./recipeContext";
 
 type Props = NativeStackScreenProps<any>;
 
-export default function IngredientsPage({ navigation }: Props) {
+export default function PreparationPage({ navigation }: Props) {
     const recipeContext = useContext(RecipeContext);
     if (!recipeContext) return null;
     const { newRecipe, setNewRecipe } = recipeContext;
 
     const route = useRoute();
     const { onClose } = (route.params as { onClose: () => void }) || { onClose: () => { } };
-    const [newIngredient, setNewIngredient] = useState<Ingredient>({ title: "", quantity: "", unit: "" });
+    const [preparationStep, setPreparationStep] = useState("");
 
-    const addIngredient = async () => {
-        if (!newIngredient.title.trim()) return;
-        newRecipe.ingredients.push({
-            title: newIngredient.title.trim(),
-            quantity: newIngredient.quantity,
-            unit: newIngredient.unit,
-        });
+    const addPreparationStep = async () => {
+        if (!preparationStep.trim()) return;
+        newRecipe.preparationSteps.push(preparationStep.trim());
         setNewRecipe({ ...newRecipe });
-        setNewIngredient({ title: "", quantity: "", unit: "", storePref: "" });
+        setPreparationStep("");
     }
 
-    const deleteIngredient = (title: string) => {
+    const deletePreparationStep = (description: string) => {
         setNewRecipe({
             ...newRecipe,
-            ingredients: newRecipe.ingredients.filter((item) => item.title !== title),
+            preparationSteps: newRecipe.preparationSteps.filter((item) => item !== description),
         });
     };
 
@@ -44,54 +39,43 @@ export default function IngredientsPage({ navigation }: Props) {
                     <Text style={styles.header}>Create a new recipe</Text>
                     <TouchableOpacity style={styles.closeButton} onPress={() => onClose()}><Ionicons name="close" size={24} /></TouchableOpacity>
                 </View>
-                <ProgressBar currentStep={1} />
+                <ProgressBar currentStep={2} />
                 <View>
-                    <Text style={styles.textMedium}> Add ingredient</Text>
+                    <Text style={styles.textMedium}> Add preparation step</Text>
                     <TextInput
-                        placeholder="Write name of the ingredient"
+                        value={preparationStep}
+                        onChangeText={(text) => setPreparationStep(text)}
                         placeholderTextColor="gray"
-                        value={newIngredient.title}
-                        onChangeText={(text) => setNewIngredient({ ...newIngredient, title: text })}
-                        style={styles.textInput} />
+                        placeholder="Write step"
+                        multiline
+                        textAlignVertical="top"
+                        style={{ ...styles.textInput, height: 120 }} />
                 </View>
-                <View style={styles.inputRow}>
-                    <TextInput
-                        placeholder="Quantity"
-                        placeholderTextColor="gray"
-                        value={newIngredient.quantity?.toString()}
-                        onChangeText={(text) => setNewIngredient({ ...newIngredient, quantity: text })}
-                        style={{ ...styles.textInput, marginRight: 12 }} />
-                    <TextInput
-                        placeholder="Name of unit"
-                        placeholderTextColor="gray"
-                        value={newIngredient.unit}
-                        onChangeText={(text) => setNewIngredient({ ...newIngredient, unit: text })}
-                        style={styles.textInput} />
-                </View>
+
                 <TouchableOpacity
                     style={styles.addIngredientButton}
-                    onPress={addIngredient}>
-                    <Text style={{ ...styles.textMedium, color: "white" }}>Add ingredient</Text>
+                    onPress={addPreparationStep}>
+                    <Text style={{ ...styles.textMedium, color: "white" }}>Add step</Text>
                 </TouchableOpacity>
 
-                {newRecipe.ingredients.length > 0 && (
+                {newRecipe.preparationSteps.length > 0 && (
                     <View style={{ paddingTop: 16 }}>
-                        <Text style={styles.textMedium}> Added ingredients</Text>
+                        <Text style={styles.textMedium}> Added preparation steps</Text>
                     </View>
                 )}
                 <View>
                     <FlatList
-                        data={newRecipe.ingredients}
-                        keyExtractor={(item) => item.title}
+                        data={newRecipe.preparationSteps}
+                        keyExtractor={(item) => item}
                         renderItem={({ item }) => (
                             <View style={styles.listRow}>
-                                <View style={{ flex: 1 }}>
-                                    <Text style={{ fontSize: 18 }}>{item.title}</Text>
-                                    <Text style={{ fontWeight: "light", fontSize: 12, color: "gray" }}>{item.quantity} {item.unit}</Text>
+                                <View style={styles.roundStepCounter}>
+                                    <Text style={{ fontWeight: "600" }}>{newRecipe.preparationSteps.indexOf(item) + 1}</Text>
                                 </View>
+                                <Text style={{ fontSize: 14, alignSelf: "flex-start" }}>{item}</Text>
                                 <TouchableOpacity
                                     style={styles.roundDeleteButton}
-                                    onPress={() => deleteIngredient(item.title)}>
+                                    onPress={() => deletePreparationStep(item)}>
                                     <Ionicons name="trash" size={16} />
                                 </TouchableOpacity>
                             </View>
@@ -108,7 +92,7 @@ export default function IngredientsPage({ navigation }: Props) {
 
                     <TouchableOpacity
                         style={{ ...styles.addRecipeNextButton, backgroundColor: "#2289ffff" }}
-                        onPress={() => navigation.navigate("preparationPage")}>
+                        onPress={() => navigation.navigate("titlePage")}>
                         <Text style={styles.textNextButton}>Next</Text>
                     </TouchableOpacity>
                 </View>

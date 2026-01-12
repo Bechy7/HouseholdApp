@@ -94,7 +94,7 @@ export default function RecipeView({ recipeData, onClose }: { recipeData: Recipe
                         data={newRecipe.ingredients}
                         keyExtractor={(item) => item.title}
                         renderItem={({ item }) => (
-                            <View style={styles.ingredientRow}>
+                            <View style={styles.listRow}>
                                 <Text style={{ fontSize: 18 }}>{item.title}</Text>
                                 <Button title="Delete" onPress={() => deleteIngredient(item.title)} />
                             </View>
