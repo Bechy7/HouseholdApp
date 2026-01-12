@@ -9,26 +9,26 @@ import { RecipeContext } from "./recipeContext";
 
 type Props = NativeStackScreenProps<any>;
 
-export default function PreparationPage({ navigation }: Props) {
+export default function NotesPage({ navigation }: Props) {
     const recipeContext = useContext(RecipeContext);
     if (!recipeContext) return null;
     const { newRecipe, setNewRecipe } = recipeContext;
 
     const route = useRoute();
     const { onClose } = (route.params as { onClose: () => void }) || { onClose: () => { } };
-    const [preparationStep, setPreparationStep] = useState("");
+    const [note, setNote] = useState("");
 
-    const addPreparationStep = async () => {
-        if (!preparationStep.trim()) return;
-        newRecipe.preparationSteps.push(preparationStep.trim());
+    const addNote = async () => {
+        if (!note.trim()) return;
+        newRecipe.notes.push(note.trim());
         setNewRecipe({ ...newRecipe });
-        setPreparationStep("");
+        setNote("");
     }
 
-    const deletePreparationStep = (description: string) => {
+    const deleteNote = (description: string) => {
         setNewRecipe({
             ...newRecipe,
-            preparationSteps: newRecipe.preparationSteps.filter((item) => item !== description),
+            notes: newRecipe.notes.filter((item) => item !== description),
         });
     };
 
@@ -39,14 +39,14 @@ export default function PreparationPage({ navigation }: Props) {
                     <Text style={styles.header}>Create a new recipe</Text>
                     <TouchableOpacity style={styles.closeButton} onPress={() => onClose()}><Ionicons name="close" size={24} /></TouchableOpacity>
                 </View>
-                <ProgressBar currentStep={2} />
+                <ProgressBar currentStep={3} />
                 <View>
-                    <Text style={styles.textMedium}> Add preparation step</Text>
+                    <Text style={styles.textMedium}> Add note</Text>
                     <TextInput
-                        value={preparationStep}
-                        onChangeText={(text) => setPreparationStep(text)}
+                        value={note}
+                        onChangeText={(text) => setNote(text)}
                         placeholderTextColor="gray"
-                        placeholder="Write step"
+                        placeholder="Write note"
                         multiline
                         textAlignVertical="top"
                         style={{ ...styles.textInput, height: 120 }} />
@@ -54,28 +54,25 @@ export default function PreparationPage({ navigation }: Props) {
 
                 <TouchableOpacity
                     style={styles.addIngredientButton}
-                    onPress={addPreparationStep}>
-                    <Text style={{ ...styles.textMedium, color: "white" }}>Add step</Text>
+                    onPress={addNote}>
+                    <Text style={{ ...styles.textMedium, color: "white" }}>Add note</Text>
                 </TouchableOpacity>
 
-                {newRecipe.preparationSteps.length > 0 && (
+                {newRecipe.notes.length > 0 && (
                     <View style={{ paddingTop: 16 }}>
-                        <Text style={styles.textMedium}> Added preparation steps</Text>
+                        <Text style={styles.textMedium}> Added notes</Text>
                     </View>
                 )}
                 <View>
                     <FlatList
-                        data={newRecipe.preparationSteps}
+                        data={newRecipe.notes}
                         keyExtractor={(item) => item}
                         renderItem={({ item }) => (
                             <View style={styles.listRow}>
-                                <View style={styles.roundStepCounter}>
-                                    <Text style={{ fontWeight: "600" }}>{newRecipe.preparationSteps.indexOf(item) + 1}</Text>
-                                </View>
                                 <Text style={{ fontSize: 14, alignSelf: "flex-start" }}>{item}</Text>
                                 <TouchableOpacity
                                     style={styles.roundDeleteButton}
-                                    onPress={() => deletePreparationStep(item)}>
+                                    onPress={() => deleteNote(item)}>
                                     <Ionicons name="trash" size={16} />
                                 </TouchableOpacity>
                             </View>
@@ -92,7 +89,7 @@ export default function PreparationPage({ navigation }: Props) {
 
                     <TouchableOpacity
                         style={{ ...styles.addRecipeNextButton, backgroundColor: "#2289ffff" }}
-                        onPress={() => navigation.navigate("notesPage")}>
+                        onPress={() => navigation.navigate("titlePage")}>
                         <Text style={styles.textNextButton}>Next</Text>
                     </TouchableOpacity>
                 </View>

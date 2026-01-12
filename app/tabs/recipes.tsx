@@ -12,6 +12,7 @@ export type Recipe = {
     portions?: string;
     calories?: string;
     preparationSteps: string[];
+    notes: string[];
 };
 
 export type Ingredient = {

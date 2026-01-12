@@ -27,7 +27,7 @@ export default function RecipeList() {
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
             const recipesData: Recipe[] = snapshot.docs.map((doc) => {
-                const data = doc.data() as { title: string; householdId: string; ingredients: { title: string; storePref: string, quantity: string, unit: string }[]; description: string; createdAt?: any; preparationsSteps: string[] };
+                const data = doc.data() as { title: string; householdId: string; ingredients: { title: string; storePref: string, quantity: string, unit: string }[]; description: string; createdAt?: any; preparationsSteps: string[], notes: string[] };
                 return {
                     id: doc.id,
                     title: data.title,
@@ -35,7 +35,8 @@ export default function RecipeList() {
                     ingredients: data.ingredients,
                     description: data.description,
                     createdAt: data.createdAt,
-                    preparationSteps: data.preparationsSteps
+                    preparationSteps: data.preparationsSteps,
+                    notes: data.notes,
                 };
             });
             setRecipes(recipesData);
