@@ -8,6 +8,7 @@ export default StyleSheet.create({
         paddingVertical: 5,
         backgroundColor: "white",
         marginBottom: 12,
+        marginRight:2,
         borderRadius: 16,
         boxShadow: "2px 2px 2px lightgray",
         height: 75

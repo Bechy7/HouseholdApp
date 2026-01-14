@@ -49,13 +49,13 @@ export default function TagsPage({ navigation }: Props) {
             createdAt: serverTimestamp(),
             title: newRecipe.title.trim(),
             householdId,
-            ingredients: newRecipe.ingredients,
-            cookingTime: newRecipe.cookingTime,
-            portions: newRecipe.portions,
-            calories: newRecipe.calories,
-            preparationSteps: newRecipe.preparationSteps,
-            notes: newRecipe.notes,
-            tags: newRecipe.tags,
+            ingredients: newRecipe.ingredients ?? [],
+            cookingTime: newRecipe.cookingTime ?? "",
+            portions: newRecipe.portions ?? "",
+            calories: newRecipe.calories ?? "",
+            preparationSteps: newRecipe.preparationSteps ?? [],
+            notes: newRecipe.notes ?? [],
+            tags: newRecipe.tags ?? [],
         });
         onClose();
     };

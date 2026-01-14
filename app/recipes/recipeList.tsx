@@ -6,6 +6,7 @@ import { db } from "../../firebaseConfig";
 import styles from "../../styles";
 import useHousehold from "../context/householdContext";
 import sortOptions, { sortMethod } from "../helpers/sortOptions";
+import EmptyBox from "../images/emptyBox.png";
 import { Recipe, Tag } from "../tabs/recipes";
 import NewRecipe from "./newRecipe";
 
@@ -31,31 +32,31 @@ export default function RecipeList() {
                     createdAt?: any;
                     title: string;
                     householdId: string;
-                    ingredients: {
+                    ingredients?: {
                         title: string;
-                        storePref: string,
-                        quantity: string,
-                        unit: string
+                        storePref?: string,
+                        quantity?: string,
+                        unit?: string
                     }[];
-                    cookingTime: string;
-                    portions: string;
-                    calories: string;
-                    preparationsSteps: string[];
-                    notes: string[];
-                    tags: Tag[]
+                    cookingTime?: string;
+                    portions?: string;
+                    calories?: string;
+                    preparationsSteps?: string[];
+                    notes?: string[];
+                    tags?: Tag[]
                 };
                 return {
                     id: doc.id,
                     createdAt: data.createdAt,
                     title: data.title,
                     householdId: data.householdId,
-                    ingredients: data.ingredients,
-                    cookingTime: data.cookingTime,
-                    portions: data.portions,
-                    calories: data.calories,
-                    preparationSteps: data.preparationsSteps,
-                    notes: data.notes,
-                    tags: data.tags
+                    ingredients: data.ingredients ?? [],
+                    cookingTime: data.cookingTime ?? "",
+                    portions: data.portions ?? "",
+                    calories: data.calories ?? "",
+                    preparationSteps: data.preparationsSteps ?? [],
+                    notes: data.notes ?? [],
+                    tags: data.tags ?? []
                 };
             });
             setRecipes(recipesData);
@@ -117,7 +118,7 @@ export default function RecipeList() {
     }
 
     return (
-        <View>
+        <View style={styles.modalContainer}>
             {sortModalVisible && (
                 <div style={styles.blurredBackground} />
             )}
@@ -158,7 +159,7 @@ export default function RecipeList() {
                                 <View style={{ flex: 1 }}>
                                     <Text style={{ fontSize: 16, marginTop: 16, marginBottom: 8 }}>{item.title}</Text>
                                     <Ionicons name="stopwatch" size={16} style={{ marginBottom: 16 }}>
-                                        <Text style={{ marginLeft: 4, fontWeight: "light", fontSize: 12 }}>25 min</Text>
+                                        <Text style={{ marginLeft: 4, fontWeight: "light", fontSize: 12 }}>{item.cookingTime || "Unknown"} min</Text>
                                     </Ionicons>
                                 </View>
                                 <TouchableOpacity style={styles.addToCalenderButton} onPress={() => {
@@ -169,6 +170,21 @@ export default function RecipeList() {
                         )}>
                     </FlatList>
                 </ScrollView>
+                
+                {recipes.length == 0 && (
+                    <View style={{ flex: 1, alignItems: "center", height: "100%" }}>
+                        <Image source={EmptyBox} style={{ marginBottom: 48 }} />
+                        <Text style={styles.textMedium}> No recipes yet</Text>
+                        <Text> Start by adding a recipe</Text>
+                        <TouchableOpacity style={styles.openRecipeModuleButton} onPress={() => {
+                            setAddRecipeModalVisible(true);
+                        }}>
+                            <Ionicons name="add" size={24} />
+                        </TouchableOpacity>
+                    </View>
+                )}
+
+
             </View>
 
             {/* Add Recipe Modal */}
