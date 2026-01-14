@@ -45,7 +45,7 @@ export default StyleSheet.create({
     addRecipeNextButton: {
         flex: 1,
         padding: 12,
-        backgroundColor: "gray",
+        backgroundColor: "#4e4e4e",
         alignItems: "center",
         marginTop: 48,
         borderRadius: 16

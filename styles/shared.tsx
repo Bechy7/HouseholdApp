@@ -80,7 +80,6 @@ export default StyleSheet.create({
         padding: 12,
         width: "100%",
         marginRight: 0,
-        marginLeft: 12,
         marginBottom: 11,
         marginTop: 10
     },

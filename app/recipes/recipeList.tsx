@@ -6,7 +6,7 @@ import { db } from "../../firebaseConfig";
 import styles from "../../styles";
 import useHousehold from "../context/householdContext";
 import sortOptions, { sortMethod } from "../helpers/sortOptions";
-import { Recipe } from "../tabs/recipes";
+import { Recipe, Tag } from "../tabs/recipes";
 import NewRecipe from "./newRecipe";
 
 export default function RecipeList() {
@@ -27,16 +27,35 @@ export default function RecipeList() {
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
             const recipesData: Recipe[] = snapshot.docs.map((doc) => {
-                const data = doc.data() as { title: string; householdId: string; ingredients: { title: string; storePref: string, quantity: string, unit: string }[]; description: string; createdAt?: any; preparationsSteps: string[], notes: string[] };
+                const data = doc.data() as {
+                    createdAt?: any;
+                    title: string;
+                    householdId: string;
+                    ingredients: {
+                        title: string;
+                        storePref: string,
+                        quantity: string,
+                        unit: string
+                    }[];
+                    cookingTime: string;
+                    portions: string;
+                    calories: string;
+                    preparationsSteps: string[];
+                    notes: string[];
+                    tags: Tag[]
+                };
                 return {
                     id: doc.id,
+                    createdAt: data.createdAt,
                     title: data.title,
                     householdId: data.householdId,
                     ingredients: data.ingredients,
-                    description: data.description,
-                    createdAt: data.createdAt,
+                    cookingTime: data.cookingTime,
+                    portions: data.portions,
+                    calories: data.calories,
                     preparationSteps: data.preparationsSteps,
                     notes: data.notes,
+                    tags: data.tags
                 };
             });
             setRecipes(recipesData);

@@ -88,8 +88,8 @@ export default function NotesPage({ navigation }: Props) {
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                        style={{ ...styles.addRecipeNextButton, backgroundColor: "#2289ffff" }}
-                        onPress={() => navigation.navigate("titlePage")}>
+                        style={styles.addRecipeNextButton}
+                        onPress={() => navigation.navigate("tagsPage")}>
                         <Text style={styles.textNextButton}>Next</Text>
                     </TouchableOpacity>
                 </View>

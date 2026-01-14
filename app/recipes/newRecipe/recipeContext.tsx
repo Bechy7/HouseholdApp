@@ -1,14 +1,25 @@
+import availableTags from "@/app/helpers/availableTags";
 import { Recipe } from "@/app/tabs/recipes";
 import { createContext, useState } from "react";
-
 
 export const RecipeContext = createContext<{ newRecipe: Recipe; setNewRecipe: (newRecipe: Recipe) => void } | undefined>(undefined);
 
 const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
-    const [newRecipe, setNewRecipe] = useState<Recipe>({ id: "", title: "", ingredients: [], householdId: "", preparationSteps: [], notes: [] });
+    const [newRecipe, setNewRecipe] = useState<Recipe>({ id: "", title: "", ingredients: [], householdId: "", preparationSteps: [], notes: [], tags: [] });
+
+    const [initialized, setInitialized] = useState(false);
+
+    if (!initialized) {
+        availableTags.forEach(tag => {
+            newRecipe.tags.push({ category: tag.category, tags: [] })
+        });
+        setNewRecipe({ ...newRecipe });
+        setInitialized(true);
+    }
+
 
     return (
-        <RecipeContext.Provider value={{newRecipe, setNewRecipe}}>
+        <RecipeContext.Provider value={{ newRecipe, setNewRecipe }}>
             {children}
         </RecipeContext.Provider>
     )

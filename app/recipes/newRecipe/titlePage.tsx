@@ -12,7 +12,7 @@ type Props = NativeStackScreenProps<any>;
 export default function TitlePage({ navigation }: Props) {
     const recipeContext = useContext(RecipeContext);
     if (!recipeContext) return null;
-    const {newRecipe, setNewRecipe} = recipeContext;
+    const { newRecipe, setNewRecipe } = recipeContext;
 
     const route = useRoute();
     const { onClose } = (route.params as { onClose: () => void }) || { onClose: () => { } };
@@ -70,7 +70,7 @@ export default function TitlePage({ navigation }: Props) {
                 </View>
 
                 <TouchableOpacity
-                    style={[styles.addRecipeNextButton, requiredFieldsFilled && { ...styles.addRecipeNextButton, backgroundColor: "#4e4e4e" }]}
+                    style={[{ ...styles.addRecipeNextButton, backgroundColor: "gray" }, requiredFieldsFilled && styles.addRecipeNextButton]}
                     disabled={!requiredFieldsFilled}
                     onPress={() => navigation.navigate("ingredientsPage")}>
                     <Text style={styles.textNextButton}>Next</Text>

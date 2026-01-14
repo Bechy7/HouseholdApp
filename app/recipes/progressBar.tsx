@@ -6,7 +6,7 @@ const steps = [
     "Title",
     "Ingredients",
     "Preparation",
-    "Nodes",
+    "Notes",
     "Tags",
 ];
 export default function ProgressBar({
