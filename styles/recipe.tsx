@@ -69,7 +69,8 @@ export default StyleSheet.create({
         backgroundColor: "#806752"
     },
     addToShoppingListButton: {
-        padding: 12,
+        paddingVertical: 12,
+        paddingHorizontal: 24,
         backgroundColor: "#806752",
         alignItems: "center",
         borderRadius: 16,

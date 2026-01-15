@@ -126,7 +126,7 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
                         data={recipe.preparationSteps}
                         keyExtractor={(item) => item}
                         renderItem={({ item }) => (
-                            <View style={styles.row}>
+                            <View style={{...styles.row, justifyContent:"flex-start"}}>
                                 <View style={styles.roundStepCounter}>
                                     <Text style={{ fontWeight: "600" }}>{recipe.preparationSteps.indexOf(item) + 1}</Text>
                                 </View>
