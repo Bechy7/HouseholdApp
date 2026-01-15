@@ -121,34 +121,34 @@ export default function RecipeList() {
     }
 
     return (
-        <View style={styles.modalContainer}>
-            {sortModalVisible && (
-                <div style={styles.blurredBackground} />
-            )}
-            <View style={styles.container}>
-                <View style={styles.row}>
-                    <Text style={styles.header}>All recipes</Text>
-                    <TouchableOpacity style={styles.openRecipeModuleButton} onPress={() => {
-                        setAddRecipeModalVisible(true);
-                    }}>
-                        <Ionicons name="add" size={24} />
-                    </TouchableOpacity>
-                </View>
+        <ScrollView keyboardShouldPersistTaps="handled">
+            <View style={styles.modalContainer}>
+                {sortModalVisible && (
+                    <div style={styles.blurredBackground} />
+                )}
+                <View style={styles.container}>
+                    <View style={styles.row}>
+                        <Text style={styles.header}>All recipes</Text>
+                        <TouchableOpacity style={styles.openRecipeModuleButton} onPress={() => {
+                            setAddRecipeModalVisible(true);
+                        }}>
+                            <Ionicons name="add" size={24} />
+                        </TouchableOpacity>
+                    </View>
 
-                <View style={styles.searchRecipe}>
-                    <Ionicons name="search" size={18} style={{ alignContent: "center" }} />
-                    <TextInput
-                        style={{ paddingLeft: 8, flex: 1 }}
-                        placeholder="Search here"
-                        placeholderTextColor={"gray"}
-                        value={searchRecipe}
-                        onChangeText={setSearchRecipe}>
-                    </TextInput>
-                </View>
+                    <View style={styles.searchRecipe}>
+                        <Ionicons name="search" size={18} style={{ alignContent: "center" }} />
+                        <TextInput
+                            style={{ paddingLeft: 8, flex: 1 }}
+                            placeholder="Search here"
+                            placeholderTextColor={"gray"}
+                            value={searchRecipe}
+                            onChangeText={setSearchRecipe}>
+                        </TextInput>
+                    </View>
 
-                {sortAndFilterButtons()}
+                    {sortAndFilterButtons()}
 
-                <ScrollView style={styles.scrollView} keyboardShouldPersistTaps="handled">
                     <FlatList
                         data={filteredRecipes}
                         keyExtractor={(item) => item.id}
@@ -173,46 +173,46 @@ export default function RecipeList() {
                             </TouchableOpacity>
                         )}>
                     </FlatList>
-                </ScrollView>
 
-                {recipes.length == 0 && (
-                    <View style={{ flex: 1, alignItems: "center" }}>
-                        <Image source={EmptyBox} style={{ marginBottom: 48 }} />
-                        <Text style={styles.textMedium}> No recipes yet</Text>
-                        <Text> Start by adding a recipe</Text>
-                        <TouchableOpacity style={styles.openRecipeModuleButton} onPress={() => {
-                            setAddRecipeModalVisible(true);
-                        }}>
-                            <Ionicons name="add" size={24} />
-                        </TouchableOpacity>
-                    </View>
-                )}
+                    {recipes.length == 0 && (
+                        <View style={{ flex: 1, alignItems: "center" }}>
+                            <Image source={EmptyBox} style={{ marginBottom: 48 }} />
+                            <Text style={styles.textMedium}> No recipes yet</Text>
+                            <Text> Start by adding a recipe</Text>
+                            <TouchableOpacity style={styles.openRecipeModuleButton} onPress={() => {
+                                setAddRecipeModalVisible(true);
+                            }}>
+                                <Ionicons name="add" size={24} />
+                            </TouchableOpacity>
+                        </View>
+                    )}
 
 
+                </View>
+
+                {/* Add Recipe Modal */}
+                <Modal style={styles.modal}
+                    visible={addRecipeModalVisible}
+                    transparent={true}
+                    animationType="slide"
+                    onRequestClose={() => setAddRecipeModalVisible(false)}
+                >
+                    <NewRecipe onClose={() => setAddRecipeModalVisible(false)} />
+                </Modal>
+
+                {/* View Recipe Modal */}
+                <Modal style={styles.modal}
+                    visible={viewRecipeModalVisible}
+                    transparent={true}
+                    animationType="slide"
+                    onRequestClose={() => setViewRecipeModalVisible(false)}
+                >
+                    <RecipeView recipe={recipeData} onClose={() => setViewRecipeModalVisible(false)} />
+                </Modal>
+
+                {sortingModal()}
             </View>
-
-            {/* Add Recipe Modal */}
-            <Modal style={styles.modal}
-                visible={addRecipeModalVisible}
-                transparent={true}
-                animationType="slide"
-                onRequestClose={() => setAddRecipeModalVisible(false)}
-            >
-                <NewRecipe onClose={() => setAddRecipeModalVisible(false)} />
-            </Modal>
-
-            {/* View Recipe Modal */}
-            <Modal style={styles.modal}
-                visible={viewRecipeModalVisible}
-                transparent={true}
-                animationType="slide"
-                onRequestClose={() => setViewRecipeModalVisible(false)}
-            >
-                <RecipeView recipe={recipeData} onClose={() => setViewRecipeModalVisible(false)} />
-            </Modal>
-
-            {sortingModal()}
-        </View>
+        </ScrollView>
     )
 }
 
