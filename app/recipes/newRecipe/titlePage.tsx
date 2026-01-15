@@ -46,8 +46,12 @@ export default function TitlePage({ navigation }: Props) {
                 <TextInput
                     placeholder="23"
                     placeholderTextColor="gray"
+                    keyboardType="numeric"
                     value={newRecipe.cookingTime}
-                    onChangeText={(text) => setNewRecipe({ ...newRecipe, cookingTime: text })}
+                    onChangeText={(text) => {
+                        const filteredText = text.replace(/[^0-9]/g, "");
+                        setNewRecipe({ ...newRecipe, cookingTime: filteredText })
+                    }}
                     style={styles.textInput} />
 
                 <View style={styles.inputRow}>
@@ -58,14 +62,22 @@ export default function TitlePage({ navigation }: Props) {
                     <TextInput
                         placeholder="4"
                         placeholderTextColor="gray"
+                        keyboardType="numeric"
                         value={newRecipe.portions}
-                        onChangeText={(text) => setNewRecipe({ ...newRecipe, portions: text })}
+                        onChangeText={(text) => {
+                            const filteredText = text.replace(/[^0-9]/g, "");
+                            setNewRecipe({ ...newRecipe, portions: filteredText })
+                        }}
                         style={{ ...styles.textInput, marginRight: 12 }} />
                     <TextInput
                         placeholder="550"
                         placeholderTextColor="gray"
+                        keyboardType="numeric"
                         value={newRecipe.calories}
-                        onChangeText={(text) => setNewRecipe({ ...newRecipe, calories: text })}
+                        onChangeText={(text) => {
+                            const filteredText = text.replace(/[^0-9]/g, "");
+                            setNewRecipe({ ...newRecipe, calories: filteredText })
+                        }}
                         style={styles.textInput} />
                 </View>
 

@@ -54,9 +54,9 @@ export default function RecipeList() {
                     title: data.title,
                     householdId: data.householdId,
                     ingredients: data.ingredients ?? [],
-                    cookingTime: data.cookingTime ?? "",
-                    portions: data.portions ?? "",
-                    calories: data.calories ?? "",
+                    cookingTime: data.cookingTime ?? "0",
+                    portions: data.portions ?? "0",
+                    calories: data.calories ?? "0",
                     preparationSteps: data.preparationSteps ?? [],
                     notes: data.notes ?? [],
                     tags: data.tags ?? []
@@ -69,7 +69,6 @@ export default function RecipeList() {
     }, []);
 
     const sortAndFilterButtons = () => {
-        console.log(filteredRecipes)
         return (
             <View style={styles.sortAndFilterRow}>
                 <TouchableOpacity style={styles.sortAndFilterButton} onPress={() => {
@@ -164,7 +163,7 @@ export default function RecipeList() {
                                 <View style={{ flex: 1 }}>
                                     <Text style={{ fontSize: 16, marginTop: 16, marginBottom: 8 }}>{item.title}</Text>
                                     <Ionicons name="stopwatch" size={16} style={{ marginBottom: 16 }}>
-                                        <Text style={{ marginLeft: 4, fontWeight: "light", fontSize: 12 }}>{item.cookingTime || "Unknown"} min</Text>
+                                        <Text style={{ marginLeft: 4, fontWeight: "light", fontSize: 12 }}>{item.cookingTime || "0"} min</Text>
                                     </Ionicons>
                                 </View>
                                 <TouchableOpacity style={styles.addToCalenderButton} onPress={() => {

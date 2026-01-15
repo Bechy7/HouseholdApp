@@ -58,8 +58,12 @@ export default function IngredientsPage({ navigation }: Props) {
                     <TextInput
                         placeholder="Quantity"
                         placeholderTextColor="gray"
-                        value={newIngredient.quantity?.toString()}
-                        onChangeText={(text) => setNewIngredient({ ...newIngredient, quantity: text })}
+                        keyboardType="numeric"
+                        value={newIngredient.quantity}
+                        onChangeText={(text) => {
+                            const filteredText = text.replace(/[^0-9.]/g, "");
+                            setNewIngredient({ ...newIngredient, quantity: filteredText})
+                        }}
                         style={{ ...styles.textInput, marginRight: 12 }} />
                     <TextInput
                         placeholder="Name of unit"
@@ -107,7 +111,7 @@ export default function IngredientsPage({ navigation }: Props) {
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                        style={styles.addRecipeNextButton }
+                        style={styles.addRecipeNextButton}
                         onPress={() => navigation.navigate("preparationPage")}>
                         <Text style={styles.textNextButton}>Next</Text>
                     </TouchableOpacity>

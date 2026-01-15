@@ -69,7 +69,7 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
     };
 
     const ingredientView = () => {
-        return (
+        return recipe.ingredients.length > 0 && (
             <View style={styles.recipeBox}>
                 <Text style={{ ...styles.title, marginTop: 0 }}>Ingredients ({recipe.ingredients.length})</Text>
                 <View>
@@ -117,8 +117,7 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
     }
 
     const preparationView = () => {
-        console.log(recipe)
-        return (
+        return recipe.preparationSteps.length > 0 && (
             <View style={styles.recipeBox}>
                 <Text style={{ ...styles.title, marginTop: 0 }}>Preparation</Text>
                 <View>
@@ -126,7 +125,7 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
                         data={recipe.preparationSteps}
                         keyExtractor={(item) => item}
                         renderItem={({ item }) => (
-                            <View style={{...styles.row, justifyContent:"flex-start"}}>
+                            <View style={{ ...styles.row, justifyContent: "flex-start" }}>
                                 <View style={styles.roundStepCounter}>
                                     <Text style={{ fontWeight: "600" }}>{recipe.preparationSteps.indexOf(item) + 1}</Text>
                                 </View>
@@ -139,8 +138,7 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
     }
 
     const notesView = () => {
-        console.log(recipe)
-        return (
+        return recipe.notes.length > 0 && (
             <View style={styles.recipeBox}>
                 <Text style={{ ...styles.title, marginTop: 0 }}>Notes</Text>
                 <View>
@@ -162,7 +160,7 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
         let tagCount = 0;
         recipe.tags.map((item) => tagCount += item.tags.length)
 
-        return (
+        return tagCount > 0 && (
             <View style={styles.recipeBox}>
                 <View style={styles.row}>
                     <Text style={{ ...styles.title, marginTop: 0 }}>Tags ({tagCount})</Text>
