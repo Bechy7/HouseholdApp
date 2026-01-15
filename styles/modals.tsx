@@ -10,7 +10,7 @@ export default StyleSheet.create({
     modalContainer: {
         width: '100%',
         height: "100%",
-        backgroundColor: '#ffffffff',
+        backgroundColor: '#F4F6F7',
         padding: 24
     },
     blurredBackground: {

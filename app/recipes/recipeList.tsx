@@ -9,9 +9,12 @@ import sortOptions, { sortMethod } from "../helpers/sortOptions";
 import EmptyBox from "../images/emptyBox.png";
 import { Recipe, Tag } from "../tabs/recipes";
 import NewRecipe from "./newRecipe";
+import RecipeView from "./recipeView";
 
 export default function RecipeList() {
     const [addRecipeModalVisible, setAddRecipeModalVisible] = useState(false);
+    const [viewRecipeModalVisible, setViewRecipeModalVisible] = useState(false);
+    const [recipeData, setRecipeData] = useState<Recipe>({ title: "", id: "", householdId: "", ingredients: [], preparationSteps: [], notes: [], tags: [] });
     const [sortModalVisible, setSortModalVisible] = useState(false);
     const [filterModalVisible, setFilterModalVisible] = useState(false);
     const [searchRecipe, setSearchRecipe] = useState("");
@@ -41,7 +44,7 @@ export default function RecipeList() {
                     cookingTime?: string;
                     portions?: string;
                     calories?: string;
-                    preparationsSteps?: string[];
+                    preparationSteps?: string[];
                     notes?: string[];
                     tags?: Tag[]
                 };
@@ -54,7 +57,7 @@ export default function RecipeList() {
                     cookingTime: data.cookingTime ?? "",
                     portions: data.portions ?? "",
                     calories: data.calories ?? "",
-                    preparationSteps: data.preparationsSteps ?? [],
+                    preparationSteps: data.preparationSteps ?? [],
                     notes: data.notes ?? [],
                     tags: data.tags ?? []
                 };
@@ -66,6 +69,7 @@ export default function RecipeList() {
     }, []);
 
     const sortAndFilterButtons = () => {
+        console.log(filteredRecipes)
         return (
             <View style={styles.sortAndFilterRow}>
                 <TouchableOpacity style={styles.sortAndFilterButton} onPress={() => {
@@ -151,7 +155,8 @@ export default function RecipeList() {
                         keyExtractor={(item) => item.id}
                         renderItem={({ item }) => (
                             <TouchableOpacity style={styles.recipeRow} onPress={() => {
-                                setAddRecipeModalVisible(true);
+                                setRecipeData(item);
+                                setViewRecipeModalVisible(true);
                             }}>
                                 <Image
                                     source={{ uri: "" }}
@@ -170,9 +175,9 @@ export default function RecipeList() {
                         )}>
                     </FlatList>
                 </ScrollView>
-                
+
                 {recipes.length == 0 && (
-                    <View style={{ flex: 1, alignItems: "center", height: "100%" }}>
+                    <View style={{ flex: 1, alignItems: "center" }}>
                         <Image source={EmptyBox} style={{ marginBottom: 48 }} />
                         <Text style={styles.textMedium}> No recipes yet</Text>
                         <Text> Start by adding a recipe</Text>
@@ -198,14 +203,14 @@ export default function RecipeList() {
             </Modal>
 
             {/* View Recipe Modal */}
-            {/* <Modal style={styles.modal}
-                visible={addRecipeModalVisible}
+            <Modal style={styles.modal}
+                visible={viewRecipeModalVisible}
                 transparent={true}
                 animationType="slide"
-                onRequestClose={() => setAddRecipeModalVisible(false)}
+                onRequestClose={() => setViewRecipeModalVisible(false)}
             >
-                <RecipeView recipeData={recipeData} onClose={() => setAddRecipeModalVisible(false)} />
-            </Modal> */}
+                <RecipeView recipe={recipeData} onClose={() => setViewRecipeModalVisible(false)} />
+            </Modal>
 
             {sortingModal()}
         </View>

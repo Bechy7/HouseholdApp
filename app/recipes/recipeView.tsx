@@ -1,57 +1,32 @@
 import { Ionicons } from "@expo/vector-icons";
-import { addDoc, collection, deleteDoc, doc, serverTimestamp, updateDoc, writeBatch } from "firebase/firestore";
+import { collection, deleteDoc, doc, serverTimestamp, writeBatch } from "firebase/firestore";
 import React, { useState } from "react";
-import { Button, FlatList, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { auth, db } from "../../firebaseConfig";
+import { FlatList, ImageBackground, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { db } from "../../firebaseConfig";
 import styles from "../../styles";
 import useHousehold from "../context/householdContext";
-import { stores } from "../tabs/groceries";
+import chickenAlfredo from "../images/chickenAlfredo.png";
 import { Recipe } from "../tabs/recipes";
 
-export default function RecipeView({ recipeData, onClose }: { recipeData: Recipe; onClose: () => void }) {
+export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClose: () => void }) {
     const [selectedStore, setSelectedStore] = useState("Default");
-    const [newRecipe, setNewRecipe] = useState<Recipe>(recipeData);
     const [newIngredient, setNewIngredient] = useState("");
+    const [checkedIds, setCheckedIds] = useState<string[]>([]);
+    const [portions, setPortions] = useState(Number(recipe.portions));
     const { householdId } = useHousehold();
-    const [descriptionHeight, setDescriptionHeight] = useState(100);
 
-
-    const addRecipe = async () => {
-        const user = auth.currentUser;
-        if (!user || !newRecipe.title.trim()) return;
-        await addDoc(collection(db, "recipes"), {
-            title: newRecipe.title.trim(),
-            householdId,
-            ingredients: newRecipe.ingredients,
-            description: newRecipe.description || "",
-            createdAt: serverTimestamp(),
-        });
+    const deleteRecipe = async () => {
+        await deleteDoc(doc(db, "recipes", recipe.id));
         onClose();
     };
 
-    const deleteRecipe = async (id: string) => {
-        await deleteDoc(doc(db, "recipes", id));
+    const editRecipe = async () => {
+
     };
 
-    const updateRecipe = async () => {
-        await updateDoc(doc(db, "recipes", newRecipe.id), {
-            title: newRecipe.title.trim(),
-            ingredients: newRecipe.ingredients,
-            description: newRecipe.description || "",
-        });
-        onClose();
-    };
-
-    const deleteIngredient = (title: string) => {
-        setNewRecipe({
-            ...newRecipe,
-            ingredients: newRecipe.ingredients.filter((item) => item.title !== title),
-        });
-    };
-
-    const addToGroceryList = async () => {
+    const addToShoppingList = async () => {
         const batch = writeBatch(db);
-        newRecipe.ingredients.forEach((ingredient) => {
+        recipe.ingredients.forEach((ingredient) => {
             const groceryRef = doc(collection(db, "groceries"));
             batch.set(groceryRef, {
                 title: ingredient.title,
@@ -63,57 +38,199 @@ export default function RecipeView({ recipeData, onClose }: { recipeData: Recipe
         await batch.commit();
     }
 
-    return (
-        <View style={styles.modalContainer}>
-            <TouchableOpacity style={styles.closeButton} onPress={() => onClose()}><Ionicons name="close" size={24} /></TouchableOpacity>
-            <ScrollView style={styles.scrollView} keyboardShouldPersistTaps="handled">
-                <TextInput
-                    placeholder="Enter recipe name"
-                    value={newRecipe.title}
-                    onChangeText={(text) => setNewRecipe({ ...newRecipe, title: text })}
-                    style={{ borderWidth: 1, borderColor: '#ccc', padding: 10, marginVertical: 10 }} />
-                <View style={styles.inputRow}>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Enter ingredient name"
-                        value={newIngredient}
-                        onChangeText={setNewIngredient}
-                    />
-                    <select style={styles.select} value={selectedStore} onChange={(e) => setSelectedStore(e.target.value)}>
-                        {stores.map((store) => (
-                            <option key={store} value={store}>{store}</option>
-                        ))}
-                    </select>
-                    <View style={{ margin: 3 }}>
-                        <Button title="Add" />
-                    </View>
+    const infoBoxes = () => {
+        return (
+            <View style={styles.row}>
+                <View style={styles.infoBox}>
+                    <Ionicons name="stopwatch" size={24}></Ionicons>
+                    <Text style={{ color: "gray" }}>Cooking time</Text>
+                    <Text >{recipe.cookingTime} min</Text>
                 </View>
-                <Text style={styles.title}>Ingredients</Text>
+                <View style={styles.infoBox}>
+                    <Ionicons name="people" size={24}></Ionicons>
+                    <Text style={{ color: "gray" }}>portions</Text>
+                    <Text >{recipe.portions}</Text>
+                </View>
+                <View style={styles.infoBox}>
+                    <Ionicons name="flame" size={24}></Ionicons>
+                    <Text style={{ color: "gray" }}>Calories</Text>
+                    <Text >{recipe.calories} kcal</Text>
+                </View>
+            </View>
+        )
+    }
+
+    const toggleCheckbox = (id: string) => {
+        setCheckedIds(prev =>
+            prev.includes(id)
+                ? prev.filter(x => x !== id)
+                : [...prev, id]
+        );
+    };
+
+    const ingredientView = () => {
+        return (
+            <View style={styles.recipeBox}>
+                <Text style={{ ...styles.title, marginTop: 0 }}>Ingredients ({recipe.ingredients.length})</Text>
                 <View>
                     <FlatList
-                        data={newRecipe.ingredients}
+                        data={recipe.ingredients}
                         keyExtractor={(item) => item.title}
                         renderItem={({ item }) => (
-                            <View style={styles.listRow}>
-                                <Text style={{ fontSize: 18 }}>{item.title}</Text>
-                                <Button title="Delete" onPress={() => deleteIngredient(item.title)} />
+                            <View style={styles.ingredientRow}>
+                                <Pressable style={styles.ingredientCheckbox}
+                                    onPress={() => toggleCheckbox(item.title)}>
+                                    {checkedIds.includes(item.title) &&
+                                        <View style={styles.inner}>
+                                            <Ionicons name="checkbox" size={28}></Ionicons>
+                                        </View>}
+                                </Pressable>
+                                <View>
+                                    <Text style={{ fontSize: 16 }}>{item.title}</Text>
+                                    <Text style={{ fontSize: 12, color: "gray" }}>{Number(item.quantity) > 0 && Number(item.quantity) * portions / Number(recipe.portions)} {item.unit}</Text>
+                                </View>
+                            </View>
+                        )} />
+                </View>
+                <View style={{ ...styles.row, marginTop: 8 }}>
+                    <View style={styles.portionsRow}>
+                        <TouchableOpacity style={styles.portionsButton} onPress={() => setPortions(prev => Math.max(0, prev - 1))}>
+                            <Text style={{ fontSize: 18, fontWeight: "bold" }}>−</Text>
+                        </TouchableOpacity>
+
+                        <View style={styles.valueBox}>
+                            <Text style={{ fontSize: 18 }}>{portions}</Text>
+                        </View>
+
+                        <TouchableOpacity style={styles.portionsButton} onPress={() => setPortions(prev => prev + 1)}>
+                            <Text style={{ fontSize: 18, fontWeight: "bold" }}>+</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <TouchableOpacity
+                        style={styles.addToShoppingListButton}
+                        onPress={() => { }}>
+                        <Text style={styles.textNextButton}>Add to shopping list</Text>
+                    </TouchableOpacity>
+                </View>
+                <Text style={{ fontSize: 12, color: "gray" }}>Portions</Text>
+            </View>)
+    }
+
+    const preparationView = () => {
+        console.log(recipe)
+        return (
+            <View style={styles.recipeBox}>
+                <Text style={{ ...styles.title, marginTop: 0 }}>Preparation</Text>
+                <View>
+                    <FlatList
+                        data={recipe.preparationSteps}
+                        keyExtractor={(item) => item}
+                        renderItem={({ item }) => (
+                            <View style={styles.row}>
+                                <View style={styles.roundStepCounter}>
+                                    <Text style={{ fontWeight: "600" }}>{recipe.preparationSteps.indexOf(item) + 1}</Text>
+                                </View>
+                                <Text style={{ fontSize: 14, alignSelf: "flex-start", marginLeft: 8, marginBottom: 16 }}>{item}</Text>
                             </View>
                         )}
                     />
                 </View>
-                <Text style={styles.title}>Description</Text>
-                <TextInput
-                    value={newRecipe.description}
-                    onChangeText={(text) => setNewRecipe({ ...newRecipe, description: text })}
-                    placeholder="Add a description"
-                    multiline
-                    textAlignVertical="top"
-                    scrollEnabled={false}
-                    onContentSizeChange={(e) => {
-                        setDescriptionHeight(Math.max(100, e.nativeEvent.contentSize.height))
-                    }}
-                    style={{ ...styles.textInput, height: descriptionHeight }} />
-            </ScrollView>
-        </View>
+            </View>)
+    }
+
+    const notesView = () => {
+        console.log(recipe)
+        return (
+            <View style={styles.recipeBox}>
+                <Text style={{ ...styles.title, marginTop: 0 }}>Notes</Text>
+                <View>
+                    <FlatList
+                        data={recipe.notes}
+                        keyExtractor={(item) => item}
+                        renderItem={({ item }) => (
+                            <View style={styles.row}>
+                                <Text style={{ fontSize: 14, alignSelf: "flex-start", marginLeft: 8, marginBottom: 8 }}>• {item}</Text>
+                            </View>
+                        )}
+                    />
+                </View>
+            </View>)
+    }
+
+    const tagsView = () => {
+        const [expanded, setExpanded] = useState(false);
+        let tagCount = 0;
+        recipe.tags.map((item) => tagCount += item.tags.length)
+
+        return (
+            <View style={styles.recipeBox}>
+                <View style={styles.row}>
+                    <Text style={{ ...styles.title, marginTop: 0 }}>Tags ({tagCount})</Text>
+                    <Pressable
+                        onPress={() => setExpanded(prev => !prev)}
+                    >
+                        <Ionicons
+                            name={expanded ? "chevron-up" : "chevron-down"}
+                            size={20}
+                        />
+                    </Pressable>
+                </View>
+
+                {expanded && (
+                    <FlatList
+                        data={recipe.tags}
+                        keyExtractor={(item) => item.category}
+                        renderItem={({ item }) => {
+                            if (item.tags.length > 0) return (
+                                <View style={styles.listRow}>
+                                    <Text style={{ fontSize: 14, alignSelf: "flex-start" }}>{item.category}:</Text>
+                                    <FlatList
+                                        data={item.tags}
+                                        keyExtractor={(item) => item}
+                                        renderItem={({ item }) => (
+                                            <View style={styles.listRow}>
+                                                <Text style={{ fontSize: 14, alignSelf: "flex-start" }}>{item}</Text>
+                                            </View>
+                                        )}>
+                                    </FlatList>
+                                </View>
+                            )
+                            return (<></>)
+                        }}
+                    />
+                )}
+
+
+            </View>
+
+        )
+    }
+
+    return (
+        <ScrollView style={{ display: "flex" }} keyboardShouldPersistTaps="handled">
+            <View style={{ backgroundColor: "#F4F6F7" }}>
+                <ImageBackground source={chickenAlfredo} style={styles.viewRecipeImage}>
+                    <View style={styles.buttonRow}>
+                        <TouchableOpacity style={{ ...styles.roundButton, alignSelf: "flex-start" }} onPress={() => onClose()}><Ionicons name="chevron-back" size={16} /></TouchableOpacity>
+                        <TouchableOpacity style={{ ...styles.roundButton, alignSelf: "flex-end" }}><Ionicons name="pencil" size={16} /></TouchableOpacity>
+                        <TouchableOpacity style={{ ...styles.roundButton, alignSelf: "flex-end" }} onPress={() => deleteRecipe()}><Ionicons name="trash" size={16} /></TouchableOpacity>
+                    </View>
+                </ImageBackground>
+
+                <TouchableOpacity style={{ ...styles.roundButton, alignSelf: "flex-end", marginTop: -24, marginRight: 16 }}>
+                    <Ionicons name="calendar" size={16} />
+                </TouchableOpacity>
+
+                <View style={{ ...styles.modalContainer, paddingHorizontal: 16, padding: 0 }}>
+                    <Text style={{ ...styles.title, marginTop: 0 }}> {recipe.title} </Text>
+                    {infoBoxes()}
+                    {ingredientView()}
+                    {preparationView()}
+                    {notesView()}
+                    {tagsView()}
+                </View>
+            </View>
+        </ScrollView>
+
     )
 }

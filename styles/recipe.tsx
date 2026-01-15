@@ -8,7 +8,7 @@ export default StyleSheet.create({
         paddingVertical: 5,
         backgroundColor: "white",
         marginBottom: 12,
-        marginRight:2,
+        marginRight: 2,
         borderRadius: 16,
         boxShadow: "2px 2px 2px lightgray",
         height: 75
@@ -68,7 +68,12 @@ export default StyleSheet.create({
         borderWidth: 1,
         backgroundColor: "#806752"
     },
-
+    addToShoppingListButton: {
+        padding: 12,
+        backgroundColor: "#806752",
+        alignItems: "center",
+        borderRadius: 16,
+    },
     listRow: {
         flex: 1,
         flexDirection: "row",
@@ -80,6 +85,16 @@ export default StyleSheet.create({
         marginVertical: 8,
         borderRadius: 16,
         boxShadow: "5px 5px 5px lightgray",
+        height: 75,
+        marginRight: 16
+    },
+    ingredientRow: {
+        flex: 1,
+        flexDirection: "row",
+        justifyContent: "flex-start",
+        alignItems: "center",
+        paddingVertical: 8,
+        backgroundColor: "white",
         height: 75,
         marginRight: 16
     },
@@ -97,5 +112,10 @@ export default StyleSheet.create({
         borderRadius: 16,
         backgroundColor: "lightgray",
         marginVertical: 12
+    },
+    viewRecipeImage: {
+        width: "100%",
+        height: 324,
+        backgroundColor: "lightgray",
     }
 });
