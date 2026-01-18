@@ -1,15 +1,17 @@
 import { Ionicons } from "@expo/vector-icons";
 import { collection, deleteDoc, doc, serverTimestamp, writeBatch } from "firebase/firestore";
 import React, { useState } from "react";
-import { FlatList, ImageBackground, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, ImageBackground, Modal, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { db } from "../../firebaseConfig";
 import styles from "../../styles";
 import useHousehold from "../context/householdContext";
 import chickenAlfredo from "../images/chickenAlfredo.png";
 import { Recipe } from "../tabs/recipes";
+import NewRecipe from "./newRecipe";
 
 export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClose: () => void }) {
     const [checkedIds, setCheckedIds] = useState<string[]>([]);
+    const [addRecipeModalVisible, setAddRecipeModalVisible] = useState(false);
     const [portions, setPortions] = useState(Number(recipe.portions));
     const [addedToShoppingList, setAddedToShoppingList] = useState(false);
     const { householdId } = useHousehold();
@@ -20,7 +22,7 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
     };
 
     const editRecipe = async () => {
-
+        setAddRecipeModalVisible(true);
     };
 
     const addToShoppingList = async () => {
@@ -108,7 +110,7 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
                         </TouchableOpacity>
                     </View>
                     <TouchableOpacity
-                        style={[styles.addToShoppingListButton, addedToShoppingList && {...styles.addToShoppingListButton, backgroundColor:"gray"}]}
+                        style={[styles.addToShoppingListButton, addedToShoppingList && { ...styles.addToShoppingListButton, backgroundColor: "gray" }]}
                         disabled={addedToShoppingList}
                         onPress={() => addToShoppingList()}>
                         {!addedToShoppingList
@@ -210,30 +212,47 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
     }
 
     return (
-        <ScrollView style={{ display: "flex" }} keyboardShouldPersistTaps="handled">
-            <View style={{ backgroundColor: "#F4F6F7" }}>
-                <ImageBackground source={chickenAlfredo} style={styles.viewRecipeImage}>
-                    <View style={styles.buttonRow}>
-                        <TouchableOpacity style={{ ...styles.roundButton, alignSelf: "flex-start" }} onPress={() => onClose()}><Ionicons name="chevron-back" size={16} /></TouchableOpacity>
-                        <TouchableOpacity style={{ ...styles.roundButton, alignSelf: "flex-end" }}><Ionicons name="pencil" size={16} /></TouchableOpacity>
-                        <TouchableOpacity style={{ ...styles.roundButton, alignSelf: "flex-end" }} onPress={() => deleteRecipe()}><Ionicons name="trash" size={16} /></TouchableOpacity>
+        <View>
+            <ScrollView style={{ display: "flex" }} keyboardShouldPersistTaps="handled">
+                <View style={{ backgroundColor: "#F4F6F7" }}>
+                    <ImageBackground source={chickenAlfredo} style={styles.viewRecipeImage}>
+                        <View style={styles.buttonRow}>
+                            <TouchableOpacity style={{ ...styles.roundButton, alignSelf: "flex-start" }} onPress={() => onClose()}><Ionicons name="chevron-back" size={16} /></TouchableOpacity>
+                            <TouchableOpacity style={{ ...styles.roundButton, alignSelf: "flex-end" }} onPress={() => editRecipe()}><Ionicons name="pencil" size={16} /></TouchableOpacity>
+                            <TouchableOpacity style={{ ...styles.roundButton, alignSelf: "flex-end" }} onPress={() => deleteRecipe()}><Ionicons name="trash" size={16} /></TouchableOpacity>
+                        </View>
+                    </ImageBackground>
+
+                    <TouchableOpacity style={{ ...styles.roundButton, alignSelf: "flex-end", marginTop: -24, marginRight: 16 }}>
+                        <Ionicons name="calendar" size={16} />
+                    </TouchableOpacity>
+
+                    <View style={{ ...styles.modalContainer, paddingHorizontal: 16, padding: 0 }}>
+                        <Text style={{ ...styles.title, marginTop: 0 }}> {recipe.title} </Text>
+                        {infoBoxes()}
+                        {ingredientView()}
+                        {preparationView()}
+                        {notesView()}
+                        {tagsView()}
                     </View>
-                </ImageBackground>
-
-                <TouchableOpacity style={{ ...styles.roundButton, alignSelf: "flex-end", marginTop: -24, marginRight: 16 }}>
-                    <Ionicons name="calendar" size={16} />
-                </TouchableOpacity>
-
-                <View style={{ ...styles.modalContainer, paddingHorizontal: 16, padding: 0 }}>
-                    <Text style={{ ...styles.title, marginTop: 0 }}> {recipe.title} </Text>
-                    {infoBoxes()}
-                    {ingredientView()}
-                    {preparationView()}
-                    {notesView()}
-                    {tagsView()}
                 </View>
-            </View>
-        </ScrollView>
+            </ScrollView>
 
+            {/* Add Recipe Modal */}
+            <Modal style={styles.modal}
+                visible={addRecipeModalVisible}
+                transparent={true}
+                animationType="slide"
+                onRequestClose={() => {
+                    setAddRecipeModalVisible(false)
+                    onClose();
+                }}
+            >
+                <NewRecipe recipe={recipe} onClose={() => {
+                    setAddRecipeModalVisible(false)
+                    onClose();
+                }} />
+            </Modal>
+        </View>
     )
 }

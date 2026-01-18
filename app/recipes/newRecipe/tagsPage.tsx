@@ -4,7 +4,7 @@ import styles from "@/styles";
 import { Ionicons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { default as React, useContext, useState } from "react";
 import { FlatList, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import availableTags from "../../helpers/availableTags";
@@ -19,7 +19,7 @@ export default function TagsPage({ navigation }: Props) {
     const { newRecipe, setNewRecipe } = recipeContext;
     const { householdId } = useHousehold();
     const route = useRoute();
-    const { onClose } = (route.params as { onClose: () => void }) || { onClose: () => { } };
+    const { onClose, shouldEdit } = (route.params as { onClose: () => void; shouldEdit: boolean }) || { onClose: () => { }, shouldEdit: false };
     const [category, setCategory] = useState(availableTags[0].category);
     const [tag, setTag] = useState(availableTags[0].tags[0]);
 
@@ -50,6 +50,22 @@ export default function TagsPage({ navigation }: Props) {
             createdAt: serverTimestamp(),
             title: newRecipe.title.trim(),
             householdId,
+            ingredients: newRecipe.ingredients ?? [],
+            cookingTime: newRecipe.cookingTime ?? "0",
+            portions: newRecipe.portions ?? "0",
+            calories: newRecipe.calories ?? "0",
+            preparationSteps: newRecipe.preparationSteps ?? [],
+            notes: newRecipe.notes ?? [],
+            tags: newRecipe.tags ?? [],
+        });
+    };
+
+    const editRecipe = async () => {
+        const user = auth.currentUser;
+        if (!user) return;
+        onClose();
+        await updateDoc(doc(db, "recipes", newRecipe.id), {
+            title: newRecipe.title.trim(),
             ingredients: newRecipe.ingredients ?? [],
             cookingTime: newRecipe.cookingTime ?? "0",
             portions: newRecipe.portions ?? "0",
@@ -126,7 +142,7 @@ export default function TagsPage({ navigation }: Props) {
 
                     <TouchableOpacity
                         style={styles.addRecipeNextButton}
-                        onPress={addRecipe}>
+                        onPress={shouldEdit ? editRecipe : addRecipe}>
                         <Text style={styles.textNextButton}>Save</Text>
                     </TouchableOpacity>
                 </View>

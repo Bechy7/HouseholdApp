@@ -4,8 +4,8 @@ import { createContext, useState } from "react";
 
 export const RecipeContext = createContext<{ newRecipe: Recipe; setNewRecipe: (newRecipe: Recipe) => void } | undefined>(undefined);
 
-const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
-    const [newRecipe, setNewRecipe] = useState<Recipe>({ id: "", title: "", ingredients: [], householdId: "", preparationSteps: [], notes: [], tags: [] });
+const RecipeProvider = ({ recipe, children }: { recipe: Recipe; children: React.ReactNode }) => {
+    const [newRecipe, setNewRecipe] = useState<Recipe>(recipe);
 
     const [initialized, setInitialized] = useState(false);
 

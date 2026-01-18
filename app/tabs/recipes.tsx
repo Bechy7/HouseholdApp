@@ -1,6 +1,8 @@
 import React from "react";
 import RecipesList from "../recipes/recipeList";
 
+export const emptyRecipeData = { title: "", id: "", householdId: "", ingredients: [], preparationSteps: [], notes: [], tags: [], calories: "", cookingTime:"", portions:"" }
+
 export type Recipe = {
     id: string;
     createdAt?: any;
