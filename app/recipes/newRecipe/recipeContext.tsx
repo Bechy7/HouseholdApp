@@ -9,7 +9,7 @@ const RecipeProvider = ({ recipe, children }: { recipe: Recipe; children: React.
 
     const [initialized, setInitialized] = useState(false);
 
-    if (!initialized) {
+    if (!initialized && !recipe.title) {
         availableTags.forEach(tag => {
             newRecipe.tags.push({ category: tag.category, tags: [] })
         });

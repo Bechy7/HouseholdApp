@@ -130,7 +130,6 @@ export default function RecipeList() {
                     <View style={styles.row}>
                         <Text style={styles.header}>All recipes</Text>
                         <TouchableOpacity style={styles.openRecipeModuleButton} onPress={() => {
-                            setRecipeData(emptyRecipeData)
                             setAddRecipeModalVisible(true);
                         }}>
                             <Ionicons name="add" size={24} />
@@ -187,8 +186,6 @@ export default function RecipeList() {
                             </TouchableOpacity>
                         </View>
                     )}
-
-
                 </View>
 
                 {/* Add Recipe Modal */}
@@ -198,7 +195,7 @@ export default function RecipeList() {
                     animationType="slide"
                     onRequestClose={() => setAddRecipeModalVisible(false)}
                 >
-                    <NewRecipe recipe={recipeData} onClose={() => setAddRecipeModalVisible(false)} />
+                    <NewRecipe recipe={emptyRecipeData} onClose={() => setAddRecipeModalVisible(false)} />
                 </Modal>
 
                 {/* View Recipe Modal */}

@@ -163,7 +163,7 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
     }
 
     const tagsView = () => {
-        const [expanded, setExpanded] = useState(false);
+        const [expanded, setExpanded] = useState(true);
         let tagCount = 0;
         recipe.tags.map((item) => tagCount += item.tags.length)
 
@@ -212,31 +212,29 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
     }
 
     return (
-        <View>
-            <ScrollView style={{ display: "flex" }} keyboardShouldPersistTaps="handled">
-                <View style={{ backgroundColor: "#F4F6F7" }}>
-                    <ImageBackground source={chickenAlfredo} style={styles.viewRecipeImage}>
-                        <View style={styles.buttonRow}>
-                            <TouchableOpacity style={{ ...styles.roundButton, alignSelf: "flex-start" }} onPress={() => onClose()}><Ionicons name="chevron-back" size={16} /></TouchableOpacity>
-                            <TouchableOpacity style={{ ...styles.roundButton, alignSelf: "flex-end" }} onPress={() => editRecipe()}><Ionicons name="pencil" size={16} /></TouchableOpacity>
-                            <TouchableOpacity style={{ ...styles.roundButton, alignSelf: "flex-end" }} onPress={() => deleteRecipe()}><Ionicons name="trash" size={16} /></TouchableOpacity>
-                        </View>
-                    </ImageBackground>
-
-                    <TouchableOpacity style={{ ...styles.roundButton, alignSelf: "flex-end", marginTop: -24, marginRight: 16 }}>
-                        <Ionicons name="calendar" size={16} />
-                    </TouchableOpacity>
-
-                    <View style={{ ...styles.modalContainer, paddingHorizontal: 16, padding: 0 }}>
-                        <Text style={{ ...styles.title, marginTop: 0 }}> {recipe.title} </Text>
-                        {infoBoxes()}
-                        {ingredientView()}
-                        {preparationView()}
-                        {notesView()}
-                        {tagsView()}
+        <ScrollView style={{ display: "flex" }} keyboardShouldPersistTaps="handled">
+            <View style={{ backgroundColor: "#F4F6F7" }}>
+                <ImageBackground source={chickenAlfredo} style={styles.viewRecipeImage}>
+                    <View style={styles.buttonRow}>
+                        <TouchableOpacity style={{ ...styles.roundButton, alignSelf: "flex-start" }} onPress={() => onClose()}><Ionicons name="chevron-back" size={16} /></TouchableOpacity>
+                        <TouchableOpacity style={{ ...styles.roundButton, alignSelf: "flex-end" }} onPress={() => editRecipe()}><Ionicons name="pencil" size={16} /></TouchableOpacity>
+                        <TouchableOpacity style={{ ...styles.roundButton, alignSelf: "flex-end" }} onPress={() => deleteRecipe()}><Ionicons name="trash" size={16} /></TouchableOpacity>
                     </View>
+                </ImageBackground>
+
+                <TouchableOpacity style={{ ...styles.roundButton, alignSelf: "flex-end", marginTop: -24, marginRight: 16 }}>
+                    <Ionicons name="calendar" size={16} />
+                </TouchableOpacity>
+
+                <View style={{ ...styles.modalContainer, paddingHorizontal: 16, padding: 0 }}>
+                    <Text style={{ ...styles.title, marginTop: 0 }}> {recipe.title} </Text>
+                    {infoBoxes()}
+                    {ingredientView()}
+                    {preparationView()}
+                    {notesView()}
+                    {tagsView()}
                 </View>
-            </ScrollView>
+            </View>
 
             {/* Add Recipe Modal */}
             <Modal style={styles.modal}
@@ -253,6 +251,6 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
                     onClose();
                 }} />
             </Modal>
-        </View>
+        </ScrollView>
     )
 }

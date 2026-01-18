@@ -24,7 +24,7 @@ export default function TagsPage({ navigation }: Props) {
     const [tag, setTag] = useState(availableTags[0].tags[0]);
 
     const addTag = async () => {
-        if (!category || !tag || newRecipe.tags.find(el => el.tags[0] === tag)) return;
+        if (!category || !tag || newRecipe.tags.find(el => el.tags.includes(tag) )) return;
         const connectedCategory = newRecipe.tags.find((item) => item.category === category);
         if (connectedCategory) {
             connectedCategory.tags.push(tag);
