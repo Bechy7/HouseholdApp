@@ -45,6 +45,7 @@ export default function TagsPage({ navigation }: Props) {
     const addRecipe = async () => {
         const user = auth.currentUser;
         if (!user) return;
+        onClose();
         await addDoc(collection(db, "recipes"), {
             createdAt: serverTimestamp(),
             title: newRecipe.title.trim(),
@@ -57,7 +58,6 @@ export default function TagsPage({ navigation }: Props) {
             notes: newRecipe.notes ?? [],
             tags: newRecipe.tags ?? [],
         });
-        onClose();
     };
 
     return (

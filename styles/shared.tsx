@@ -74,12 +74,13 @@ export default StyleSheet.create({
         flexDirection: "row",
     },
     input: {
-        flex: 1,
         borderWidth: 1,
-        borderColor: "#ccc",
-        borderRadius: 8,
+        borderColor: "black",
+        borderRadius: 16,
         padding: 10,
-        marginRight: 10
+        marginRight: 10,
+        backgroundColor:"white",
+        marginVertical:8
     },
     roundDeleteButton: {
         backgroundColor: "lightgray",
@@ -115,6 +116,14 @@ export default StyleSheet.create({
         marginRight: 0,
         marginBottom: 11,
         marginTop: 10
+    },
+    saveButton: {
+        marginVertical:24,
+        backgroundColor: "#806752",
+        borderRadius:16,
+        height:48,
+        alignItems:"center",
+        justifyContent:"center"
     },
     textInput: {
         borderWidth: 1,
@@ -154,14 +163,15 @@ export default StyleSheet.create({
         justifyContent: "center",
         marginRight: 12
     },
-    portionsRow: {
+    quantityRow: {
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
         borderWidth: 1,
-        borderRadius: 16
+        borderRadius: 16,
+        backgroundColor:"white"
     },
-    portionsButton: {
+    quantityButton: {
         width: 40,
         height: 40,
         borderRadius: 6,

@@ -9,15 +9,14 @@ import chickenAlfredo from "../images/chickenAlfredo.png";
 import { Recipe } from "../tabs/recipes";
 
 export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClose: () => void }) {
-    const [selectedStore, setSelectedStore] = useState("Default");
-    const [newIngredient, setNewIngredient] = useState("");
     const [checkedIds, setCheckedIds] = useState<string[]>([]);
     const [portions, setPortions] = useState(Number(recipe.portions));
+    const [addedToShoppingList, setAddedToShoppingList] = useState(false);
     const { householdId } = useHousehold();
 
     const deleteRecipe = async () => {
-        await deleteDoc(doc(db, "recipes", recipe.id));
         onClose();
+        await deleteDoc(doc(db, "recipes", recipe.id));
     };
 
     const editRecipe = async () => {
@@ -30,11 +29,13 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
             const groceryRef = doc(collection(db, "groceries"));
             batch.set(groceryRef, {
                 title: ingredient.title,
+                quantity: 1,
                 householdId: householdId,
-                storePref: ingredient.storePref,
+                storePref: "Other",
                 createdAt: serverTimestamp(),
             });
         });
+        setAddedToShoppingList(true);
         await batch.commit();
     }
 
@@ -93,8 +94,8 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
                         )} />
                 </View>
                 <View style={{ ...styles.row, marginTop: 8 }}>
-                    <View style={styles.portionsRow}>
-                        <TouchableOpacity style={styles.portionsButton} onPress={() => setPortions(prev => Math.max(0, prev - 1))}>
+                    <View style={styles.quantityRow}>
+                        <TouchableOpacity style={styles.quantityButton} onPress={() => setPortions(prev => Math.max(0, prev - 1))}>
                             <Text style={{ fontSize: 18, fontWeight: "bold" }}>−</Text>
                         </TouchableOpacity>
 
@@ -102,14 +103,18 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
                             <Text style={{ fontSize: 18 }}>{portions}</Text>
                         </View>
 
-                        <TouchableOpacity style={styles.portionsButton} onPress={() => setPortions(prev => prev + 1)}>
+                        <TouchableOpacity style={styles.quantityButton} onPress={() => setPortions(prev => prev + 1)}>
                             <Text style={{ fontSize: 18, fontWeight: "bold" }}>+</Text>
                         </TouchableOpacity>
                     </View>
                     <TouchableOpacity
-                        style={styles.addToShoppingListButton}
-                        onPress={() => { }}>
-                        <Text style={styles.textNextButton}>Add to shopping list</Text>
+                        style={[styles.addToShoppingListButton, addedToShoppingList && {...styles.addToShoppingListButton, backgroundColor:"gray"}]}
+                        disabled={addedToShoppingList}
+                        onPress={() => addToShoppingList()}>
+                        {!addedToShoppingList
+                            ? <Text style={styles.textNextButton}>Add to shopping list</Text>
+                            : <Text style={styles.textNextButton}>Added to shopping ✅</Text>
+                        }
                     </TouchableOpacity>
                 </View>
                 <Text style={{ fontSize: 12, color: "gray" }}>Portions</Text>

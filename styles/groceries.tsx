@@ -7,6 +7,13 @@ export default StyleSheet.create({
         alignItems: "center",
         paddingVertical: 5
     },
+    storeButton: {
+        borderColor:"black",
+        borderWidth:1,
+        borderRadius:12,
+        backgroundColor:"white",
+        padding:8
+    },
     suggestions: {
         backgroundColor: "#f5f5f5",
         borderRadius: 8,
