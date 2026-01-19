@@ -5,7 +5,7 @@ import React, { useContext, useState } from "react";
 import { FlatList, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import styles from "../../../styles";
 import { Ingredient } from "../../tabs/recipes";
-import ProgressBar from "../progressBar";
+import ProgressBar from "./progressBar";
 import { RecipeContext } from "./recipeContext";
 
 type Props = NativeStackScreenProps<any>;
@@ -26,6 +26,9 @@ export default function IngredientsPage({ navigation }: Props) {
             quantity: newIngredient.quantity,
             unit: newIngredient.unit,
         });
+        if (newRecipe.ingredients.some((ingredient) => ingredient.title === newIngredient.title)) {
+            return;
+        }
         setNewRecipe({ ...newRecipe });
         setNewIngredient({ title: "", quantity: "", unit: "", storePref: "" });
     }
@@ -104,7 +107,6 @@ export default function IngredientsPage({ navigation }: Props) {
                 </View>
             </ScrollView>
 
-
             <View style={styles.row}>
                 <TouchableOpacity
                     style={styles.addRecipeBackButton}
@@ -113,7 +115,7 @@ export default function IngredientsPage({ navigation }: Props) {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    style={styles.addRecipeNextButton}
+                    style={styles.nextButton}
                     onPress={() => navigation.navigate("preparationPage")}>
                     <Text style={styles.textNextButton}>Next</Text>
                 </TouchableOpacity>

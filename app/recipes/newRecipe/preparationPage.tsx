@@ -4,7 +4,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useContext, useState } from "react";
 import { FlatList, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import styles from "../../../styles";
-import ProgressBar from "../progressBar";
+import ProgressBar from "./progressBar";
 import { RecipeContext } from "./recipeContext";
 
 type Props = NativeStackScreenProps<any>;
@@ -92,7 +92,7 @@ export default function PreparationPage({ navigation }: Props) {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    style={styles.addRecipeNextButton}
+                    style={styles.nextButton}
                     onPress={() => navigation.navigate("notesPage")}>
                     <Text style={styles.textNextButton}>Next</Text>
                 </TouchableOpacity>

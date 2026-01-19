@@ -43,14 +43,6 @@ export default StyleSheet.create({
         height: 40,
         justifyContent: "center",
     },
-    addRecipeNextButton: {
-        flex: 1,
-        padding: 12,
-        backgroundColor: "#4e4e4e",
-        alignItems: "center",
-        marginTop: 48,
-        borderRadius: 16
-    },
     addRecipeBackButton: {
         flex: 1,
         padding: 12,
@@ -61,13 +53,13 @@ export default StyleSheet.create({
         marginRight: 8
     },
     addIngredientButton: {
-        flex: 1,
         padding: 24,
         alignItems: "center",
         borderRadius: 18,
         borderWidth: 1,
         backgroundColor: "#806752",
-        justifyContent:"center"
+        justifyContent:"center",
+        height:48
     },
     addToShoppingListButton: {
         paddingVertical: 12,

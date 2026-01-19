@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { collection, deleteDoc, doc, onSnapshot, orderBy, query, where } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import { default as React, useEffect, useState } from "react";
 import { FlatList, Modal, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { db } from "../../firebaseConfig";
 import styles from "../../styles";

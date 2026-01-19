@@ -12,7 +12,7 @@ export default function Index() {
   if (user) {
     //TODO: Uncomment
     // return <Redirect href="../household" />;
-    return <Redirect href="../tabs/groceries" />;
+    return <Redirect href="../tabs/tasks" />;
   }
 
   return <Redirect href="/login" />;

@@ -79,8 +79,16 @@ export default StyleSheet.create({
         borderRadius: 16,
         padding: 10,
         marginRight: 10,
-        backgroundColor:"white",
-        marginVertical:8
+        backgroundColor: "white",
+        marginVertical: 8
+    },
+    nextButton: {
+        flex: 1,
+        padding: 12,
+        backgroundColor: "#4e4e4e",
+        alignItems: "center",
+        marginTop: 48,
+        borderRadius: 16
     },
     roundDeleteButton: {
         backgroundColor: "lightgray",
@@ -118,12 +126,12 @@ export default StyleSheet.create({
         marginTop: 10
     },
     saveButton: {
-        marginVertical:24,
+        marginVertical: 24,
         backgroundColor: "#806752",
-        borderRadius:16,
-        height:48,
-        alignItems:"center",
-        justifyContent:"center"
+        borderRadius: 16,
+        height: 48,
+        alignItems: "center",
+        justifyContent: "center"
     },
     textInput: {
         borderWidth: 1,
@@ -169,7 +177,7 @@ export default StyleSheet.create({
         alignItems: "center",
         borderWidth: 1,
         borderRadius: 16,
-        backgroundColor:"white"
+        backgroundColor: "white"
     },
     quantityButton: {
         width: 40,
@@ -189,7 +197,7 @@ export default StyleSheet.create({
         width: 12,
         height: 12,
         borderRadius: 3,
-        alignItems:"center",
-        justifyContent:"center"
+        alignItems: "center",
+        justifyContent: "center"
     },
 });

@@ -38,11 +38,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="cleaning"
+        name="tasks"
         options={{
-          title: "Cleaning",
+          title: "tasks",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="trash" color={color} size={size} />
+            <Ionicons name="paper-plane" color={color} size={size} />
           ),
         }}
       />

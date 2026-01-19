@@ -8,7 +8,7 @@ import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/fi
 import { default as React, useContext, useState } from "react";
 import { FlatList, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import availableTags from "../../helpers/availableTags";
-import ProgressBar from "../progressBar";
+import ProgressBar from "./progressBar";
 import { RecipeContext } from "./recipeContext";
 
 type Props = NativeStackScreenProps<any>;
@@ -140,7 +140,7 @@ export default function TagsPage({ navigation }: Props) {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    style={styles.addRecipeNextButton}
+                    style={styles.nextButton}
                     onPress={shouldEdit ? editRecipe : addRecipe}>
                     <Text style={styles.textNextButton}>Save</Text>
                 </TouchableOpacity>

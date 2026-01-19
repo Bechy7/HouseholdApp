@@ -4,7 +4,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useContext } from "react";
 import { Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import styles from "../../../styles";
-import ProgressBar from "../progressBar";
+import ProgressBar from "./progressBar";
 import { RecipeContext } from "./recipeContext";
 
 type Props = NativeStackScreenProps<any>;
@@ -82,7 +82,7 @@ export default function TitlePage({ navigation }: Props) {
                 </View>
 
                 <TouchableOpacity
-                    style={[{ ...styles.addRecipeNextButton, backgroundColor: "gray" }, requiredFieldsFilled && styles.addRecipeNextButton]}
+                    style={[{ ...styles.nextButton, backgroundColor: "gray" }, requiredFieldsFilled && styles.nextButton]}
                     disabled={!requiredFieldsFilled}
                     onPress={() => navigation.navigate("ingredientsPage")}>
                     <Text style={styles.textNextButton}>Next</Text>
