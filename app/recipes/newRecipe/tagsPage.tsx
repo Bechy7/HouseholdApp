@@ -24,7 +24,7 @@ export default function TagsPage({ navigation }: Props) {
     const [tag, setTag] = useState(availableTags[0].tags[0]);
 
     const addTag = async () => {
-        if (!category || !tag || newRecipe.tags.find(el => el.tags.includes(tag) )) return;
+        if (!category || !tag || newRecipe.tags.find(el => el.tags.includes(tag))) return;
         const connectedCategory = newRecipe.tags.find((item) => item.category === category);
         if (connectedCategory) {
             connectedCategory.tags.push(tag);
@@ -78,77 +78,75 @@ export default function TagsPage({ navigation }: Props) {
 
     return (
         <View style={styles.modalContainer}>
-            <ScrollView style={styles.scrollView} keyboardShouldPersistTaps="handled">
-                <View style={styles.row}>
-                    <Text style={styles.header}>Create a new recipe</Text>
-                    <TouchableOpacity style={styles.closeButton} onPress={() => onClose()}><Ionicons name="close" size={24} /></TouchableOpacity>
-                </View>
-                <ProgressBar currentStep={4} />
-                <View>
-                    <Text style={styles.textMedium}> Add Tag</Text>
-                    <select style={styles.select} value={category} onChange={(e) => { setCategory(e.target.value), setTag(availableTags.find((t) => t.category === e.target.value)?.tags[0] ?? "") }}>
-                        {availableTags.map((tag) => (
-                            <option key={tag.category} value={tag.category}>{tag.category}</option>
-                        ))}
-                    </select>
-                    <select style={styles.select} value={tag} onChange={(e) => setTag(e.target.value)}>
-                        {availableTags.find((item) => item.category === category)?.tags.map((tag) => (
-                            <option key={tag} value={tag}>{tag}</option>
-                        ))}
-                    </select>
-                </View>
+            <View style={styles.row}>
+                <Text style={styles.header}>Create a new recipe</Text>
+                <TouchableOpacity style={styles.closeButton} onPress={() => onClose()}><Ionicons name="close" size={24} /></TouchableOpacity>
+            </View>
+            <ProgressBar currentStep={4} />
+            <View>
+                <Text style={styles.textMedium}> Add Tag</Text>
+                <select style={styles.select} value={category} onChange={(e) => { setCategory(e.target.value), setTag(availableTags.find((t) => t.category === e.target.value)?.tags[0] ?? "") }}>
+                    {availableTags.map((tag) => (
+                        <option key={tag.category} value={tag.category}>{tag.category}</option>
+                    ))}
+                </select>
+                <select style={styles.select} value={tag} onChange={(e) => setTag(e.target.value)}>
+                    {availableTags.find((item) => item.category === category)?.tags.map((tag) => (
+                        <option key={tag} value={tag}>{tag}</option>
+                    ))}
+                </select>
+            </View>
 
+            <TouchableOpacity
+                style={styles.addIngredientButton}
+                onPress={addTag}>
+                <Text style={{ ...styles.textMedium, color: "white" }}>Add tag</Text>
+            </TouchableOpacity>
+
+            <ScrollView style={styles.scrollView} keyboardShouldPersistTaps="handled">
+                <FlatList
+                    data={newRecipe.tags}
+                    keyExtractor={(item) => item.category}
+                    renderItem={({ item }) => {
+                        if (item.tags.length > 0) return (
+                            <View style={styles.listRow}>
+                                <Text style={{ fontSize: 14, alignSelf: "flex-start" }}>{item.category}:</Text>
+                                <FlatList
+                                    data={item.tags}
+                                    keyExtractor={(item) => item}
+                                    renderItem={({ item }) => (
+                                        <View style={styles.listRow}>
+                                            <Text style={{ fontSize: 14, alignSelf: "flex-start" }}>{item}</Text>
+                                            <TouchableOpacity
+                                                style={styles.roundDeleteButton}
+                                                onPress={() => deleteTag(item)}>
+                                                <Ionicons name="trash" size={16} />
+                                            </TouchableOpacity>
+                                        </View>
+                                    )}>
+                                </FlatList>
+                            </View>
+                        )
+                        return (<></>)
+                    }}
+                />
+            </ScrollView>
+
+            <View style={styles.row}>
                 <TouchableOpacity
-                    style={styles.addIngredientButton}
-                    onPress={addTag}>
-                    <Text style={{ ...styles.textMedium, color: "white" }}>Add tag</Text>
+                    style={styles.addRecipeBackButton}
+                    onPress={navigation.goBack}>
+                    <Text style={styles.textMedium}>Back</Text>
                 </TouchableOpacity>
 
-                <View>
-                    <FlatList
-                        data={newRecipe.tags}
-                        keyExtractor={(item) => item.category}
-                        renderItem={({ item }) => {
-                            if (item.tags.length > 0) return (
-                                <View style={styles.listRow}>
-                                    <Text style={{ fontSize: 14, alignSelf: "flex-start" }}>{item.category}:</Text>
-                                    <FlatList
-                                        data={item.tags}
-                                        keyExtractor={(item) => item}
-                                        renderItem={({ item }) => (
-                                            <View style={styles.listRow}>
-                                                <Text style={{ fontSize: 14, alignSelf: "flex-start" }}>{item}</Text>
-                                                <TouchableOpacity
-                                                    style={styles.roundDeleteButton}
-                                                    onPress={() => deleteTag(item)}>
-                                                    <Ionicons name="trash" size={16} />
-                                                </TouchableOpacity>
-                                            </View>
-                                        )}>
-                                    </FlatList>
-                                </View>
-                            )
-                            return (<></>)
-                        }}
-                    />
-                </View>
-
-                <View style={styles.row}>
-                    <TouchableOpacity
-                        style={styles.addRecipeBackButton}
-                        onPress={navigation.goBack}>
-                        <Text style={styles.textMedium}>Back</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        style={styles.addRecipeNextButton}
-                        onPress={shouldEdit ? editRecipe : addRecipe}>
-                        <Text style={styles.textNextButton}>Save</Text>
-                    </TouchableOpacity>
-                </View>
+                <TouchableOpacity
+                    style={styles.addRecipeNextButton}
+                    onPress={shouldEdit ? editRecipe : addRecipe}>
+                    <Text style={styles.textNextButton}>Save</Text>
+                </TouchableOpacity>
+            </View>
 
 
-            </ScrollView>
         </View>
     )
 }

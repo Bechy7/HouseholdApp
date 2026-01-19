@@ -39,50 +39,50 @@ export default function IngredientsPage({ navigation }: Props) {
 
     return (
         <View style={styles.modalContainer}>
-            <ScrollView style={styles.scrollView} keyboardShouldPersistTaps="handled">
-                <View style={styles.row}>
-                    <Text style={styles.header}>Create a new recipe</Text>
-                    <TouchableOpacity style={styles.closeButton} onPress={() => onClose()}><Ionicons name="close" size={24} /></TouchableOpacity>
-                </View>
-                <ProgressBar currentStep={1} />
-                <View>
-                    <Text style={styles.textMedium}> Add ingredient</Text>
-                    <TextInput
-                        placeholder="Write name of the ingredient"
-                        placeholderTextColor="gray"
-                        value={newIngredient.title}
-                        onChangeText={(text) => setNewIngredient({ ...newIngredient, title: text })}
-                        style={styles.textInput} />
-                </View>
-                <View style={styles.inputRow}>
-                    <TextInput
-                        placeholder="Quantity"
-                        placeholderTextColor="gray"
-                        keyboardType="numeric"
-                        value={newIngredient.quantity}
-                        onChangeText={(text) => {
-                            const filteredText = text.replace(/[^0-9.]/g, "");
-                            setNewIngredient({ ...newIngredient, quantity: filteredText})
-                        }}
-                        style={{ ...styles.textInput, marginRight: 12 }} />
-                    <TextInput
-                        placeholder="Name of unit"
-                        placeholderTextColor="gray"
-                        value={newIngredient.unit}
-                        onChangeText={(text) => setNewIngredient({ ...newIngredient, unit: text })}
-                        style={styles.textInput} />
-                </View>
-                <TouchableOpacity
-                    style={styles.addIngredientButton}
-                    onPress={addIngredient}>
-                    <Text style={{ ...styles.textMedium, color: "white" }}>Add ingredient</Text>
-                </TouchableOpacity>
+            <View style={styles.row}>
+                <Text style={styles.header}>Create a new recipe</Text>
+                <TouchableOpacity style={styles.closeButton} onPress={() => onClose()}><Ionicons name="close" size={24} /></TouchableOpacity>
+            </View>
+            <ProgressBar currentStep={1} />
+            <View>
+                <Text style={styles.textMedium}> Add ingredient</Text>
+                <TextInput
+                    placeholder="Write name of the ingredient"
+                    placeholderTextColor="gray"
+                    value={newIngredient.title}
+                    onChangeText={(text) => setNewIngredient({ ...newIngredient, title: text })}
+                    style={styles.textInput} />
+            </View>
+            <View style={styles.inputRow}>
+                <TextInput
+                    placeholder="Quantity"
+                    placeholderTextColor="gray"
+                    keyboardType="numeric"
+                    value={newIngredient.quantity}
+                    onChangeText={(text) => {
+                        const filteredText = text.replace(/[^0-9.]/g, "");
+                        setNewIngredient({ ...newIngredient, quantity: filteredText })
+                    }}
+                    style={{ ...styles.textInput, marginRight: 12 }} />
+                <TextInput
+                    placeholder="Name of unit"
+                    placeholderTextColor="gray"
+                    value={newIngredient.unit}
+                    onChangeText={(text) => setNewIngredient({ ...newIngredient, unit: text })}
+                    style={styles.textInput} />
+            </View>
+            <TouchableOpacity
+                style={styles.addIngredientButton}
+                onPress={addIngredient}>
+                <Text style={{ ...styles.textMedium, color: "white" }}>Add ingredient</Text>
+            </TouchableOpacity>
 
-                {newRecipe.ingredients.length > 0 && (
-                    <View style={{ paddingTop: 16 }}>
-                        <Text style={styles.textMedium}> Added ingredients</Text>
-                    </View>
-                )}
+            {newRecipe.ingredients.length > 0 && (
+                <View style={{ paddingTop: 16 }}>
+                    <Text style={styles.textMedium}> Added ingredients</Text>
+                </View>
+            )}
+            <ScrollView style={styles.scrollView} keyboardShouldPersistTaps="handled">
                 <View>
                     <FlatList
                         data={newRecipe.ingredients}
@@ -102,23 +102,24 @@ export default function IngredientsPage({ navigation }: Props) {
                         )}
                     />
                 </View>
-
-                <View style={styles.row}>
-                    <TouchableOpacity
-                        style={styles.addRecipeBackButton}
-                        onPress={navigation.goBack}>
-                        <Text style={styles.textMedium}>Back</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        style={styles.addRecipeNextButton}
-                        onPress={() => navigation.navigate("preparationPage")}>
-                        <Text style={styles.textNextButton}>Next</Text>
-                    </TouchableOpacity>
-                </View>
-
-
             </ScrollView>
+
+
+            <View style={styles.row}>
+                <TouchableOpacity
+                    style={styles.addRecipeBackButton}
+                    onPress={navigation.goBack}>
+                    <Text style={styles.textMedium}>Back</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={styles.addRecipeNextButton}
+                    onPress={() => navigation.navigate("preparationPage")}>
+                    <Text style={styles.textNextButton}>Next</Text>
+                </TouchableOpacity>
+            </View>
+
+
         </View>
     )
 }

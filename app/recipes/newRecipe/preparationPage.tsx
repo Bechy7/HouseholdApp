@@ -34,35 +34,35 @@ export default function PreparationPage({ navigation }: Props) {
 
     return (
         <View style={styles.modalContainer}>
+            <View style={styles.row}>
+                <Text style={styles.header}>Create a new recipe</Text>
+                <TouchableOpacity style={styles.closeButton} onPress={() => onClose()}><Ionicons name="close" size={24} /></TouchableOpacity>
+            </View>
+            <ProgressBar currentStep={2} />
+            <View>
+                <Text style={styles.textMedium}> Add preparation step</Text>
+                <TextInput
+                    value={preparationStep}
+                    onChangeText={(text) => setPreparationStep(text)}
+                    placeholderTextColor="gray"
+                    placeholder="Write step"
+                    multiline
+                    textAlignVertical="top"
+                    style={{ ...styles.textInput, height: 120 }} />
+            </View>
+
+            <TouchableOpacity
+                style={styles.addIngredientButton}
+                onPress={addPreparationStep}>
+                <Text style={{ ...styles.textMedium, color: "white" }}>Add step</Text>
+            </TouchableOpacity>
+
+            {newRecipe.preparationSteps.length > 0 && (
+                <View style={{ paddingTop: 16 }}>
+                    <Text style={styles.textMedium}> Added preparation steps</Text>
+                </View>
+            )}
             <ScrollView style={styles.scrollView} keyboardShouldPersistTaps="handled">
-                <View style={styles.row}>
-                    <Text style={styles.header}>Create a new recipe</Text>
-                    <TouchableOpacity style={styles.closeButton} onPress={() => onClose()}><Ionicons name="close" size={24} /></TouchableOpacity>
-                </View>
-                <ProgressBar currentStep={2} />
-                <View>
-                    <Text style={styles.textMedium}> Add preparation step</Text>
-                    <TextInput
-                        value={preparationStep}
-                        onChangeText={(text) => setPreparationStep(text)}
-                        placeholderTextColor="gray"
-                        placeholder="Write step"
-                        multiline
-                        textAlignVertical="top"
-                        style={{ ...styles.textInput, height: 120 }} />
-                </View>
-
-                <TouchableOpacity
-                    style={styles.addIngredientButton}
-                    onPress={addPreparationStep}>
-                    <Text style={{ ...styles.textMedium, color: "white" }}>Add step</Text>
-                </TouchableOpacity>
-
-                {newRecipe.preparationSteps.length > 0 && (
-                    <View style={{ paddingTop: 16 }}>
-                        <Text style={styles.textMedium}> Added preparation steps</Text>
-                    </View>
-                )}
                 <View>
                     <FlatList
                         data={newRecipe.preparationSteps}
@@ -82,23 +82,21 @@ export default function PreparationPage({ navigation }: Props) {
                         )}
                     />
                 </View>
-
-                <View style={styles.row}>
-                    <TouchableOpacity
-                        style={styles.addRecipeBackButton}
-                        onPress={navigation.goBack}>
-                        <Text style={styles.textMedium}>Back</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        style={styles.addRecipeNextButton}
-                        onPress={() => navigation.navigate("notesPage")}>
-                        <Text style={styles.textNextButton}>Next</Text>
-                    </TouchableOpacity>
-                </View>
-
-
             </ScrollView>
+            
+            <View style={styles.row}>
+                <TouchableOpacity
+                    style={styles.addRecipeBackButton}
+                    onPress={navigation.goBack}>
+                    <Text style={styles.textMedium}>Back</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={styles.addRecipeNextButton}
+                    onPress={() => navigation.navigate("notesPage")}>
+                    <Text style={styles.textNextButton}>Next</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     )
 }

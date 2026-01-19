@@ -34,35 +34,35 @@ export default function NotesPage({ navigation }: Props) {
 
     return (
         <View style={styles.modalContainer}>
+            <View style={styles.row}>
+                <Text style={styles.header}>Create a new recipe</Text>
+                <TouchableOpacity style={styles.closeButton} onPress={() => onClose()}><Ionicons name="close" size={24} /></TouchableOpacity>
+            </View>
+            <ProgressBar currentStep={3} />
+            <View>
+                <Text style={styles.textMedium}> Add note</Text>
+                <TextInput
+                    value={note}
+                    onChangeText={(text) => setNote(text)}
+                    placeholderTextColor="gray"
+                    placeholder="Write note"
+                    multiline
+                    textAlignVertical="top"
+                    style={{ ...styles.textInput, height: 120 }} />
+            </View>
+
+            <TouchableOpacity
+                style={styles.addIngredientButton}
+                onPress={addNote}>
+                <Text style={{ ...styles.textMedium, color: "white" }}>Add note</Text>
+            </TouchableOpacity>
+
+            {newRecipe.notes.length > 0 && (
+                <View style={{ paddingTop: 16 }}>
+                    <Text style={styles.textMedium}> Added notes</Text>
+                </View>
+            )}
             <ScrollView style={styles.scrollView} keyboardShouldPersistTaps="handled">
-                <View style={styles.row}>
-                    <Text style={styles.header}>Create a new recipe</Text>
-                    <TouchableOpacity style={styles.closeButton} onPress={() => onClose()}><Ionicons name="close" size={24} /></TouchableOpacity>
-                </View>
-                <ProgressBar currentStep={3} />
-                <View>
-                    <Text style={styles.textMedium}> Add note</Text>
-                    <TextInput
-                        value={note}
-                        onChangeText={(text) => setNote(text)}
-                        placeholderTextColor="gray"
-                        placeholder="Write note"
-                        multiline
-                        textAlignVertical="top"
-                        style={{ ...styles.textInput, height: 120 }} />
-                </View>
-
-                <TouchableOpacity
-                    style={styles.addIngredientButton}
-                    onPress={addNote}>
-                    <Text style={{ ...styles.textMedium, color: "white" }}>Add note</Text>
-                </TouchableOpacity>
-
-                {newRecipe.notes.length > 0 && (
-                    <View style={{ paddingTop: 16 }}>
-                        <Text style={styles.textMedium}> Added notes</Text>
-                    </View>
-                )}
                 <View>
                     <FlatList
                         data={newRecipe.notes}
@@ -79,23 +79,23 @@ export default function NotesPage({ navigation }: Props) {
                         )}
                     />
                 </View>
-
-                <View style={styles.row}>
-                    <TouchableOpacity
-                        style={styles.addRecipeBackButton}
-                        onPress={navigation.goBack}>
-                        <Text style={styles.textMedium}>Back</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        style={styles.addRecipeNextButton}
-                        onPress={() => navigation.navigate("tagsPage")}>
-                        <Text style={styles.textNextButton}>Next</Text>
-                    </TouchableOpacity>
-                </View>
-
-
             </ScrollView>
+
+            <View style={styles.row}>
+                <TouchableOpacity
+                    style={styles.addRecipeBackButton}
+                    onPress={navigation.goBack}>
+                    <Text style={styles.textMedium}>Back</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={styles.addRecipeNextButton}
+                    onPress={() => navigation.navigate("tagsPage")}>
+                    <Text style={styles.textNextButton}>Next</Text>
+                </TouchableOpacity>
+            </View>
+
+
         </View>
     )
 }

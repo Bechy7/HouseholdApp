@@ -62,11 +62,12 @@ export default StyleSheet.create({
     },
     addIngredientButton: {
         flex: 1,
-        padding: 12,
+        padding: 24,
         alignItems: "center",
-        borderRadius: 16,
+        borderRadius: 18,
         borderWidth: 1,
-        backgroundColor: "#806752"
+        backgroundColor: "#806752",
+        justifyContent:"center"
     },
     addToShoppingListButton: {
         paddingVertical: 12,
