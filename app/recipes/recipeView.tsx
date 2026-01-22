@@ -84,7 +84,7 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
                                 <Pressable style={styles.ingredientCheckbox}
                                     onPress={() => toggleCheckbox(item.title)}>
                                     {checkedIds.includes(item.title) &&
-                                        <View style={styles.inner}>
+                                        <View style={styles.smallCheckbox}>
                                             <Ionicons name="checkbox" size={28}></Ionicons>
                                         </View>}
                                 </Pressable>
@@ -216,13 +216,16 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
             <View style={{ backgroundColor: "#F4F6F7" }}>
                 <ImageBackground source={chickenAlfredo} style={styles.viewRecipeImage}>
                     <View style={styles.buttonRow}>
-                        <TouchableOpacity style={{ ...styles.roundButton, alignSelf: "flex-start" }} onPress={() => onClose()}><Ionicons name="chevron-back" size={16} /></TouchableOpacity>
-                        <TouchableOpacity style={{ ...styles.roundButton, alignSelf: "flex-end" }} onPress={() => editRecipe()}><Ionicons name="pencil" size={16} /></TouchableOpacity>
-                        <TouchableOpacity style={{ ...styles.roundButton, alignSelf: "flex-end" }} onPress={() => deleteRecipe()}><Ionicons name="trash" size={16} /></TouchableOpacity>
+                        <TouchableOpacity style={styles.bigRoundButton} onPress={() => onClose()}><Ionicons name="chevron-back" size={16} /></TouchableOpacity>
+                        <View style={styles.buttonRow}>
+                            <TouchableOpacity style={styles.bigRoundButton} onPress={() => editRecipe()}><Ionicons name="pencil" size={16} /></TouchableOpacity>
+                            <TouchableOpacity style={styles.bigRoundButton} onPress={() => deleteRecipe()}><Ionicons name="trash" size={16} /></TouchableOpacity>
+                        </View>
+
                     </View>
                 </ImageBackground>
 
-                <TouchableOpacity style={{ ...styles.roundButton, alignSelf: "flex-end", marginTop: -24, marginRight: 16 }}>
+                <TouchableOpacity style={{ ...styles.bigRoundButton, alignSelf: "flex-end", marginTop: -24, marginRight: 16 }}>
                     <Ionicons name="calendar" size={16} />
                 </TouchableOpacity>
 

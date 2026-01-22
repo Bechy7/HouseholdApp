@@ -19,7 +19,7 @@ export default function NotesPage({ navigation }: Props) {
     const [note, setNote] = useState("");
 
     const addNote = async () => {
-        if (!note.trim()) return;
+        if (!note.trim() || newRecipe.notes.some((n) => n === note)) return;
         newRecipe.notes.push(note.trim());
         setNewRecipe({ ...newRecipe });
         setNote("");
@@ -83,7 +83,7 @@ export default function NotesPage({ navigation }: Props) {
 
             <View style={styles.row}>
                 <TouchableOpacity
-                    style={styles.addRecipeBackButton}
+                    style={styles.backButton}
                     onPress={navigation.goBack}>
                     <Text style={styles.textMedium}>Back</Text>
                 </TouchableOpacity>

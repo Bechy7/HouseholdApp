@@ -11,6 +11,13 @@ export default StyleSheet.create({
         justifyContent: "center",
         marginRight: 12
     },
+    smallCheckbox: {
+        width: 12,
+        height: 12,
+        borderRadius: 3,
+        alignItems: "center",
+        justifyContent: "center"
+    },
     row: {
         display: "flex",
         flexDirection: "row",
@@ -22,7 +29,14 @@ export default StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
     },
-    roundButton: {
+    mediumRoundButton: {
+        width: 32,
+        height: 32,
+        borderRadius: 16,
+        alignItems: "center",
+        justifyContent: "center"
+    },
+    bigRoundButton: {
         borderRadius: 20,
         backgroundColor: "white",
         width: 40,
@@ -81,6 +95,15 @@ export default StyleSheet.create({
         marginRight: 10,
         backgroundColor: "white",
         marginVertical: 8
+    },
+    backButton: {
+        flex: 1,
+        padding: 12,
+        alignItems: "center",
+        marginTop: 48,
+        borderRadius: 16,
+        borderWidth: 1,
+        marginRight: 8
     },
     nextButton: {
         flex: 1,
@@ -193,11 +216,5 @@ export default StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
     },
-    inner: {
-        width: 12,
-        height: 12,
-        borderRadius: 3,
-        alignItems: "center",
-        justifyContent: "center"
-    },
+
 });

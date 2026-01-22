@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useRoute } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { Timestamp } from "firebase/firestore";
 import React, { useContext, useState } from "react";
 import { Platform, Pressable, Text, TextInput, TouchableOpacity, View } from "react-native";
 import styles from "../../../styles";
@@ -14,30 +15,36 @@ export default function TaskInfoPage({ navigation }: Props) {
     const taskContext = useContext(TaskContext);
     if (!taskContext) return null;
     const { newTask, setNewTask } = taskContext;
-    const [date, setDate] = useState<Date | null>(null);
     const [showPicker, setShowPicker] = useState(false);
-    const [repeatTask, setRepeatTask] = useState(false);
-    const [addSavedTasks, setAddSavedTasks] = useState(false);
 
     const route = useRoute();
     const { onClose } = (route.params as { onClose: () => void }) || { onClose: () => { } };
     const requiredFieldsFilled = newTask.title.trim().length > 0;
 
-    const formatDate = (date: Date) => {
-        const day = String(date.getDate()).padStart(2, "0");
-        const month = String(date.getMonth() + 1).padStart(2, "0");
-        const year = date.getFullYear();
+    const formatDate = (ts: Timestamp) => {
+        const d = ts.toDate();
+        const day = String(d.getDate()).padStart(2, "0");
+        const month = String(d.getMonth() + 1).padStart(2, "0");
+        const year = d.getFullYear();
         return `${day}/${month}/${year}`;
     };
-
     const showCalendar = () => {
         // ---------- WEB ----------
         if (Platform.OS === "web") {
             return (
                 <input
                     type="date"
-                    value={date ? date.toISOString().split("T")[0] : new Date().toISOString().split("T")[0]}
-                    onChange={(e) => setDate(new Date(e.target.value))}
+                    value={
+                        newTask.date
+                            ? newTask.date.toDate().toISOString().split("T")[0]
+                            : new Date().toISOString().split("T")[0]
+                    }
+                    onChange={(e) =>
+                        setNewTask({
+                            ...newTask,
+                            date: Timestamp.fromDate(new Date(e.target.value))
+                        })
+                    }
                     style={{
                         padding: 12,
                         borderRadius: 20,
@@ -55,7 +62,7 @@ export default function TaskInfoPage({ navigation }: Props) {
                     <TextInput
                         editable={false}
                         placeholder="Select date"
-                        value={date ? formatDate(date) : ""}
+                        value={newTask.date ? formatDate(newTask.date) : ""}
                         style={{
                             borderWidth: 1,
                             padding: 12,
@@ -66,12 +73,17 @@ export default function TaskInfoPage({ navigation }: Props) {
 
                 {showPicker && (
                     <DateTimePicker
-                        value={date ?? new Date()}
+                        value={newTask.date ? newTask.date.toDate() : new Date()}
                         mode="date"
                         display="default"
                         onChange={(_, selectedDate) => {
                             setShowPicker(false);
-                            if (selectedDate) setDate(selectedDate);
+                            if (selectedDate) {
+                                setNewTask({
+                                    ...newTask,
+                                    date: Timestamp.fromDate(selectedDate)
+                                });
+                            }
                         }}
                     />
                 )}
@@ -82,11 +94,19 @@ export default function TaskInfoPage({ navigation }: Props) {
     return (
         <View style={styles.modalContainer}>
             <View style={styles.row}>
-                <Text style={styles.header}>Create a task</Text>
+                <Text style={styles.title}>Create a task</Text>
                 <TouchableOpacity style={styles.closeButton} onPress={() => onClose()}><Ionicons name="close" size={24} /></TouchableOpacity>
             </View>
+            <View style={{...styles.row, paddingTop:16}}>
+                <View style={{ flex: 1 }}>
+                    <Text style={{ alignSelf: "center", fontWeight: "bold" }}>Task info</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                    <Text style={{ alignSelf: "center" }}>Checklist</Text>
+                </View>
+            </View>
             <ProgressBar currentStep={0} />
-            <View>
+            <View style={{marginTop:8}}>
                 <Text style={styles.textMedium}> Name of the recipe *</Text>
                 <TextInput
                     placeholder="Write name of the recipe"
@@ -103,9 +123,9 @@ export default function TaskInfoPage({ navigation }: Props) {
 
             <View style={{ ...styles.row, justifyContent: "flex-start", marginTop: 16 }}>
                 <Pressable style={{ ...styles.ingredientCheckbox }}
-                    onPress={() => setRepeatTask(!repeatTask)}>
-                    {repeatTask &&
-                        <View style={styles.inner}>
+                    onPress={() => setNewTask({ ...newTask, repeatTask: !newTask.repeatTask })}>
+                    {newTask.repeatTask &&
+                        <View style={styles.smallCheckbox}>
                             <Ionicons name="checkbox" size={28}></Ionicons>
                         </View>}
                 </Pressable>
@@ -114,9 +134,9 @@ export default function TaskInfoPage({ navigation }: Props) {
 
             <View style={{ ...styles.row, justifyContent: "flex-start", marginTop: 16 }}>
                 <Pressable style={{ ...styles.ingredientCheckbox }}
-                    onPress={() => setAddSavedTasks(!addSavedTasks)}>
-                    {addSavedTasks &&
-                        <View style={styles.inner}>
+                    onPress={() => setNewTask({ ...newTask, saveTask: !newTask.saveTask })}>
+                    {newTask.saveTask &&
+                        <View style={styles.smallCheckbox}>
                             <Ionicons name="checkbox" size={28}></Ionicons>
                         </View>}
                 </Pressable>

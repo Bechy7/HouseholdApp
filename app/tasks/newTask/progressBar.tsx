@@ -1,6 +1,6 @@
 import styles from "@/styles";
 import React from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 
 const steps = [
     "Task info",
@@ -12,26 +12,10 @@ export default function ProgressBar({
     currentStep: number;
 }) {
     return (
-        <View style={styles.container}>
-            {/* Labels */}
-            <View style={styles.labelsContainer}>
-                {steps.map((label, index) => (
-                    <Text
-                        key={label}
-                        style={[
-                            styles.label,
-                            index <= currentStep && styles.labelActive,
-                        ]}
-                    >
-                        {label}
-                    </Text>
-                ))}
-            </View>
-
-            {/* Progress bar */}
+        <View style={{ padding: 8 }}>
             <View style={styles.barContainer}>
-                <View style={[styles.lineActive, { width: `${Math.min(((currentStep / (steps.length - 1)) * 100 + 50), 100)}%` }]} />
-                <View style={styles.line} />
+                <View style={[styles.line, currentStep == 0 && styles.buttonLineActive]} />
+                <View style={[styles.line, currentStep == 1 && styles.buttonLineActive]} />
             </View>
         </View>
     );

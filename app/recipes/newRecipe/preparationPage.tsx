@@ -86,7 +86,7 @@ export default function PreparationPage({ navigation }: Props) {
             
             <View style={styles.row}>
                 <TouchableOpacity
-                    style={styles.addRecipeBackButton}
+                    style={styles.backButton}
                     onPress={navigation.goBack}>
                     <Text style={styles.textMedium}>Back</Text>
                 </TouchableOpacity>

@@ -46,4 +46,13 @@ export default StyleSheet.create({
     marginRight: -4,
     zIndex: 999
   },
+
+  buttonLineActive: {
+    width: "50%",
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#806752",
+    marginHorizontal: -4,
+    zIndex: 999
+  }
 });

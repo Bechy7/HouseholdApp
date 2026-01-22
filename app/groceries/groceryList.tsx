@@ -63,7 +63,7 @@ export default function GroceryList() {
                             <Pressable style={styles.ingredientCheckbox}
                                 onPress={() => toggleCheckbox(item.title)}>
                                 {checkedIds.includes(item.title) &&
-                                    <View style={styles.inner}>
+                                    <View style={styles.smallCheckbox}>
                                         <Ionicons name="checkbox" size={28}></Ionicons>
                                     </View>}
                             </Pressable>

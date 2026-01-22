@@ -43,15 +43,6 @@ export default StyleSheet.create({
         height: 40,
         justifyContent: "center",
     },
-    addRecipeBackButton: {
-        flex: 1,
-        padding: 12,
-        alignItems: "center",
-        marginTop: 48,
-        borderRadius: 16,
-        borderWidth: 1,
-        marginRight: 8
-    },
     addIngredientButton: {
         padding: 24,
         alignItems: "center",

@@ -20,15 +20,12 @@ export default function IngredientsPage({ navigation }: Props) {
     const [newIngredient, setNewIngredient] = useState<Ingredient>({ title: "", quantity: "", unit: "" });
 
     const addIngredient = async () => {
-        if (!newIngredient.title.trim()) return;
+        if (!newIngredient.title.trim() || newRecipe.ingredients.some((ingredient) => ingredient.title === newIngredient.title)) return;
         newRecipe.ingredients.push({
             title: newIngredient.title.trim(),
             quantity: newIngredient.quantity,
             unit: newIngredient.unit,
         });
-        if (newRecipe.ingredients.some((ingredient) => ingredient.title === newIngredient.title)) {
-            return;
-        }
         setNewRecipe({ ...newRecipe });
         setNewIngredient({ title: "", quantity: "", unit: "", storePref: "" });
     }
@@ -109,7 +106,7 @@ export default function IngredientsPage({ navigation }: Props) {
 
             <View style={styles.row}>
                 <TouchableOpacity
-                    style={styles.addRecipeBackButton}
+                    style={styles.backButton}
                     onPress={navigation.goBack}>
                     <Text style={styles.textMedium}>Back</Text>
                 </TouchableOpacity>

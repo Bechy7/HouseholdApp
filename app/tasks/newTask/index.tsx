@@ -14,7 +14,7 @@ export default function NewTask({ task, onClose }: { task: Task; onClose: () => 
         <TaskProvider task={task}>
             <Stack.Navigator screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="taskInfoPage" component={TaskInfoPage} initialParams={{ onClose }} />
-                <Stack.Screen name="checklistPage" component={ChecklistPage} initialParams={{ onClose }} />
+                <Stack.Screen name="checklistPage" component={ChecklistPage} initialParams={{ onClose, shouldEdit }} />
             </Stack.Navigator>
         </TaskProvider >
     );
