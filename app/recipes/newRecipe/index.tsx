@@ -1,10 +1,10 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import { Recipe } from "@/app/tabs/recipes";
+import RecipeProvider from "../../context/recipeContext";
 import IngredientsPage from "./ingredientsPage";
 import NotesPage from "./notesPage";
 import PreparationPage from "./preparationPage";
-import RecipeProvider from "./recipeContext";
 import TagsPage from "./tagsPage";
 import TitlePage from "./titlePage";
 

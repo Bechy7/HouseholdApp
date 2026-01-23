@@ -8,7 +8,7 @@ import React, { useContext, useState } from "react";
 import { FlatList, Pressable, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import styles from "../../../styles";
 import ProgressBar from "./progressBar";
-import { TaskContext } from "./taskContext";
+import { TaskContext } from "../../context/taskContext";
 
 type Props = NativeStackScreenProps<any>;
 

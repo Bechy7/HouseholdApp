@@ -4,8 +4,8 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useContext, useState } from "react";
 import { FlatList, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import styles from "../../../styles";
+import { RecipeContext } from "../../context/recipeContext";
 import ProgressBar from "./progressBar";
-import { RecipeContext } from "./recipeContext";
 
 type Props = NativeStackScreenProps<any>;
 

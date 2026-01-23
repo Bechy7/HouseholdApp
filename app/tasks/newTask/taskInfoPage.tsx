@@ -6,8 +6,8 @@ import { Timestamp } from "firebase/firestore";
 import React, { useContext, useState } from "react";
 import { Platform, Pressable, Text, TextInput, TouchableOpacity, View } from "react-native";
 import styles from "../../../styles";
+import { TaskContext } from "../../context/taskContext";
 import ProgressBar from "./progressBar";
-import { TaskContext } from "./taskContext";
 
 type Props = NativeStackScreenProps<any>;
 

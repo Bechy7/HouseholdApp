@@ -36,6 +36,7 @@ export default StyleSheet.create({
     height: 8,
     borderRadius: 4,
     backgroundColor: "#D1D1D6",
+    marginLeft:-4
   },
 
   lineActive: {

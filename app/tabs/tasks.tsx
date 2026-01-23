@@ -1,6 +1,8 @@
 import { Timestamp } from "firebase/firestore";
 import TaskList from "../tasks/taskList";
 
+export const emptyTaskData: Task = { id: "", title: "", checklist: [], householdId: "", repeatTask: false, saveTask: false, finished: false}
+
 export type Task = {
     id: string;
     householdId: string;

@@ -44,7 +44,18 @@ export default StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         marginVertical: 16,
-        marginHorizontal: 4
+        marginHorizontal: 4,
+    },
+    bigRoundButtonShadow: {
+        borderRadius: 20,
+        backgroundColor: "white",
+        width: 40,
+        height: 40,
+        alignItems: "center",
+        justifyContent: "center",
+        marginVertical: 16,
+        marginHorizontal: 4,
+        boxShadow: "2px 2px 2px lightgray",
     },
     closeButton: {
         alignSelf: "flex-end",
@@ -77,7 +88,7 @@ export default StyleSheet.create({
         boxShadow: "2px 2px 2px lightgray",
         height: 88
     },
-    recipeBox: {
+    box: {
         padding: 16,
         backgroundColor: "white",
         marginBottom: 24,

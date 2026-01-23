@@ -73,7 +73,7 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
 
     const ingredientView = () => {
         return recipe.ingredients.length > 0 && (
-            <View style={styles.recipeBox}>
+            <View style={styles.box}>
                 <Text style={{ ...styles.title, marginTop: 0 }}>Ingredients ({recipe.ingredients.length})</Text>
                 <View>
                     <FlatList
@@ -125,7 +125,7 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
 
     const preparationView = () => {
         return recipe.preparationSteps.length > 0 && (
-            <View style={styles.recipeBox}>
+            <View style={styles.box}>
                 <Text style={{ ...styles.title, marginTop: 0 }}>Preparation</Text>
                 <View>
                     <FlatList
@@ -146,7 +146,7 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
 
     const notesView = () => {
         return recipe.notes.length > 0 && (
-            <View style={styles.recipeBox}>
+            <View style={styles.box}>
                 <Text style={{ ...styles.title, marginTop: 0 }}>Notes</Text>
                 <View>
                     <FlatList
@@ -168,7 +168,7 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
         recipe.tags.map((item) => tagCount += item.tags.length)
 
         return tagCount > 0 && (
-            <View style={styles.recipeBox}>
+            <View style={styles.box}>
                 <View style={styles.row}>
                     <Text style={{ ...styles.title, marginTop: 0 }}>Tags ({tagCount})</Text>
                     <Pressable
