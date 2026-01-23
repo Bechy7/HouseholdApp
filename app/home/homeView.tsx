@@ -75,12 +75,11 @@ export default function HomeView() {
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
             const tasksData: Task[] = snapshot.docs.map((doc) => {
-                const data = doc.data() as { title: string; householdId: string; date?: Timestamp; checklist: Checklist[]; saveTask: boolean; repeatTask: boolean; finished: boolean };
+                const data = doc.data() as { title: string; householdId: string; checklist: Checklist[]; saveTask: boolean; repeatTask: boolean; finished: boolean };
                 return {
                     id: doc.id,
                     householdId: data.householdId,
                     title: data.title,
-                    date: data.date,
                     checklist: data.checklist,
                     saveTask: data.saveTask,
                     repeatTask: data.repeatTask,

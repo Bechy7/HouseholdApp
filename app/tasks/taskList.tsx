@@ -1,11 +1,11 @@
 import styles from "@/styles";
 import { Ionicons } from "@expo/vector-icons";
-import { collection, deleteDoc, doc, onSnapshot, orderBy, query, Timestamp, where } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDoc, onSnapshot, orderBy, query, serverTimestamp, Timestamp, where } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { FlatList, Modal, ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { db } from "../../firebaseConfig";
+import { auth, db } from "../../firebaseConfig";
 import useHousehold from "../context/householdContext";
-import { Checklist, Task } from "../tabs/tasks";
+import { Checklist, emptyTaskData, PlannedTask, Task } from "../tabs/tasks";
 import NewTask from "./newTask";
 import ProgressBar from "./newTask/progressBar";
 import TaskView from "./taskView";
@@ -13,7 +13,9 @@ import TaskView from "./taskView";
 export default function TaskList() {
     const { householdId } = useHousehold();
     const [tasks, setTasks] = useState<Task[]>([]);
+    const [plannedTasks, setPlannedtasks] = useState<PlannedTask[]>([]);
     const [task, setTask] = useState<Task>({ title: "", id: "", householdId, checklist: [], saveTask: false, repeatTask: false, finished: false });
+    const [plannedDate, setPlannedDate] = useState<Timestamp | null>(null)
     const [addTaskModalVisible, setAddTaskModalVisible] = useState(false);
     const [viewTaskModalVisible, setViewTaskModalVisible] = useState(false);
     const [showSavedTasks, setShowSavedTasks] = useState(false);
@@ -25,12 +27,11 @@ export default function TaskList() {
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
             const tasksData: Task[] = snapshot.docs.map((doc) => {
-                const data = doc.data() as { title: string; householdId: string; date?: Timestamp; checklist: Checklist[]; saveTask: boolean; repeatTask: boolean; finished: boolean };
+                const data = doc.data() as { title: string; householdId: string; checklist: Checklist[]; saveTask: boolean; repeatTask: boolean; finished: boolean };
                 return {
                     id: doc.id,
                     householdId: data.householdId,
                     title: data.title,
-                    date: data.date,
                     checklist: data.checklist,
                     saveTask: data.saveTask,
                     repeatTask: data.repeatTask,
@@ -43,9 +44,43 @@ export default function TaskList() {
         return () => unsubscribe();
     }, []);
 
-    const deleteTask = async (id: string) => {
-        await deleteDoc(doc(db, "tasks", id));
+    useEffect(() => {
+        const q = query(collection(db, "plannedTasks"),
+            where("householdId", "==", householdId),
+            orderBy("createdAt", "asc"));
+
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            const tasksData: PlannedTask[] = snapshot.docs.map((doc) => {
+                const data = doc.data() as { title: string; householdId: string; taskId: string, date: Timestamp };
+                return {
+                    id: doc.id,
+                    title: data.title,
+                    householdId: data.householdId,
+                    taskId: data.taskId,
+                    date: data.date
+                };
+            });
+            setPlannedtasks(tasksData);
+        });
+
+        return () => unsubscribe();
+    }, []);
+
+    const deletePlannedTask = async (id: string) => {
+        await deleteDoc(doc(db, "plannedTasks", id));
     };
+
+    const addPlannedTask = async (task: Task) => {
+        const user = auth.currentUser;
+        if (!user) return;
+        await addDoc(collection(db, "plannedTasks"), {
+            createdAt: serverTimestamp(),
+            taskId: task.id,
+            title: task.title,
+            householdId: task.householdId,
+            date: Timestamp.now()
+        });
+    }
 
     const formatDate = (ts: Timestamp) =>
         new Intl.DateTimeFormat("en-US", {
@@ -54,8 +89,20 @@ export default function TaskList() {
             year: "numeric",
         }).format(ts.toDate());
 
-    const taskList = () => {
-        const filteredTasks = showSavedTasks ? tasks.filter((task) => task.saveTask) : tasks.filter((task) => task.date)
+    const getTaskFromPlannedTask = async (plannedTask: PlannedTask) => {
+        const taskRef = doc(db, "tasks", plannedTask.taskId);
+        const snap = await getDoc(taskRef);
+
+        if (!snap.exists()) return emptyTaskData;
+
+        return {
+            id: snap.id,
+            ...snap.data(),
+        } as Task;
+    };
+
+    const savedTasksView = () => {
+        const filteredTasks = tasks.filter((task) => task.saveTask)
         return (
             <FlatList
                 data={filteredTasks}
@@ -63,7 +110,32 @@ export default function TaskList() {
                 renderItem={({ item }) => (
                     <TouchableOpacity style={styles.listRow} onPress={() => {
                         setTask(item)
+                        setPlannedDate(null)
                         setViewTaskModalVisible(true)
+                    }}>
+                        <View>
+                            <Text style={styles.textMedium}>{item.title}</Text>
+                        </View>
+                        <TouchableOpacity style={{ ...styles.addToCalenderButton, backgroundColor: "#806752" }} onPress={() => addPlannedTask(item)}>
+                            <Ionicons style={{ color: "white" }} name="calendar" size={16} />
+                        </TouchableOpacity>
+                    </TouchableOpacity>
+                )}
+            />
+        )
+    }
+
+    const plannedTasksView = () => {
+        const filteredTasks = plannedTasks.filter((task) => task.date)
+        return (
+            <FlatList
+                data={filteredTasks}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                    <TouchableOpacity style={styles.listRow} onPress={async () => {
+                        setTask(await getTaskFromPlannedTask(item));
+                        setPlannedDate(item.date);
+                        setViewTaskModalVisible(true);
                     }}>
                         <View>
                             <Text style={styles.textMedium}>{item.title}</Text>
@@ -75,14 +147,13 @@ export default function TaskList() {
                             )}
 
                         </View>
-                        <TouchableOpacity style={{ ...styles.addToCalenderButton, backgroundColor: "#806752" }} onPress={() => deleteTask(item.id)}>
+                        <TouchableOpacity style={{ ...styles.addToCalenderButton, backgroundColor: "#806752" }} onPress={() => deletePlannedTask(item.id)}>
                             <Ionicons style={{ color: "white" }} name="trash" size={16} />
                         </TouchableOpacity>
                     </TouchableOpacity>
                 )}
             />
         )
-
     }
 
     return (<View style={styles.modalContainer}>
@@ -107,7 +178,7 @@ export default function TaskList() {
         <ProgressBar currentStep={showSavedTasks ? 1 : 0} />
 
         <ScrollView style={styles.scrollView} keyboardShouldPersistTaps="handled">
-            {taskList()}
+            {showSavedTasks ? savedTasksView() : plannedTasksView()}
         </ScrollView>
 
         <Modal style={styles.modal}
@@ -125,7 +196,7 @@ export default function TaskList() {
             animationType="slide"
             onRequestClose={() => setViewTaskModalVisible(false)}
         >
-            <TaskView task={task} onClose={() => setViewTaskModalVisible(false)} />
+            <TaskView task={task} plannedDate={plannedDate} onClose={() => setViewTaskModalVisible(false)} />
         </Modal>
     </View>)
 }

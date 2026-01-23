@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { deleteDoc, doc, Timestamp, updateDoc } from "firebase/firestore";
+import { collection, doc, getDocs, query, Timestamp, updateDoc, where, writeBatch } from "firebase/firestore";
 import React, { useState } from "react";
 import { FlatList, Modal, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { auth, db } from "../../firebaseConfig";
@@ -8,14 +8,31 @@ import useHousehold from "../context/householdContext";
 import { Task } from "../tabs/tasks";
 import NewTask from "./newTask";
 
-export default function TaskView({ task, onClose }: { task: Task; onClose: () => void }) {
+export default function TaskView({ task, plannedDate, onClose }: { task: Task; plannedDate: Timestamp | null; onClose: () => void }) {
     const [checkedIds, setCheckedIds] = useState<string[]>([]);
     const [addTaskModalVisible, setAddTaskModalVisible] = useState(false);
     const { householdId } = useHousehold();
 
     const deleteTask = async () => {
         onClose();
-        await deleteDoc(doc(db, "tasks", task.id));
+        const batch = writeBatch(db);
+        console.log("hejsa3");
+        batch.delete(doc(db, "tasks", task.id));
+        console.log("hejsa2");
+        const plannedTasksSnap = await getDocs(
+            query(
+                collection(db, "plannedTasks"),
+                where("taskId", "==", task.id),
+                where("householdId", "==", householdId)
+            )
+        );
+        console.log("hejsa1");
+        plannedTasksSnap.forEach((task) => {
+            batch.delete(task.ref);
+        });
+        console.log("hejsa");
+
+        await batch.commit();
     };
 
     const editTask = async () => {
@@ -53,7 +70,7 @@ export default function TaskView({ task, onClose }: { task: Task; onClose: () =>
                     data={task.checklist}
                     keyExtractor={(item) => item.title}
                     renderItem={({ item }) => (
-                        <View style={{...styles.listRow, marginRight:8}}>
+                        <View style={{ ...styles.listRow, marginRight: 8 }}>
                             <Pressable style={styles.ingredientCheckbox}
                                 onPress={() => toggleCheckbox(item.title)}>
                                 {checkedIds.includes(item.title) &&
@@ -75,51 +92,54 @@ export default function TaskView({ task, onClose }: { task: Task; onClose: () =>
     }
 
     return (
-        <ScrollView style={{ display: "flex" }} keyboardShouldPersistTaps="handled">
-            <View style={{ backgroundColor: "#F4F6F7" }}>
-                <View style={styles.buttonRow}>
-                    <TouchableOpacity style={styles.bigRoundButton} onPress={() => onClose()}><Ionicons name="chevron-back" size={16} /></TouchableOpacity>
+        <View style={styles.modalContainer}>
+            <ScrollView style={{ display: "flex" }} keyboardShouldPersistTaps="handled">
+                <View style={{ backgroundColor: "#F4F6F7" }}>
                     <View style={styles.buttonRow}>
-                        <TouchableOpacity style={styles.bigRoundButton} onPress={() => editTask()}><Ionicons name="pencil" size={16} /></TouchableOpacity>
-                        <TouchableOpacity style={styles.bigRoundButton} onPress={() => deleteTask()}><Ionicons name="trash" size={16} /></TouchableOpacity>
+                        <TouchableOpacity style={styles.bigRoundButton} onPress={() => onClose()}><Ionicons name="chevron-back" size={16} /></TouchableOpacity>
+                        <View style={styles.buttonRow}>
+                            <TouchableOpacity style={styles.bigRoundButton} onPress={() => editTask()}><Ionicons name="pencil" size={16} /></TouchableOpacity>
+                            <TouchableOpacity style={styles.bigRoundButton} onPress={() => deleteTask()}><Ionicons name="trash" size={16} /></TouchableOpacity>
+                        </View>
+
+                    </View>
+
+                    <View style={{ ...styles.modalContainer, paddingHorizontal: 16, padding: 0 }}>
+                        <Text style={{ ...styles.title, marginTop: 0 }}> {task.title} </Text>
+                        {plannedDate && (
+                            <View style={{ ...styles.row, margin: 8, justifyContent: "flex-start", marginBottom: 16 }}>
+                                <Ionicons style={{ marginRight: 8 }} name="calendar" size={16} />
+                                <Text>{formatDate(plannedDate)}</Text>
+                            </View>
+                        )}
+                        {checklistView()}
+                        <TouchableOpacity
+                            style={styles.saveButton}
+                            onPress={finishTask}>
+                            <Text style={styles.textNextButton}>Finish task</Text>
+                        </TouchableOpacity>
                     </View>
 
                 </View>
 
-                <View style={{ ...styles.modalContainer, paddingHorizontal: 16, padding: 0 }}>
-                    <Text style={{ ...styles.title, marginTop: 0 }}> {task.title} </Text>
-                    {task.date && (
-                        <View style={{ ...styles.row, margin: 8, justifyContent: "flex-start", marginBottom: 16 }}>
-                            <Ionicons style={{ marginRight: 8 }} name="calendar" size={16} />
-                            <Text>{formatDate(task.date)}</Text>
-                        </View>
-                    )}
-                    {checklistView()}
-                    <TouchableOpacity
-                        style={styles.saveButton}
-                        onPress={finishTask}>
-                        <Text style={styles.textNextButton}>Finish task</Text>
-                    </TouchableOpacity>
-                </View>
-
-            </View>
 
 
+                <Modal style={styles.modal}
+                    visible={addTaskModalVisible}
+                    transparent={true}
+                    animationType="slide"
+                    onRequestClose={() => {
+                        setAddTaskModalVisible(false)
+                        onClose();
+                    }}
+                >
+                    <NewTask task={task} onClose={() => {
+                        setAddTaskModalVisible(false)
+                        onClose();
+                    }} />
+                </Modal>
+            </ScrollView>
+        </View>
 
-            <Modal style={styles.modal}
-                visible={addTaskModalVisible}
-                transparent={true}
-                animationType="slide"
-                onRequestClose={() => {
-                    setAddTaskModalVisible(false)
-                    onClose();
-                }}
-            >
-                <NewTask task={task} onClose={() => {
-                    setAddTaskModalVisible(false)
-                    onClose();
-                }} />
-            </Modal>
-        </ScrollView>
     )
 }

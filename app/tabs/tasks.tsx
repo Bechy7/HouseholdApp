@@ -7,11 +7,19 @@ export type Task = {
     id: string;
     householdId: string;
     title: string;
-    date?: Timestamp;
     checklist: Checklist[];
     repeatTask: boolean;
     saveTask: boolean;
     finished: boolean;
+    date?: Timestamp;
+}
+
+export type PlannedTask = {
+    id: string;
+    householdId: string;
+    title: string;
+    taskId: string;
+    date: Timestamp;
 }
 
 export type Checklist = {
