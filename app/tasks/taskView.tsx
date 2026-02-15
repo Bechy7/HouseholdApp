@@ -8,7 +8,7 @@ import useHousehold from "../context/householdContext";
 import { Task } from "../tabs/tasks";
 import NewTask from "./newTask";
 
-export default function TaskView({ task, plannedDate, onClose }: { task: Task; plannedDate: Timestamp | null; onClose: () => void }) {
+export default function TaskView({ task, plannedDate, onClose }: { task: Task; plannedDate?: Timestamp | null; onClose: () => void }) {
     const [checkedIds, setCheckedIds] = useState<string[]>([]);
     const [addTaskModalVisible, setAddTaskModalVisible] = useState(false);
     const { householdId } = useHousehold();

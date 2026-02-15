@@ -8,6 +8,7 @@ import useHousehold from "../context/householdContext";
 import RecipeView from "../recipes/recipeView";
 import { emptyRecipeData, Meal, Recipe } from "../tabs/recipes";
 import { emptyTaskData, PlannedTask, Task } from "../tabs/tasks";
+import TaskView from "../tasks/taskView";
 import ProgressBar from "./progressBar";
 
 export default function HomeView() {
@@ -131,6 +132,7 @@ export default function HomeView() {
 
         return {
             id: snap.id,
+            date: plannedTask.date,
             ...snap.data(),
         } as Task;
     };
@@ -196,7 +198,8 @@ export default function HomeView() {
                             </TouchableOpacity>
                         )} />
                 </View>
-            </View>)
+            </View>
+        )
     }
 
     const taskView = () => {
@@ -226,7 +229,8 @@ export default function HomeView() {
                             </TouchableOpacity>
                         )} />
                 </View>
-            </View>)
+            </View>
+        )
     }
 
     return (
@@ -275,7 +279,15 @@ export default function HomeView() {
             >
                 <RecipeView recipe={recipeData} onClose={() => setViewRecipeModalVisible(false)} />
             </Modal>
-        </View>
 
+            <Modal style={styles.modal}
+                visible={viewTaskModalVisible}
+                transparent={true}
+                animationType="slide"
+                onRequestClose={() => setViewTaskModalVisible(false)}
+            >
+                <TaskView task={taskData} plannedDate={taskData.date} onClose={() => setViewTaskModalVisible(false)} />
+            </Modal>
+        </View>
     )
 }
