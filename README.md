@@ -48,3 +48,8 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+## Example User
+Email: Testsen@hotmail.com
+Password: ko28z3FagSGz
+HouseholdId: 0yk1JltfuCqUQkcQizPQ

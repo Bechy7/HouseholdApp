@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { collection, deleteDoc, doc, serverTimestamp, writeBatch } from "firebase/firestore";
+import { collection, doc, getDocs, query, serverTimestamp, where, writeBatch } from "firebase/firestore";
 import React, { useState } from "react";
 import { FlatList, ImageBackground, Modal, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { db } from "../../firebaseConfig";
@@ -18,7 +18,20 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
 
     const deleteRecipe = async () => {
         onClose();
-        await deleteDoc(doc(db, "recipes", recipe.id));
+        const batch = writeBatch(db);
+        batch.delete(doc(db, "recipes", recipe.id));
+        const mealsSnap = await getDocs(
+            query(
+                collection(db, "meals"),
+                where("recipeId", "==", recipe.id),
+                where("householdId", "==", householdId)
+            )
+        );
+        mealsSnap.forEach((meal) => {
+            batch.delete(meal.ref);
+        });
+
+        await batch.commit();
     };
 
     const editRecipe = async () => {

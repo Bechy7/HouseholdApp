@@ -16,9 +16,7 @@ export default function TaskView({ task, plannedDate, onClose }: { task: Task; p
     const deleteTask = async () => {
         onClose();
         const batch = writeBatch(db);
-        console.log("hejsa3");
         batch.delete(doc(db, "tasks", task.id));
-        console.log("hejsa2");
         const plannedTasksSnap = await getDocs(
             query(
                 collection(db, "plannedTasks"),
@@ -26,11 +24,9 @@ export default function TaskView({ task, plannedDate, onClose }: { task: Task; p
                 where("householdId", "==", householdId)
             )
         );
-        console.log("hejsa1");
         plannedTasksSnap.forEach((task) => {
             batch.delete(task.ref);
         });
-        console.log("hejsa");
 
         await batch.commit();
     };

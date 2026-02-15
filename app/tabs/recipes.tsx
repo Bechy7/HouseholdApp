@@ -1,3 +1,4 @@
+import { Timestamp } from "firebase/firestore";
 import React from "react";
 import RecipesList from "../recipes/recipeList";
 
@@ -16,6 +17,15 @@ export type Recipe = {
     notes: string[];
     tags: Tag[];
 };
+
+export type Meal = {
+    id: string;
+    householdId: string;
+    recipeId: string;
+    title: string;
+    cookingTime?: string;
+    date: Timestamp;
+}
 
 export type Ingredient = {
     title: string;

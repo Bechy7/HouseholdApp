@@ -1,13 +1,13 @@
 import { Ionicons } from "@expo/vector-icons";
-import { collection, onSnapshot, orderBy, query, where } from "firebase/firestore";
+import { addDoc, collection, onSnapshot, orderBy, query, serverTimestamp, Timestamp, where } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { FlatList, Image, Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { db } from "../../firebaseConfig";
+import { auth, db } from "../../firebaseConfig";
 import styles from "../../styles";
 import useHousehold from "../context/householdContext";
 import sortOptions, { sortMethod } from "../helpers/sortOptions";
 import EmptyBox from "../images/emptyBox.png";
-import { Recipe, Tag, emptyRecipeData } from "../tabs/recipes";
+import { emptyRecipeData, Recipe, Tag } from "../tabs/recipes";
 import NewRecipe from "./newRecipe";
 import RecipeView from "./recipeView";
 
@@ -67,6 +67,19 @@ export default function RecipeList() {
 
         return () => unsubscribe();
     }, []);
+
+    const addMeal = async (recipe: Recipe) => {
+            const user = auth.currentUser;
+            if (!user) return;
+            await addDoc(collection(db, "meals"), {
+                createdAt: serverTimestamp(),
+                recipeId: recipe.id,
+                title: recipe.title,
+                cookingTime: recipe.cookingTime,
+                householdId: recipe.householdId,
+                date: Timestamp.now()
+            });
+        }
 
     const sortAndFilterButtons = () => {
         return (
@@ -166,8 +179,7 @@ export default function RecipeList() {
                                         <Text style={{ marginLeft: 4, fontWeight: "light", fontSize: 12 }}>{item.cookingTime || "0"} min</Text>
                                     </Ionicons>
                                 </View>
-                                <TouchableOpacity style={styles.addToCalenderButton} onPress={() => {
-                                }}>
+                                <TouchableOpacity style={styles.addToCalenderButton} onPress={() => addMeal(item)}>
                                     <Ionicons name="calendar" size={16} />
                                 </TouchableOpacity>
                             </TouchableOpacity>

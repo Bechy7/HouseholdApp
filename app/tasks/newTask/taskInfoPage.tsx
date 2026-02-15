@@ -107,9 +107,9 @@ export default function TaskInfoPage({ navigation }: Props) {
             </View>
             <ProgressBar currentStep={0} />
             <View style={{marginTop:8}}>
-                <Text style={styles.textMedium}> Name of the recipe *</Text>
+                <Text style={styles.textMedium}> Task name *</Text>
                 <TextInput
-                    placeholder="Write name of the recipe"
+                    placeholder="Write name of the task"
                     placeholderTextColor="gray"
                     value={newTask.title}
                     onChangeText={(text) => setNewTask({ ...newTask, title: text })}

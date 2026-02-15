@@ -1,92 +1,78 @@
 import { Ionicons } from "@expo/vector-icons";
-import { collection, onSnapshot, orderBy, query, Timestamp, where } from "firebase/firestore";
+import { collection, doc, getDoc, onSnapshot, orderBy, query, Timestamp, where } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { FlatList, Image, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, Image, Modal, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { auth, db } from "../../firebaseConfig";
 import styles from "../../styles";
 import useHousehold from "../context/householdContext";
-import { emptyRecipeData, Recipe, Tag } from "../tabs/recipes";
-import { Checklist, emptyTaskData, Task } from "../tabs/tasks";
+import RecipeView from "../recipes/recipeView";
+import { emptyRecipeData, Meal, Recipe } from "../tabs/recipes";
+import { emptyTaskData, PlannedTask, Task } from "../tabs/tasks";
 import ProgressBar from "./progressBar";
 
 export default function HomeView() {
     enum TimeState { Day, Week, Month }
     const [timeView, setTimeView] = useState<TimeState>(TimeState.Day);
-    const [day, setDay] = useState<Date>(new Date());
-    const [meals, setMeals] = useState<Recipe[]>([])
-    const [tasks, setTasks] = useState<Task[]>([])
+    const [filteringDay, setFilteringDay] = useState<Date>(new Date());
+    const [meals, setMeals] = useState<Meal[]>([])
+    const [plannedTasks, setPlannedTasks] = useState<PlannedTask[]>([])
     const [checkedMeals, setCheckedMeals] = useState<string[]>([]);
     const [checkedTasks, setCheckedTasks] = useState<string[]>([]);
-    const [viewRecipeModalVisible, setViewRecipeModalVisible] = useState(false);
-    const [viewTaskModalVisible, setViewTaskModalVisible] = useState(false);
     const [recipeData, setRecipeData] = useState<Recipe>(emptyRecipeData)
+    const [viewRecipeModalVisible, setViewRecipeModalVisible] = useState(false);
     const [taskData, setTaskData] = useState<Task>(emptyTaskData)
+    const [viewTaskModalVisible, setViewTaskModalVisible] = useState(false);
 
     const { householdId } = useHousehold();
 
     useEffect(() => {
-        const q = query(collection(db, "recipes"),
+        const q = query(collection(db, "meals"),
             where("householdId", "==", householdId),
             orderBy("createdAt", "asc"));
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
-            const recipesData: Recipe[] = snapshot.docs.map((doc) => {
+            const mealsData: Meal[] = snapshot.docs.map((doc) => {
                 const data = doc.data() as {
                     createdAt?: any;
                     title: string;
                     householdId: string;
-                    ingredients?: {
-                        title: string;
-                        storePref?: string,
-                        quantity?: string,
-                        unit?: string
-                    }[];
                     cookingTime?: string;
-                    portions?: string;
-                    calories?: string;
-                    preparationSteps?: string[];
-                    notes?: string[];
-                    tags?: Tag[]
+                    recipeId: string;
+                    date: Timestamp;
                 };
                 return {
                     id: doc.id,
                     createdAt: data.createdAt,
                     title: data.title,
                     householdId: data.householdId,
-                    ingredients: data.ingredients ?? [],
                     cookingTime: data.cookingTime ?? "0",
-                    portions: data.portions ?? "0",
-                    calories: data.calories ?? "0",
-                    preparationSteps: data.preparationSteps ?? [],
-                    notes: data.notes ?? [],
-                    tags: data.tags ?? []
+                    recipeId: data.recipeId,
+                    date: data.date
                 };
             });
-            setMeals(recipesData);
+            setMeals(mealsData);
         });
 
         return () => unsubscribe();
     }, []);
 
     useEffect(() => {
-        const q = query(collection(db, "tasks"),
+        const q = query(collection(db, "plannedTasks"),
             where("householdId", "==", householdId),
             orderBy("createdAt", "asc"));
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
-            const tasksData: Task[] = snapshot.docs.map((doc) => {
-                const data = doc.data() as { title: string; householdId: string; checklist: Checklist[]; saveTask: boolean; repeatTask: boolean; finished: boolean };
+            const plannedTasksData: PlannedTask[] = snapshot.docs.map((doc) => {
+                const data = doc.data() as { householdId: string; title: string; taskId: string; date: Timestamp };
                 return {
                     id: doc.id,
                     householdId: data.householdId,
                     title: data.title,
-                    checklist: data.checklist,
-                    saveTask: data.saveTask,
-                    repeatTask: data.repeatTask,
-                    finished: data.finished
+                    taskId: data.taskId,
+                    date: data.date
                 };
             });
-            setTasks(tasksData);
+            setPlannedTasks(plannedTasksData);
         });
 
         return () => unsubscribe();
@@ -125,12 +111,35 @@ export default function HomeView() {
         );
     };
 
+    const getRecipeFromMeal = async (meal: Meal) => {
+        const recipeRef = doc(db, "recipes", meal.recipeId);
+        const snap = await getDoc(recipeRef);
+
+        if (!snap.exists()) return emptyRecipeData;
+
+        return {
+            id: snap.id,
+            ...snap.data(),
+        } as Recipe;
+    };
+
+    const getTaskFromPlannedTask = async (plannedTask: PlannedTask) => {
+        const taskRef = doc(db, "tasks", plannedTask.taskId);
+        const snap = await getDoc(taskRef);
+
+        if (!snap.exists()) return emptyTaskData;
+
+        return {
+            id: snap.id,
+            ...snap.data(),
+        } as Task;
+    };
 
     const DateButtonsView = () => {
         return (
             <View style={styles.buttonRow}>
                 <TouchableOpacity style={styles.bigRoundButtonShadow} onPress={() =>
-                    setDay((prev) => {
+                    setFilteringDay((prev) => {
                         const d = new Date(prev);
                         d.setDate(d.getDate() - 1);
                         return d;
@@ -138,9 +147,9 @@ export default function HomeView() {
                 }>
                     <Ionicons name="chevron-back" size={16} />
                 </TouchableOpacity>
-                <Text style={{ ...styles.textMedium, alignSelf: "center" }}>{formatDateWithYear(day)}</Text>
+                <Text style={{ ...styles.textMedium, alignSelf: "center" }}>{formatDateWithYear(filteringDay)}</Text>
                 <TouchableOpacity style={styles.bigRoundButtonShadow} onPress={() =>
-                    setDay((prev) => {
+                    setFilteringDay((prev) => {
                         const d = new Date(prev);
                         d.setDate(d.getDate() + 1);
                         return d;
@@ -153,16 +162,20 @@ export default function HomeView() {
     }
 
     const mealsView = () => {
-        return meals.length > 0 && (
-            <View style={{marginBottom:16}}>
+        const filteredMeals = meals.filter((meal) =>
+            formatDateWithYear(meal.date.toDate()) === formatDateWithYear(filteringDay)
+        );
+
+        return filteredMeals.length > 0 && (
+            <View style={{ marginBottom: 16 }}>
                 <Text style={{ ...styles.textMedium, marginBottom: 8 }}>Meals</Text>
                 <View>
                     <FlatList
-                        data={meals}
+                        data={filteredMeals}
                         keyExtractor={(item) => item.title}
                         renderItem={({ item }) => (
-                            <TouchableOpacity style={styles.recipeRow} onPress={() => {
-                                setRecipeData(item);
+                            <TouchableOpacity style={styles.recipeRow} onPress={async () => {
+                                setRecipeData(await getRecipeFromMeal(item));
                                 setViewRecipeModalVisible(true);
                             }}>
                                 <Image
@@ -187,19 +200,23 @@ export default function HomeView() {
     }
 
     const taskView = () => {
-        return tasks.length > 0 && (
+        const filteredTasks = plannedTasks.filter((task) =>
+            formatDateWithYear(task.date.toDate()) === formatDateWithYear(filteringDay)
+        );
+
+        return filteredTasks.length > 0 && (
             <View>
                 <Text style={{ ...styles.textMedium, marginBottom: 8 }}>Tasks</Text>
                 <View>
                     <FlatList
-                        data={tasks}
+                        data={filteredTasks}
                         keyExtractor={(item) => item.title}
                         renderItem={({ item }) => (
-                            <TouchableOpacity style={{...styles.recipeRow, height: 56}} onPress={() => {
-                                setTaskData(item);
+                            <TouchableOpacity style={{ ...styles.recipeRow, height: 56 }} onPress={async () => {
+                                setTaskData(await getTaskFromPlannedTask(item));
                                 setViewTaskModalVisible(true);
                             }}>
-                                <Text style={{...styles.textMedium, marginLeft:12}}>{item.title}</Text>
+                                <Text style={{ ...styles.textMedium, marginLeft: 12 }}>{item.title}</Text>
                                 <Pressable style={styles.checkbox}
                                     onPress={() => toggleTasksCheckbox(item.title)}>
                                     <View style={styles.smallCheckbox}>
@@ -249,7 +266,15 @@ export default function HomeView() {
                 {taskView()}
             </ScrollView>
 
-
+            {/* View Recipe Modal */}
+            <Modal style={styles.modal}
+                visible={viewRecipeModalVisible}
+                transparent={true}
+                animationType="slide"
+                onRequestClose={() => setViewRecipeModalVisible(false)}
+            >
+                <RecipeView recipe={recipeData} onClose={() => setViewRecipeModalVisible(false)} />
+            </Modal>
         </View>
 
     )
