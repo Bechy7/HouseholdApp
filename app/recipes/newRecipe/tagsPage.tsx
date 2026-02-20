@@ -8,7 +8,7 @@ import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/fi
 import { default as React, useContext, useState } from "react";
 import { FlatList, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { RecipeContext } from "../../context/recipeContext";
-import availableTags from "../../helpers/availableTags";
+import availableTags from "../../utils/availableTags";
 import ProgressBar from "./progressBar";
 
 type Props = NativeStackScreenProps<any>;

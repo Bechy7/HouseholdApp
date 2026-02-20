@@ -5,8 +5,8 @@ import { FlatList, Modal, Pressable, ScrollView, Text, TouchableOpacity, View } 
 import { db } from "../../firebaseConfig";
 import styles from "../../styles";
 import useHousehold from "../context/householdContext";
-import defaultGroceries from "../helpers/grocerySuggestion";
 import { Grocery, stores } from "../tabs/groceries";
+import defaultGroceries from "../utils/grocerySuggestion";
 import GroceryView from "./groceryView";
 
 export default function GroceryList() {
@@ -61,8 +61,8 @@ export default function GroceryList() {
                     renderItem={({ item }) => (
                         <View style={styles.listRow}>
                             <Pressable style={styles.ingredientCheckbox}
-                                onPress={() => toggleCheckbox(item.title)}>
-                                {checkedIds.includes(item.title) &&
+                                onPress={() => toggleCheckbox(item.id)}>
+                                {checkedIds.includes(item.id) &&
                                     <View style={styles.smallCheckbox}>
                                         <Ionicons name="checkbox" size={28}></Ionicons>
                                     </View>}

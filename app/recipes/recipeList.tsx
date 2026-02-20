@@ -5,9 +5,9 @@ import { FlatList, Image, Modal, ScrollView, Text, TextInput, TouchableOpacity, 
 import { auth, db } from "../../firebaseConfig";
 import styles from "../../styles";
 import useHousehold from "../context/householdContext";
-import sortOptions, { sortMethod } from "../helpers/sortOptions";
 import EmptyBox from "../images/emptyBox.png";
 import { emptyRecipeData, Recipe, Tag } from "../tabs/recipes";
+import sortOptions, { sortMethod } from "../utils/sortOptions";
 import NewRecipe from "./newRecipe";
 import RecipeView from "./recipeView";
 

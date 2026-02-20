@@ -1,5 +1,5 @@
-import availableTags from "@/app/helpers/availableTags";
 import { Recipe } from "@/app/tabs/recipes";
+import availableTags from "@/app/utils/availableTags";
 import { createContext, useState } from "react";
 
 export const RecipeContext = createContext<{ newRecipe: Recipe; setNewRecipe: (newRecipe: Recipe) => void } | undefined>(undefined);
