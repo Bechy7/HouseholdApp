@@ -1,20 +1,22 @@
 import { Ionicons } from "@expo/vector-icons";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { addDoc, collection, onSnapshot, orderBy, query, serverTimestamp, Timestamp, where } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FlatList, Image, Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { auth, db } from "../../firebaseConfig";
 import styles from "../../styles";
 import useHousehold from "../context/householdContext";
+import { RecipeContext } from "../context/recipeContext";
 import EmptyBox from "../images/emptyBox.png";
 import { emptyRecipeData, Recipe, Tag } from "../tabs/recipes";
 import sortOptions, { sortMethod } from "../utils/sortOptions";
-import NewRecipe from "./newRecipe";
-import RecipeView from "./recipeView";
 
-export default function RecipeList() {
-    const [addRecipeModalVisible, setAddRecipeModalVisible] = useState(false);
-    const [viewRecipeModalVisible, setViewRecipeModalVisible] = useState(false);
-    const [recipeData, setRecipeData] = useState<Recipe>(emptyRecipeData);
+type Props = NativeStackScreenProps<any>;
+export default function RecipeList({ navigation }: Props) {
+    const recipeContext = useContext(RecipeContext);
+    if (!recipeContext) return null;
+    const { newRecipe, setNewRecipe } = recipeContext;
+
     const [sortModalVisible, setSortModalVisible] = useState(false);
     const [filterModalVisible, setFilterModalVisible] = useState(false);
     const [searchRecipe, setSearchRecipe] = useState("");
@@ -69,17 +71,17 @@ export default function RecipeList() {
     }, []);
 
     const addMeal = async (recipe: Recipe) => {
-            const user = auth.currentUser;
-            if (!user) return;
-            await addDoc(collection(db, "meals"), {
-                createdAt: serverTimestamp(),
-                recipeId: recipe.id,
-                title: recipe.title,
-                cookingTime: recipe.cookingTime,
-                householdId: recipe.householdId,
-                date: Timestamp.now()
-            });
-        }
+        const user = auth.currentUser;
+        if (!user) return;
+        await addDoc(collection(db, "meals"), {
+            createdAt: serverTimestamp(),
+            recipeId: recipe.id,
+            title: recipe.title,
+            cookingTime: recipe.cookingTime,
+            householdId: recipe.householdId,
+            date: Timestamp.now()
+        });
+    }
 
     const sortAndFilterButtons = () => {
         return (
@@ -143,7 +145,7 @@ export default function RecipeList() {
                     <View style={styles.row}>
                         <Text style={styles.header}>All recipes</Text>
                         <TouchableOpacity style={styles.openRecipeModuleButton} onPress={() => {
-                            setAddRecipeModalVisible(true);
+                            navigation.navigate("titlePage")
                         }}>
                             <Ionicons name="add" size={24} />
                         </TouchableOpacity>
@@ -167,8 +169,8 @@ export default function RecipeList() {
                         keyExtractor={(item) => item.id}
                         renderItem={({ item }) => (
                             <TouchableOpacity style={styles.recipeRow} onPress={() => {
-                                setRecipeData(item);
-                                setViewRecipeModalVisible(true);
+                                setNewRecipe(item);
+                                navigation.navigate("recipeView");
                             }}>
                                 <Image
                                     source={{ uri: "" }}
@@ -192,34 +194,14 @@ export default function RecipeList() {
                             <Text style={styles.textMedium}> No recipes yet</Text>
                             <Text> Start by adding a recipe</Text>
                             <TouchableOpacity style={styles.openRecipeModuleButton} onPress={() => {
-                                setAddRecipeModalVisible(true);
+                                setNewRecipe(emptyRecipeData);
+                                navigation.navigate("titlePage");
                             }}>
                                 <Ionicons name="add" size={24} />
                             </TouchableOpacity>
                         </View>
                     )}
                 </View>
-
-                {/* Add Recipe Modal */}
-                <Modal style={styles.modal}
-                    visible={addRecipeModalVisible}
-                    transparent={true}
-                    animationType="slide"
-                    onRequestClose={() => setAddRecipeModalVisible(false)}
-                >
-                    <NewRecipe recipe={emptyRecipeData} onClose={() => setAddRecipeModalVisible(false)} />
-                </Modal>
-
-                {/* View Recipe Modal */}
-                <Modal style={styles.modal}
-                    visible={viewRecipeModalVisible}
-                    transparent={true}
-                    animationType="slide"
-                    onRequestClose={() => setViewRecipeModalVisible(false)}
-                >
-                    <RecipeView recipe={recipeData} onClose={() => setViewRecipeModalVisible(false)} />
-                </Modal>
-
                 {sortingModal()}
             </View>
         </ScrollView>

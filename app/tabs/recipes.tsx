@@ -1,6 +1,6 @@
 import { Timestamp } from "firebase/firestore";
 import React from "react";
-import RecipesList from "../recipes/recipeList";
+import NewRecipe from "../recipes/newRecipe";
 
 export const emptyRecipeData = { title: "", id: "", householdId: "", ingredients: [], preparationSteps: [], notes: [], tags: [], calories: "", cookingTime:"", portions:"" }
 
@@ -40,5 +40,5 @@ export type Tag = {
 }
 
 export default function RecipesPage() {
-    return <RecipesList />;
+    return <NewRecipe recipe={emptyRecipeData} />;
 }

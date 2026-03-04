@@ -4,8 +4,8 @@ import { Button, StyleSheet, Text, TextInput, View } from "react-native";
 import { auth } from "../firebaseConfig";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("Testsen@hotmail.com");
+  const [password, setPassword] = useState("ko28z3FagSGz");
   const [isRegister, setIsRegister] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);

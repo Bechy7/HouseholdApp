@@ -1,5 +1,4 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useRoute } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useContext } from "react";
 import { Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
@@ -14,8 +13,6 @@ export default function TitlePage({ navigation }: Props) {
     if (!recipeContext) return null;
     const { newRecipe, setNewRecipe } = recipeContext;
 
-    const route = useRoute();
-    const { onClose } = (route.params as { onClose: () => void }) || { onClose: () => { } };
     const requiredFieldsFilled = newRecipe.title.trim().length > 0;
 
     return (
@@ -23,7 +20,7 @@ export default function TitlePage({ navigation }: Props) {
             <ScrollView style={styles.scrollView} keyboardShouldPersistTaps="handled">
                 <View style={styles.row}>
                     <Text style={styles.header}>Create a new recipe</Text>
-                    <TouchableOpacity style={styles.closeButton} onPress={() => onClose()}><Ionicons name="close" size={24} /></TouchableOpacity>
+                    <TouchableOpacity style={styles.closeButton} onPress={() => navigation.popToTop()}><Ionicons name="close" size={24} /></TouchableOpacity>
                 </View>
                 <ProgressBar currentStep={0} />
                 <View>

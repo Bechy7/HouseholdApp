@@ -1,5 +1,4 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useRoute } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useContext, useState } from "react";
 import { FlatList, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
@@ -13,9 +12,6 @@ export default function PreparationPage({ navigation }: Props) {
     const recipeContext = useContext(RecipeContext);
     if (!recipeContext) return null;
     const { newRecipe, setNewRecipe } = recipeContext;
-
-    const route = useRoute();
-    const { onClose } = (route.params as { onClose: () => void }) || { onClose: () => { } };
     const [preparationStep, setPreparationStep] = useState("");
 
     const addPreparationStep = async () => {
@@ -36,7 +32,7 @@ export default function PreparationPage({ navigation }: Props) {
         <View style={styles.modalContainer}>
             <View style={styles.row}>
                 <Text style={styles.header}>Create a new recipe</Text>
-                <TouchableOpacity style={styles.closeButton} onPress={() => onClose()}><Ionicons name="close" size={24} /></TouchableOpacity>
+                <TouchableOpacity style={styles.closeButton} onPress={() => navigation.popToTop()}><Ionicons name="close" size={24} /></TouchableOpacity>
             </View>
             <ProgressBar currentStep={2} />
             <View>

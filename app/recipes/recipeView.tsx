@@ -1,29 +1,33 @@
 import { Ionicons } from "@expo/vector-icons";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { collection, doc, getDocs, query, serverTimestamp, where, writeBatch } from "firebase/firestore";
-import React, { useState } from "react";
-import { FlatList, ImageBackground, Modal, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import React, { useContext, useState } from "react";
+import { FlatList, ImageBackground, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { db } from "../../firebaseConfig";
 import styles from "../../styles";
 import useHousehold from "../context/householdContext";
+import { RecipeContext } from "../context/recipeContext";
 import chickenAlfredo from "../images/chickenAlfredo.png";
-import { Recipe } from "../tabs/recipes";
-import NewRecipe from "./newRecipe";
 
-export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClose: () => void }) {
+type Props = NativeStackScreenProps<any>;
+export default function RecipeView({ navigation }: Props) {
+    const recipeContext = useContext(RecipeContext);
+    if (!recipeContext) return null;
+    const { newRecipe } = recipeContext;
+    
     const [checkedIds, setCheckedIds] = useState<string[]>([]);
-    const [addRecipeModalVisible, setAddRecipeModalVisible] = useState(false);
-    const [portions, setPortions] = useState(Number(recipe.portions));
+    const [portions, setPortions] = useState(Number(newRecipe.portions));
     const [addedToShoppingList, setAddedToShoppingList] = useState(false);
     const { householdId } = useHousehold();
 
     const deleteRecipe = async () => {
-        onClose();
+        navigation.goBack();
         const batch = writeBatch(db);
-        batch.delete(doc(db, "recipes", recipe.id));
+        batch.delete(doc(db, "recipes", newRecipe.id));
         const mealsSnap = await getDocs(
             query(
                 collection(db, "meals"),
-                where("recipeId", "==", recipe.id),
+                where("recipeId", "==", newRecipe.id),
                 where("householdId", "==", householdId)
             )
         );
@@ -34,13 +38,9 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
         await batch.commit();
     };
 
-    const editRecipe = async () => {
-        setAddRecipeModalVisible(true);
-    };
-
     const addToShoppingList = async () => {
         const batch = writeBatch(db);
-        recipe.ingredients.forEach((ingredient) => {
+        newRecipe.ingredients.forEach((ingredient) => {
             const groceryRef = doc(collection(db, "groceries"));
             batch.set(groceryRef, {
                 title: ingredient.title,
@@ -60,17 +60,17 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
                 <View style={styles.infoBox}>
                     <Ionicons name="stopwatch" size={24}></Ionicons>
                     <Text style={{ color: "gray" }}>Cooking time</Text>
-                    <Text >{recipe.cookingTime} min</Text>
+                    <Text >{newRecipe.cookingTime} min</Text>
                 </View>
                 <View style={styles.infoBox}>
                     <Ionicons name="people" size={24}></Ionicons>
                     <Text style={{ color: "gray" }}>portions</Text>
-                    <Text >{recipe.portions}</Text>
+                    <Text >{newRecipe.portions}</Text>
                 </View>
                 <View style={styles.infoBox}>
                     <Ionicons name="flame" size={24}></Ionicons>
                     <Text style={{ color: "gray" }}>Calories</Text>
-                    <Text >{recipe.calories} kcal</Text>
+                    <Text >{newRecipe.calories} kcal</Text>
                 </View>
             </View>
         )
@@ -85,12 +85,12 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
     };
 
     const ingredientView = () => {
-        return recipe.ingredients.length > 0 && (
+        return newRecipe.ingredients.length > 0 && (
             <View style={styles.box}>
-                <Text style={{ ...styles.title, marginTop: 0 }}>Ingredients ({recipe.ingredients.length})</Text>
+                <Text style={{ ...styles.title, marginTop: 0 }}>Ingredients ({newRecipe.ingredients.length})</Text>
                 <View>
                     <FlatList
-                        data={recipe.ingredients}
+                        data={newRecipe.ingredients}
                         keyExtractor={(item) => item.title}
                         renderItem={({ item }) => (
                             <View style={styles.ingredientRow}>
@@ -103,7 +103,7 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
                                 </Pressable>
                                 <View>
                                     <Text style={{ fontSize: 16 }}>{item.title}</Text>
-                                    <Text style={{ fontSize: 12, color: "gray" }}>{Number(item.quantity) > 0 && Number(item.quantity) * portions / Number(recipe.portions)} {item.unit}</Text>
+                                    <Text style={{ fontSize: 12, color: "gray" }}>{Number(item.quantity) > 0 && Number(item.quantity) * portions / Number(newRecipe.portions)} {item.unit}</Text>
                                 </View>
                             </View>
                         )} />
@@ -137,17 +137,17 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
     }
 
     const preparationView = () => {
-        return recipe.preparationSteps.length > 0 && (
+        return newRecipe.preparationSteps.length > 0 && (
             <View style={styles.box}>
                 <Text style={{ ...styles.title, marginTop: 0 }}>Preparation</Text>
                 <View>
                     <FlatList
-                        data={recipe.preparationSteps}
+                        data={newRecipe.preparationSteps}
                         keyExtractor={(item) => item}
                         renderItem={({ item }) => (
                             <View style={{ ...styles.row, justifyContent: "flex-start" }}>
                                 <View style={styles.roundStepCounter}>
-                                    <Text style={{ fontWeight: "600" }}>{recipe.preparationSteps.indexOf(item) + 1}</Text>
+                                    <Text style={{ fontWeight: "600" }}>{newRecipe.preparationSteps.indexOf(item) + 1}</Text>
                                 </View>
                                 <Text style={{ fontSize: 14, alignSelf: "flex-start", marginLeft: 8, marginBottom: 16 }}>{item}</Text>
                             </View>
@@ -158,12 +158,12 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
     }
 
     const notesView = () => {
-        return recipe.notes.length > 0 && (
+        return newRecipe.notes.length > 0 && (
             <View style={styles.box}>
                 <Text style={{ ...styles.title, marginTop: 0 }}>Notes</Text>
                 <View>
                     <FlatList
-                        data={recipe.notes}
+                        data={newRecipe.notes}
                         keyExtractor={(item) => item}
                         renderItem={({ item }) => (
                             <View style={styles.row}>
@@ -178,7 +178,7 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
     const tagsView = () => {
         const [expanded, setExpanded] = useState(true);
         let tagCount = 0;
-        recipe.tags.map((item) => tagCount += item.tags.length)
+        newRecipe.tags.map((item) => tagCount += item.tags.length)
 
         return tagCount > 0 && (
             <View style={styles.box}>
@@ -196,7 +196,7 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
 
                 {expanded && (
                     <FlatList
-                        data={recipe.tags}
+                        data={newRecipe.tags}
                         keyExtractor={(item) => item.category}
                         renderItem={({ item }) => {
                             if (item.tags.length > 0) return (
@@ -229,9 +229,9 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
             <View style={{ backgroundColor: "#F4F6F7" }}>
                 <ImageBackground source={chickenAlfredo} style={styles.viewRecipeImage}>
                     <View style={styles.buttonRow}>
-                        <TouchableOpacity style={styles.bigRoundButton} onPress={() => onClose()}><Ionicons name="chevron-back" size={16} /></TouchableOpacity>
+                        <TouchableOpacity style={styles.bigRoundButton} onPress={() => navigation.goBack()}><Ionicons name="chevron-back" size={16} /></TouchableOpacity>
                         <View style={styles.buttonRow}>
-                            <TouchableOpacity style={styles.bigRoundButton} onPress={() => editRecipe()}><Ionicons name="pencil" size={16} /></TouchableOpacity>
+                            <TouchableOpacity style={styles.bigRoundButton} onPress={() => navigation.navigate("titlePage")}><Ionicons name="pencil" size={16} /></TouchableOpacity>
                             <TouchableOpacity style={styles.bigRoundButton} onPress={() => deleteRecipe()}><Ionicons name="trash" size={16} /></TouchableOpacity>
                         </View>
 
@@ -243,7 +243,7 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
                 </TouchableOpacity>
 
                 <View style={{ ...styles.modalContainer, paddingHorizontal: 16, padding: 0 }}>
-                    <Text style={{ ...styles.title, marginTop: 0 }}> {recipe.title} </Text>
+                    <Text style={{ ...styles.title, marginTop: 0 }}> {newRecipe.title} </Text>
                     {infoBoxes()}
                     {ingredientView()}
                     {preparationView()}
@@ -251,22 +251,6 @@ export default function RecipeView({ recipe, onClose }: { recipe: Recipe; onClos
                     {tagsView()}
                 </View>
             </View>
-
-            {/* Add Recipe Modal */}
-            <Modal style={styles.modal}
-                visible={addRecipeModalVisible}
-                transparent={true}
-                animationType="slide"
-                onRequestClose={() => {
-                    setAddRecipeModalVisible(false)
-                    onClose();
-                }}
-            >
-                <NewRecipe recipe={recipe} onClose={() => {
-                    setAddRecipeModalVisible(false)
-                    onClose();
-                }} />
-            </Modal>
         </ScrollView>
     )
 }

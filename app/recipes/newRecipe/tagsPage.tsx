@@ -19,7 +19,7 @@ export default function TagsPage({ navigation }: Props) {
     const { newRecipe, setNewRecipe } = recipeContext;
     const { householdId } = useHousehold();
     const route = useRoute();
-    const { onClose, shouldEdit } = (route.params as { onClose: () => void; shouldEdit: boolean }) || { onClose: () => { }, shouldEdit: false };
+    const { shouldEdit } = (route.params as { shouldEdit: boolean }) || { shouldEdit: false };
     const [category, setCategory] = useState(availableTags[0].category);
     const [tag, setTag] = useState(availableTags[0].tags[0]);
 
@@ -45,7 +45,7 @@ export default function TagsPage({ navigation }: Props) {
     const addRecipe = async () => {
         const user = auth.currentUser;
         if (!user) return;
-        onClose();
+        navigation.popToTop();
         await addDoc(collection(db, "recipes"), {
             createdAt: serverTimestamp(),
             title: newRecipe.title.trim(),
@@ -63,7 +63,7 @@ export default function TagsPage({ navigation }: Props) {
     const editRecipe = async () => {
         const user = auth.currentUser;
         if (!user) return;
-        onClose();
+        navigation.popToTop();
         await updateDoc(doc(db, "recipes", newRecipe.id), {
             title: newRecipe.title.trim(),
             ingredients: newRecipe.ingredients ?? [],
@@ -80,7 +80,7 @@ export default function TagsPage({ navigation }: Props) {
         <View style={styles.modalContainer}>
             <View style={styles.row}>
                 <Text style={styles.header}>Create a new recipe</Text>
-                <TouchableOpacity style={styles.closeButton} onPress={() => onClose()}><Ionicons name="close" size={24} /></TouchableOpacity>
+                <TouchableOpacity style={styles.closeButton} onPress={() => navigation.popToTop()}><Ionicons name="close" size={24} /></TouchableOpacity>
             </View>
             <ProgressBar currentStep={4} />
             <View>
