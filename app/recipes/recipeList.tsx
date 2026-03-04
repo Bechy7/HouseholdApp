@@ -145,6 +145,7 @@ export default function RecipeList({ navigation }: Props) {
                     <View style={styles.row}>
                         <Text style={styles.header}>All recipes</Text>
                         <TouchableOpacity style={styles.openRecipeModuleButton} onPress={() => {
+                            setNewRecipe(emptyRecipeData);
                             navigation.navigate("titlePage")
                         }}>
                             <Ionicons name="add" size={24} />

@@ -20,7 +20,7 @@ export default function TitlePage({ navigation }: Props) {
             <ScrollView style={styles.scrollView} keyboardShouldPersistTaps="handled">
                 <View style={styles.row}>
                     <Text style={styles.header}>Create a new recipe</Text>
-                    <TouchableOpacity style={styles.closeButton} onPress={() => navigation.popToTop()}><Ionicons name="close" size={24} /></TouchableOpacity>
+                    <TouchableOpacity style={styles.closeButton} onPress={() => navigation.goBack()}><Ionicons name="close" size={24} /></TouchableOpacity>
                 </View>
                 <ProgressBar currentStep={0} />
                 <View>
