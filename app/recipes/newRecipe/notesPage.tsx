@@ -34,7 +34,7 @@ export default function NotesPage({ navigation }: Props) {
         <View style={styles.modalContainer}>
             <View style={styles.row}>
                 <Text style={styles.header}>Create a new recipe</Text>
-                <TouchableOpacity style={styles.closeButton} onPress={() => navigation.popToTop()}><Ionicons name="close" size={24} /></TouchableOpacity>
+                <TouchableOpacity style={styles.closeButton} onPress={() => navigation.pop(4)}><Ionicons name="close" size={24} /></TouchableOpacity>
             </View>
             <ProgressBar currentStep={3} />
             <View>

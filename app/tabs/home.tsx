@@ -1,8 +1,8 @@
 import React from "react";
-import HomeView from "../home/homeView";
+import Home from "../home";
 
 export default function HomePage() {
-    return <HomeView />
+    return <Home />
 
 }
 

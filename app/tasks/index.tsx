@@ -1,9 +1,9 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import { Task } from "../../tabs/tasks";
-import ChecklistPage from "./checklistPage";
-import TaskProvider from "../../context/taskContext";
-import TaskInfoPage from "./taskInfoPage";
+import TaskProvider from "../context/taskContext";
+import { Task } from "../tabs/tasks";
+import ChecklistPage from "./newTask/checklistPage";
+import TaskInfoPage from "./newTask/taskInfoPage";
 
 
 const Stack = createNativeStackNavigator();

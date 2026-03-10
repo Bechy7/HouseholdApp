@@ -6,7 +6,7 @@ import { FlatList, Modal, ScrollView, Text, TouchableOpacity, View } from "react
 import { auth, db } from "../../firebaseConfig";
 import useHousehold from "../context/householdContext";
 import { Checklist, emptyTaskData, PlannedTask, Task } from "../tabs/tasks";
-import NewTask from "./newTask";
+import NewTask from "./";
 import ProgressBar from "./newTask/progressBar";
 import TaskView from "./taskView";
 

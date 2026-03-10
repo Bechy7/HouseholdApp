@@ -7,7 +7,6 @@ import { db } from "../../firebaseConfig";
 import styles from "../../styles";
 import useHousehold from "../context/householdContext";
 import { RecipeContext } from "../context/recipeContext";
-import chickenAlfredo from "../images/chickenAlfredo.png";
 
 type Props = NativeStackScreenProps<any>;
 export default function RecipeView({ navigation }: Props) {
@@ -227,7 +226,7 @@ export default function RecipeView({ navigation }: Props) {
     return (
         <ScrollView style={{ display: "flex" }} keyboardShouldPersistTaps="handled">
             <View style={{ backgroundColor: "#F4F6F7" }}>
-                <ImageBackground source={chickenAlfredo} style={styles.viewRecipeImage}>
+                <ImageBackground source={{ uri: newRecipe.imageUrl || "" }} style={styles.viewRecipeImage}>
                     <View style={styles.buttonRow}>
                         <TouchableOpacity style={styles.bigRoundButton} onPress={() => navigation.goBack()}><Ionicons name="chevron-back" size={16} /></TouchableOpacity>
                         <View style={styles.buttonRow}>

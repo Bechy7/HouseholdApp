@@ -45,7 +45,7 @@ export default function TagsPage({ navigation }: Props) {
     const addRecipe = async () => {
         const user = auth.currentUser;
         if (!user) return;
-        navigation.popToTop();
+        navigation.pop(5);
         await addDoc(collection(db, "recipes"), {
             createdAt: serverTimestamp(),
             title: newRecipe.title.trim(),
@@ -57,13 +57,14 @@ export default function TagsPage({ navigation }: Props) {
             preparationSteps: newRecipe.preparationSteps ?? [],
             notes: newRecipe.notes ?? [],
             tags: newRecipe.tags ?? [],
+            imageUrl: newRecipe.imageUrl
         });
     };
 
     const editRecipe = async () => {
         const user = auth.currentUser;
         if (!user) return;
-        navigation.popToTop();
+        navigation.pop(5);
         await updateDoc(doc(db, "recipes", newRecipe.id), {
             title: newRecipe.title.trim(),
             ingredients: newRecipe.ingredients ?? [],
@@ -73,6 +74,7 @@ export default function TagsPage({ navigation }: Props) {
             preparationSteps: newRecipe.preparationSteps ?? [],
             notes: newRecipe.notes ?? [],
             tags: newRecipe.tags ?? [],
+            imageUrl: newRecipe.imageUrl
         });
     };
 
@@ -80,7 +82,7 @@ export default function TagsPage({ navigation }: Props) {
         <View style={styles.modalContainer}>
             <View style={styles.row}>
                 <Text style={styles.header}>Create a new recipe</Text>
-                <TouchableOpacity style={styles.closeButton} onPress={() => navigation.popToTop()}><Ionicons name="close" size={24} /></TouchableOpacity>
+                <TouchableOpacity style={styles.closeButton} onPress={() => navigation.pop(5)}><Ionicons name="close" size={24} /></TouchableOpacity>
             </View>
             <ProgressBar currentStep={4} />
             <View>

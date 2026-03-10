@@ -15,7 +15,7 @@ type Props = NativeStackScreenProps<any>;
 export default function RecipeList({ navigation }: Props) {
     const recipeContext = useContext(RecipeContext);
     if (!recipeContext) return null;
-    const { newRecipe, setNewRecipe } = recipeContext;
+    const { setNewRecipe } = recipeContext;
 
     const [sortModalVisible, setSortModalVisible] = useState(false);
     const [filterModalVisible, setFilterModalVisible] = useState(false);
@@ -49,6 +49,7 @@ export default function RecipeList({ navigation }: Props) {
                     preparationSteps?: string[];
                     notes?: string[];
                     tags?: Tag[]
+                    imageUrl?: string;
                 };
                 return {
                     id: doc.id,
@@ -61,7 +62,8 @@ export default function RecipeList({ navigation }: Props) {
                     calories: data.calories ?? "0",
                     preparationSteps: data.preparationSteps ?? [],
                     notes: data.notes ?? [],
-                    tags: data.tags ?? []
+                    tags: data.tags ?? [],
+                    imageUrl: data.imageUrl
                 };
             });
             setRecipes(recipesData);
@@ -79,7 +81,8 @@ export default function RecipeList({ navigation }: Props) {
             title: recipe.title,
             cookingTime: recipe.cookingTime,
             householdId: recipe.householdId,
-            date: Timestamp.now()
+            date: Timestamp.now(),
+            imageUrl: recipe.imageUrl
         });
     }
 
@@ -174,7 +177,7 @@ export default function RecipeList({ navigation }: Props) {
                                 navigation.navigate("recipeView");
                             }}>
                                 <Image
-                                    source={{ uri: "" }}
+                                    source={{ uri: item.imageUrl || "" }}
                                     style={styles.RecipeListImage} />
                                 <View style={{ flex: 1 }}>
                                     <Text style={{ fontSize: 16, marginTop: 16, marginBottom: 8 }}>{item.title}</Text>

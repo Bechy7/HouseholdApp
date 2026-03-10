@@ -1,8 +1,8 @@
 import { Timestamp } from "firebase/firestore";
 import React from "react";
-import NewRecipe from "../recipes/newRecipe";
+import NewRecipe from "../recipes";
 
-export const emptyRecipeData = { title: "", id: "", householdId: "", ingredients: [], preparationSteps: [], notes: [], tags: [], calories: "", cookingTime:"", portions:"" }
+export const emptyRecipeData = { title: "", id: "", householdId: "", ingredients: [], preparationSteps: [], notes: [], tags: [], calories: "", cookingTime: "", portions: "", imageUrl: "" }
 
 export type Recipe = {
     id: string;
@@ -16,6 +16,7 @@ export type Recipe = {
     preparationSteps: string[];
     notes: string[];
     tags: Tag[];
+    imageUrl?: string;
 };
 
 export type Meal = {
@@ -25,6 +26,7 @@ export type Meal = {
     title: string;
     cookingTime?: string;
     date: Timestamp;
+    imageUrl?: string;
 }
 
 export type Ingredient = {

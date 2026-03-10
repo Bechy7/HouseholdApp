@@ -1,8 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import * as ImagePicker from 'expo-image-picker';
 import React, { useContext } from "react";
 import { Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import styles from "../../../styles";
+import { supabase } from '../../../supabase';
 import { RecipeContext } from "../../context/recipeContext";
 import ProgressBar from "./progressBar";
 
@@ -15,6 +17,46 @@ export default function TitlePage({ navigation }: Props) {
 
     const requiredFieldsFilled = newRecipe.title.trim().length > 0;
 
+    const pickAndUpload = async () => {
+        const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (!permission.granted) return;
+
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            quality: 0.7,
+            allowsEditing: true,
+            aspect: [1, 1], // square profile image
+        });
+
+        if (result.canceled) return;
+        const uri = result.assets[0].uri;
+
+        try {
+            const response = await fetch(uri);
+            const blob = await response.blob();
+
+            const filePath = `Images/${crypto.randomUUID()}.jpg`;
+
+            const { error } = await supabase.storage
+                .from('Images')
+                .upload(filePath, blob, {
+                    upsert: true, // replaces old image
+                    contentType: 'image/jpeg',
+                });
+
+            if (error) throw error;
+
+            const { data } = supabase.storage
+                .from('Images')
+                .getPublicUrl(filePath);
+
+            setNewRecipe({ ...newRecipe, imageUrl: data.publicUrl });
+
+        } catch (error) {
+            console.error('Upload failed:', error);
+        }
+    };
+
     return (
         <View style={styles.modalContainer}>
             <ScrollView style={styles.scrollView} keyboardShouldPersistTaps="handled">
@@ -25,9 +67,11 @@ export default function TitlePage({ navigation }: Props) {
                 <ProgressBar currentStep={0} />
                 <View>
                     <Text style={styles.textMedium}> Name of the recipe</Text>
-                    <Image
-                        source={{ uri: "" }}
-                        style={styles.addRecipeImage} />
+                    <TouchableOpacity onPress={pickAndUpload}>
+                        <Image
+                            source={{ uri: newRecipe.imageUrl || "" }}
+                            style={styles.addRecipeImage} />
+                    </TouchableOpacity>
                 </View>
                 <View>
                     <Text style={styles.textMedium}> Name of the recipe *</Text>

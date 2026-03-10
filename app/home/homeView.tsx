@@ -1,18 +1,24 @@
 import { Ionicons } from "@expo/vector-icons";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { collection, doc, getDoc, onSnapshot, orderBy, query, Timestamp, where } from "firebase/firestore";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { FlatList, Image, Modal, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { auth, db } from "../../firebaseConfig";
 import styles from "../../styles";
 import useHousehold from "../context/householdContext";
-import RecipeView from "../recipes/recipeView";
+import { RecipeContext } from "../context/recipeContext";
 import { emptyRecipeData, Meal, Recipe } from "../tabs/recipes";
 import { emptyTaskData, PlannedTask, Task } from "../tabs/tasks";
 import TaskView from "../tasks/taskView";
 import { getCurrentWeekRange, getWeekDays, getWeekStart } from "../utils/dateHelper";
 import ProgressBar from "./progressBar";
 
-export default function HomeView() {
+type Props = NativeStackScreenProps<any>;
+export default function HomeView({ navigation }: Props) {
+    const recipeContext = useContext(RecipeContext);
+    if (!recipeContext) return null;
+    const { setNewRecipe } = recipeContext;
+
     enum TimeState { Day, Week, Month }
     enum DesireState { Meals, Tasks }
     const [timeView, setTimeView] = useState<TimeState>(TimeState.Day);
@@ -22,8 +28,6 @@ export default function HomeView() {
     const [plannedTasks, setPlannedTasks] = useState<PlannedTask[]>([])
     const [checkedMeals, setCheckedMeals] = useState<string[]>([]);
     const [checkedTasks, setCheckedTasks] = useState<string[]>([]);
-    const [recipeData, setRecipeData] = useState<Recipe>(emptyRecipeData)
-    const [viewRecipeModalVisible, setViewRecipeModalVisible] = useState(false);
     const [taskData, setTaskData] = useState<Task>(emptyTaskData)
     const [viewTaskModalVisible, setViewTaskModalVisible] = useState(false);
     const [currentWeekStart, setCurrentWeekStart] = useState(getWeekStart(new Date()));
@@ -46,6 +50,7 @@ export default function HomeView() {
                     cookingTime?: string;
                     recipeId: string;
                     date: Timestamp;
+                    imageUrl: string;
                 };
                 return {
                     id: doc.id,
@@ -54,7 +59,8 @@ export default function HomeView() {
                     householdId: data.householdId,
                     cookingTime: data.cookingTime ?? "0",
                     recipeId: data.recipeId,
-                    date: data.date
+                    date: data.date,
+                    imageUrl: data.imageUrl
                 };
             });
             setMeals(mealsData);
@@ -218,11 +224,11 @@ export default function HomeView() {
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
                 <TouchableOpacity style={styles.recipeRow} onPress={async () => {
-                    setRecipeData(await getRecipeFromMeal(item));
-                    setViewRecipeModalVisible(true);
+                    setNewRecipe(await getRecipeFromMeal(item));
+                    navigation.navigate("recipeView");
                 }}>
                     <Image
-                        source={{ uri: "" }}
+                        source={{ uri: item.imageUrl || "" }}
                         style={styles.RecipeListImage} />
                     <View style={{ flex: 1 }}>
                         <Text style={{ fontSize: 16, marginTop: 16, marginBottom: 8 }}>{item.title}</Text>
@@ -408,16 +414,6 @@ export default function HomeView() {
 
 
             </ScrollView>
-
-            {/* View Recipe Modal */}
-            <Modal style={styles.modal}
-                visible={viewRecipeModalVisible}
-                transparent={true}
-                animationType="slide"
-                onRequestClose={() => setViewRecipeModalVisible(false)}
-            >
-                <RecipeView recipe={recipeData} onClose={() => setViewRecipeModalVisible(false)} />
-            </Modal>
 
             <Modal style={styles.modal}
                 visible={viewTaskModalVisible}

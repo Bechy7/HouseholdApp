@@ -32,7 +32,7 @@ export default function PreparationPage({ navigation }: Props) {
         <View style={styles.modalContainer}>
             <View style={styles.row}>
                 <Text style={styles.header}>Create a new recipe</Text>
-                <TouchableOpacity style={styles.closeButton} onPress={() => navigation.popToTop()}><Ionicons name="close" size={24} /></TouchableOpacity>
+                <TouchableOpacity style={styles.closeButton} onPress={() => navigation.pop(3)}><Ionicons name="close" size={24} /></TouchableOpacity>
             </View>
             <ProgressBar currentStep={2} />
             <View>

@@ -6,7 +6,7 @@ import { auth, db } from "../../firebaseConfig";
 import styles from "../../styles";
 import useHousehold from "../context/householdContext";
 import { Task } from "../tabs/tasks";
-import NewTask from "./newTask";
+import NewTask from "./";
 
 export default function TaskView({ task, plannedDate, onClose }: { task: Task; plannedDate?: Timestamp | null; onClose: () => void }) {
     const [checkedIds, setCheckedIds] = useState<string[]>([]);
