@@ -1,23 +1,26 @@
 import styles from "@/styles";
 import { Ionicons } from "@expo/vector-icons";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { addDoc, collection, deleteDoc, doc, getDoc, onSnapshot, orderBy, query, serverTimestamp, Timestamp, where } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
-import { FlatList, Modal, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { FlatList, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { auth, db } from "../../firebaseConfig";
 import useHousehold from "../context/householdContext";
+import { TaskContext } from "../context/taskContext";
 import { Checklist, emptyTaskData, PlannedTask, Task } from "../tabs/tasks";
-import NewTask from "./";
 import ProgressBar from "./newTask/progressBar";
-import TaskView from "./taskView";
 
-export default function TaskList() {
+type Props = NativeStackScreenProps<any>;
+export default function TaskList({ navigation }: Props) {
+    const taskContext = useContext(TaskContext);
+    if (!taskContext) return null;
+    const { newTask, setNewTask } = taskContext;
     const { householdId } = useHousehold();
     const [tasks, setTasks] = useState<Task[]>([]);
     const [plannedTasks, setPlannedtasks] = useState<PlannedTask[]>([]);
     const [task, setTask] = useState<Task>({ title: "", id: "", householdId, checklist: [], saveTask: false, repeatTask: false, finished: false });
     const [plannedDate, setPlannedDate] = useState<Timestamp | null>(null)
     const [addTaskModalVisible, setAddTaskModalVisible] = useState(false);
-    const [viewTaskModalVisible, setViewTaskModalVisible] = useState(false);
     const [showSavedTasks, setShowSavedTasks] = useState(false);
 
     useEffect(() => {
@@ -109,9 +112,8 @@ export default function TaskList() {
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
                     <TouchableOpacity style={styles.listRow} onPress={() => {
-                        setTask(item)
-                        setPlannedDate(null)
-                        setViewTaskModalVisible(true)
+                        setNewTask(item)
+                        navigation.navigate("taskView")
                     }}>
                         <View>
                             <Text style={styles.textMedium}>{item.title}</Text>
@@ -133,9 +135,8 @@ export default function TaskList() {
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
                     <TouchableOpacity style={styles.listRow} onPress={async () => {
-                        setTask(await getTaskFromPlannedTask(item));
-                        setPlannedDate(item.date);
-                        setViewTaskModalVisible(true);
+                        setNewTask(await getTaskFromPlannedTask(item));
+                        navigation.navigate("taskView")
                     }}>
                         <View>
                             <Text style={styles.textMedium}>{item.title}</Text>
@@ -160,8 +161,8 @@ export default function TaskList() {
         <View style={styles.row}>
             <Text style={styles.title}>Tasks</Text>
             <TouchableOpacity style={styles.openRecipeModuleButton} onPress={() => {
-                setTask({ title: "", id: "", householdId, checklist: [], saveTask: false, repeatTask: false, finished: false })
-                setAddTaskModalVisible(true);
+                setNewTask(emptyTaskData)
+                navigation.navigate("taskInfoPage")
             }}>
                 <Ionicons name="add" size={24} />
             </TouchableOpacity>
@@ -180,23 +181,5 @@ export default function TaskList() {
         <ScrollView style={styles.scrollView} keyboardShouldPersistTaps="handled">
             {showSavedTasks ? savedTasksView() : plannedTasksView()}
         </ScrollView>
-
-        <Modal style={styles.modal}
-            visible={addTaskModalVisible}
-            transparent={true}
-            animationType="slide"
-            onRequestClose={() => setAddTaskModalVisible(false)}
-        >
-            <NewTask task={task} onClose={() => setAddTaskModalVisible(false)} />
-        </Modal>
-
-        <Modal style={styles.modal}
-            visible={viewTaskModalVisible}
-            transparent={true}
-            animationType="slide"
-            onRequestClose={() => setViewTaskModalVisible(false)}
-        >
-            <TaskView task={task} plannedDate={plannedDate} onClose={() => setViewTaskModalVisible(false)} />
-        </Modal>
     </View>)
 }

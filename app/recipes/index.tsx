@@ -14,7 +14,6 @@ import RecipeView from "./recipeView";
 const Stack = createNativeStackNavigator();
 
 export default function NewRecipe({ recipe }: { recipe: Recipe }) {
-    const shouldEdit = recipe.title ? true : false
     return (
         <RecipeProvider recipe={recipe}>
             <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -25,7 +24,7 @@ export default function NewRecipe({ recipe }: { recipe: Recipe }) {
                 <Stack.Screen name="ingredientsPage" component={IngredientsPage} />
                 <Stack.Screen name="preparationPage" component={PreparationPage} />
                 <Stack.Screen name="notesPage" component={NotesPage} />
-                <Stack.Screen name="tagsPage" component={TagsPage} initialParams={{ shouldEdit }} />
+                <Stack.Screen name="tagsPage" component={TagsPage} />
             </Stack.Navigator>
         </RecipeProvider >
     );

@@ -1,3 +1,4 @@
+import { HomeContext } from "@/app/context/homeContext";
 import { Ionicons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useContext, useState } from "react";
@@ -11,8 +12,9 @@ type Props = NativeStackScreenProps<any>;
 
 export default function IngredientsPage({ navigation }: Props) {
     const recipeContext = useContext(RecipeContext);
-    if (!recipeContext) return null;
-    const { newRecipe, setNewRecipe } = recipeContext;
+    const homeContext = useContext(HomeContext);
+    if (!recipeContext && !homeContext) return null;
+    const { newRecipe, setNewRecipe } = recipeContext || homeContext!;
 
     const [newIngredient, setNewIngredient] = useState<Ingredient>({ title: "", quantity: "", unit: "" });
 

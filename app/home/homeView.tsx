@@ -2,22 +2,21 @@ import { Ionicons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { collection, doc, getDoc, onSnapshot, orderBy, query, Timestamp, where } from "firebase/firestore";
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import { FlatList, Image, Modal, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, Image, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { auth, db } from "../../firebaseConfig";
 import styles from "../../styles";
+import { HomeContext } from "../context/homeContext";
 import useHousehold from "../context/householdContext";
-import { RecipeContext } from "../context/recipeContext";
 import { emptyRecipeData, Meal, Recipe } from "../tabs/recipes";
 import { emptyTaskData, PlannedTask, Task } from "../tabs/tasks";
-import TaskView from "../tasks/taskView";
-import { getCurrentWeekRange, getWeekDays, getWeekStart } from "../utils/dateHelper";
+import { getWeekDays, getWeekStart } from "../utils/dateHelper";
 import ProgressBar from "./progressBar";
 
 type Props = NativeStackScreenProps<any>;
 export default function HomeView({ navigation }: Props) {
-    const recipeContext = useContext(RecipeContext);
-    if (!recipeContext) return null;
-    const { setNewRecipe } = recipeContext;
+    const homeContext = useContext(HomeContext);
+    if (!homeContext) return null;
+    const { setNewRecipe, setNewTask } = homeContext;
 
     enum TimeState { Day, Week, Month }
     enum DesireState { Meals, Tasks }
@@ -28,13 +27,10 @@ export default function HomeView({ navigation }: Props) {
     const [plannedTasks, setPlannedTasks] = useState<PlannedTask[]>([])
     const [checkedMeals, setCheckedMeals] = useState<string[]>([]);
     const [checkedTasks, setCheckedTasks] = useState<string[]>([]);
-    const [taskData, setTaskData] = useState<Task>(emptyTaskData)
-    const [viewTaskModalVisible, setViewTaskModalVisible] = useState(false);
     const [currentWeekStart, setCurrentWeekStart] = useState(getWeekStart(new Date()));
     const weekDays = useMemo(() => getWeekDays(currentWeekStart), [currentWeekStart]);
 
     const { householdId } = useHousehold();
-    const { monday, sunday } = getCurrentWeekRange();
 
     useEffect(() => {
         const q = query(collection(db, "meals"),
@@ -251,8 +247,8 @@ export default function HomeView({ navigation }: Props) {
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
                 <TouchableOpacity style={{ ...styles.recipeRow, height: 56 }} onPress={async () => {
-                    setTaskData(await getTaskFromPlannedTask(item));
-                    setViewTaskModalVisible(true);
+                    setNewTask(await getTaskFromPlannedTask(item));
+                    navigation.navigate("taskView");
                 }}>
                     <Text style={{ ...styles.textMedium, marginLeft: 12 }}>{item.title}</Text>
                     <Pressable style={styles.checkbox}
@@ -411,18 +407,7 @@ export default function HomeView({ navigation }: Props) {
                         </ScrollView>
                     </>
                 }
-
-
             </ScrollView>
-
-            <Modal style={styles.modal}
-                visible={viewTaskModalVisible}
-                transparent={true}
-                animationType="slide"
-                onRequestClose={() => setViewTaskModalVisible(false)}
-            >
-                <TaskView task={taskData} plannedDate={taskData.date} onClose={() => setViewTaskModalVisible(false)} />
-            </Modal>
         </View>
     )
 }

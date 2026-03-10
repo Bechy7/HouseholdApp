@@ -1,7 +1,7 @@
+import { HomeContext } from "@/app/context/homeContext";
 import useHousehold from "@/app/context/householdContext";
 import { auth, db } from "@/firebaseConfig";
 import { Ionicons } from "@expo/vector-icons";
-import { useRoute } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { collection, doc, serverTimestamp, updateDoc, writeBatch } from "firebase/firestore";
 import React, { useContext, useState } from "react";
@@ -14,12 +14,11 @@ type Props = NativeStackScreenProps<any>;
 
 export default function ChecklistPage({ navigation }: Props) {
     const taskContext = useContext(TaskContext);
-    if (!taskContext) return null;
-    const { newTask, setNewTask } = taskContext;
+    const homeContext = useContext(HomeContext);
+    if (!taskContext && !homeContext) return null;
+    const { newTask, setNewTask } = taskContext || homeContext!;
     const [newSubTask, setNewSubTask] = useState("");
 
-    const route = useRoute();
-    const { onClose, shouldEdit } = (route.params as { onClose: () => void; shouldEdit: boolean }) || { onClose: () => { }, shouldEdit: false };
     const { householdId } = useHousehold();
     const [checkedIds, setCheckedIds] = useState<string[]>([]);
     const batch = writeBatch(db);
@@ -27,7 +26,7 @@ export default function ChecklistPage({ navigation }: Props) {
     const addTask = async () => {
         const user = auth.currentUser;
         if (!user) return;
-        onClose();
+        navigation.pop(2);
         const tasksRef = doc(collection(db, "tasks"))
 
         batch.set(tasksRef, {
@@ -58,7 +57,7 @@ export default function ChecklistPage({ navigation }: Props) {
     const editTask = async () => {
         const user = auth.currentUser;
         if (!user) return;
-        onClose();
+        navigation.pop(2);
         await updateDoc(doc(db, "tasks", newTask.id), {
             createdAt: serverTimestamp(),
             title: newTask.title.trim(),
@@ -99,7 +98,7 @@ export default function ChecklistPage({ navigation }: Props) {
         <View style={styles.modalContainer}>
             <View style={styles.row}>
                 <Text style={styles.title}>Create a task</Text>
-                <TouchableOpacity style={styles.closeButton} onPress={() => onClose()}><Ionicons name="close" size={24} /></TouchableOpacity>
+                <TouchableOpacity style={styles.closeButton} onPress={() => navigation.pop(2)}><Ionicons name="close" size={24} /></TouchableOpacity>
             </View>
             <View style={{ ...styles.row, paddingTop: 16 }}>
                 <View style={{ flex: 1 }}>
@@ -165,7 +164,7 @@ export default function ChecklistPage({ navigation }: Props) {
 
                 <TouchableOpacity
                     style={styles.nextButton}
-                    onPress={shouldEdit ? editTask : addTask}>
+                    onPress={newTask.id ? editTask : addTask}>
                     <Text style={styles.textNextButton}>Save</Text>
                 </TouchableOpacity>
             </View>

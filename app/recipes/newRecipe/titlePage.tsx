@@ -1,3 +1,4 @@
+import { HomeContext } from "@/app/context/homeContext";
 import { Ionicons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import * as ImagePicker from 'expo-image-picker';
@@ -12,8 +13,9 @@ type Props = NativeStackScreenProps<any>;
 
 export default function TitlePage({ navigation }: Props) {
     const recipeContext = useContext(RecipeContext);
-    if (!recipeContext) return null;
-    const { newRecipe, setNewRecipe } = recipeContext;
+    const homeContext = useContext(HomeContext);
+    if (!recipeContext && !homeContext) return null;
+    const { newRecipe, setNewRecipe } = recipeContext || homeContext!;
 
     const requiredFieldsFilled = newRecipe.title.trim().length > 0;
 

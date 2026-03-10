@@ -1,5 +1,5 @@
+import { HomeContext } from "@/app/context/homeContext";
 import { Ionicons } from "@expo/vector-icons";
-import { useRoute } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useContext, useState } from "react";
 import { FlatList, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
@@ -11,8 +11,9 @@ type Props = NativeStackScreenProps<any>;
 
 export default function NotesPage({ navigation }: Props) {
     const recipeContext = useContext(RecipeContext);
-    if (!recipeContext) return null;
-    const { newRecipe, setNewRecipe } = recipeContext;
+    const homeContext = useContext(HomeContext);
+    if (!recipeContext && !homeContext) return null;
+    const { newRecipe, setNewRecipe } = recipeContext || homeContext!;
 
     const [note, setNote] = useState("");
 

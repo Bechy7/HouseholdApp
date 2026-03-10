@@ -5,15 +5,17 @@ import React, { useContext, useState } from "react";
 import { FlatList, ImageBackground, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { db } from "../../firebaseConfig";
 import styles from "../../styles";
+import { HomeContext } from "../context/homeContext";
 import useHousehold from "../context/householdContext";
 import { RecipeContext } from "../context/recipeContext";
 
 type Props = NativeStackScreenProps<any>;
 export default function RecipeView({ navigation }: Props) {
     const recipeContext = useContext(RecipeContext);
-    if (!recipeContext) return null;
-    const { newRecipe } = recipeContext;
-    
+    const homeContext = useContext(HomeContext);
+    if (!recipeContext && !homeContext) return null;
+    const { newRecipe } = recipeContext || homeContext!;
+
     const [checkedIds, setCheckedIds] = useState<string[]>([]);
     const [portions, setPortions] = useState(Number(newRecipe.portions));
     const [addedToShoppingList, setAddedToShoppingList] = useState(false);

@@ -1,7 +1,7 @@
 import { Timestamp } from "firebase/firestore";
-import TaskList from "../tasks/taskList";
+import TaskIndex from "../tasks";
 
-export const emptyTaskData: Task = { id: "", title: "", checklist: [], householdId: "", repeatTask: false, saveTask: false, finished: false}
+export const emptyTaskData: Task = { id: "", title: "", checklist: [], householdId: "", repeatTask: false, saveTask: false, finished: false }
 
 export type Task = {
     id: string;
@@ -30,6 +30,6 @@ export type Checklist = {
 export default function TasksPage() {
 
     return (
-        <TaskList />
+        <TaskIndex task={emptyTaskData} />
     );
 }

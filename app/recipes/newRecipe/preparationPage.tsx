@@ -1,3 +1,4 @@
+import { HomeContext } from "@/app/context/homeContext";
 import { Ionicons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useContext, useState } from "react";
@@ -10,8 +11,9 @@ type Props = NativeStackScreenProps<any>;
 
 export default function PreparationPage({ navigation }: Props) {
     const recipeContext = useContext(RecipeContext);
-    if (!recipeContext) return null;
-    const { newRecipe, setNewRecipe } = recipeContext;
+    const homeContext = useContext(HomeContext);
+    if (!recipeContext && !homeContext) return null;
+    const { newRecipe, setNewRecipe } = recipeContext || homeContext!;
     const [preparationStep, setPreparationStep] = useState("");
 
     const addPreparationStep = async () => {
@@ -79,7 +81,7 @@ export default function PreparationPage({ navigation }: Props) {
                     />
                 </View>
             </ScrollView>
-            
+
             <View style={styles.row}>
                 <TouchableOpacity
                     style={styles.backButton}

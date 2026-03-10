@@ -1,8 +1,8 @@
+import { HomeContext } from "@/app/context/homeContext";
 import useHousehold from "@/app/context/householdContext";
 import { auth, db } from "@/firebaseConfig";
 import styles from "@/styles";
 import { Ionicons } from "@expo/vector-icons";
-import { useRoute } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { default as React, useContext, useState } from "react";
@@ -15,11 +15,10 @@ type Props = NativeStackScreenProps<any>;
 
 export default function TagsPage({ navigation }: Props) {
     const recipeContext = useContext(RecipeContext);
-    if (!recipeContext) return null;
-    const { newRecipe, setNewRecipe } = recipeContext;
+    const homeContext = useContext(HomeContext);
+    if (!recipeContext && !homeContext) return null;
+    const { newRecipe, setNewRecipe } = recipeContext || homeContext!;
     const { householdId } = useHousehold();
-    const route = useRoute();
-    const { shouldEdit } = (route.params as { shouldEdit: boolean }) || { shouldEdit: false };
     const [category, setCategory] = useState(availableTags[0].category);
     const [tag, setTag] = useState(availableTags[0].tags[0]);
 
@@ -143,7 +142,7 @@ export default function TagsPage({ navigation }: Props) {
 
                 <TouchableOpacity
                     style={styles.nextButton}
-                    onPress={shouldEdit ? editRecipe : addRecipe}>
+                    onPress={newRecipe.id ? editRecipe : addRecipe}>
                     <Text style={styles.textNextButton}>Save</Text>
                 </TouchableOpacity>
             </View>

@@ -1,3 +1,4 @@
+import { HomeContext } from "@/app/context/homeContext";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useRoute } from "@react-navigation/native";
@@ -13,12 +14,12 @@ type Props = NativeStackScreenProps<any>;
 
 export default function TaskInfoPage({ navigation }: Props) {
     const taskContext = useContext(TaskContext);
-    if (!taskContext) return null;
-    const { newTask, setNewTask } = taskContext;
+    const homeContext = useContext(HomeContext);
+    if (!taskContext && !homeContext) return null;
+    const { newTask, setNewTask } = taskContext || homeContext!;
     const [showPicker, setShowPicker] = useState(false);
 
     const route = useRoute();
-    const { onClose } = (route.params as { onClose: () => void }) || { onClose: () => { } };
     const requiredFieldsFilled = newTask.title.trim().length > 0;
 
     const formatDate = (ts: Timestamp) => {
@@ -95,9 +96,9 @@ export default function TaskInfoPage({ navigation }: Props) {
         <View style={styles.modalContainer}>
             <View style={styles.row}>
                 <Text style={styles.title}>Create a task</Text>
-                <TouchableOpacity style={styles.closeButton} onPress={() => onClose()}><Ionicons name="close" size={24} /></TouchableOpacity>
+                <TouchableOpacity style={styles.closeButton} onPress={() => navigation.goBack()}><Ionicons name="close" size={24} /></TouchableOpacity>
             </View>
-            <View style={{...styles.row, paddingTop:16}}>
+            <View style={{ ...styles.row, paddingTop: 16 }}>
                 <View style={{ flex: 1 }}>
                     <Text style={{ alignSelf: "center", fontWeight: "bold" }}>Task info</Text>
                 </View>
@@ -106,7 +107,7 @@ export default function TaskInfoPage({ navigation }: Props) {
                 </View>
             </View>
             <ProgressBar currentStep={0} />
-            <View style={{marginTop:8}}>
+            <View style={{ marginTop: 8 }}>
                 <Text style={styles.textMedium}> Task name *</Text>
                 <TextInput
                     placeholder="Write name of the task"

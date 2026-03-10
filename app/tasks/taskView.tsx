@@ -1,26 +1,31 @@
 import { Ionicons } from "@expo/vector-icons";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { collection, doc, getDocs, query, Timestamp, updateDoc, where, writeBatch } from "firebase/firestore";
-import React, { useState } from "react";
-import { FlatList, Modal, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import React, { useContext, useState } from "react";
+import { FlatList, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { auth, db } from "../../firebaseConfig";
 import styles from "../../styles";
+import { HomeContext } from "../context/homeContext";
 import useHousehold from "../context/householdContext";
-import { Task } from "../tabs/tasks";
-import NewTask from "./";
+import { TaskContext } from "../context/taskContext";
 
-export default function TaskView({ task, plannedDate, onClose }: { task: Task; plannedDate?: Timestamp | null; onClose: () => void }) {
+type Props = NativeStackScreenProps<any>;
+export default function TaskView({ navigation }: Props) {
+    const taskContext = useContext(TaskContext);
+    const homeContext = useContext(HomeContext);
+    if (!taskContext && !homeContext) return null;
+    const { newTask } = taskContext || homeContext!;
     const [checkedIds, setCheckedIds] = useState<string[]>([]);
-    const [addTaskModalVisible, setAddTaskModalVisible] = useState(false);
     const { householdId } = useHousehold();
 
     const deleteTask = async () => {
-        onClose();
+        navigation.goBack();
         const batch = writeBatch(db);
-        batch.delete(doc(db, "tasks", task.id));
+        batch.delete(doc(db, "tasks", newTask.id));
         const plannedTasksSnap = await getDocs(
             query(
                 collection(db, "plannedTasks"),
-                where("taskId", "==", task.id),
+                where("taskId", "==", newTask.id),
                 where("householdId", "==", householdId)
             )
         );
@@ -32,7 +37,7 @@ export default function TaskView({ task, plannedDate, onClose }: { task: Task; p
     };
 
     const editTask = async () => {
-        setAddTaskModalVisible(true);
+        navigation.navigate("taskInfoPage")
     };
 
     const toggleCheckbox = (id: string) => {
@@ -53,8 +58,8 @@ export default function TaskView({ task, plannedDate, onClose }: { task: Task; p
     const finishTask = async () => {
         const user = auth.currentUser;
         if (!user) return;
-        onClose();
-        await updateDoc(doc(db, "tasks", task.id), {
+        navigation.goBack();
+        await updateDoc(doc(db, "tasks", newTask.id), {
             finished: true
         });
     }
@@ -63,7 +68,7 @@ export default function TaskView({ task, plannedDate, onClose }: { task: Task; p
         return (
             <View>
                 <FlatList
-                    data={task.checklist}
+                    data={newTask.checklist}
                     keyExtractor={(item) => item.title}
                     renderItem={({ item }) => (
                         <View style={{ ...styles.listRow, marginRight: 8 }}>
@@ -92,7 +97,7 @@ export default function TaskView({ task, plannedDate, onClose }: { task: Task; p
             <ScrollView style={{ display: "flex" }} keyboardShouldPersistTaps="handled">
                 <View style={{ backgroundColor: "#F4F6F7" }}>
                     <View style={styles.buttonRow}>
-                        <TouchableOpacity style={styles.bigRoundButton} onPress={() => onClose()}><Ionicons name="chevron-back" size={16} /></TouchableOpacity>
+                        <TouchableOpacity style={styles.bigRoundButton} onPress={() => navigation.goBack()}><Ionicons name="chevron-back" size={16} /></TouchableOpacity>
                         <View style={styles.buttonRow}>
                             <TouchableOpacity style={styles.bigRoundButton} onPress={() => editTask()}><Ionicons name="pencil" size={16} /></TouchableOpacity>
                             <TouchableOpacity style={styles.bigRoundButton} onPress={() => deleteTask()}><Ionicons name="trash" size={16} /></TouchableOpacity>
@@ -101,11 +106,11 @@ export default function TaskView({ task, plannedDate, onClose }: { task: Task; p
                     </View>
 
                     <View style={{ ...styles.modalContainer, paddingHorizontal: 16, padding: 0 }}>
-                        <Text style={{ ...styles.title, marginTop: 0 }}> {task.title} </Text>
-                        {plannedDate && (
+                        <Text style={{ ...styles.title, marginTop: 0 }}> {newTask.title} </Text>
+                        {newTask.date && (
                             <View style={{ ...styles.row, margin: 8, justifyContent: "flex-start", marginBottom: 16 }}>
                                 <Ionicons style={{ marginRight: 8 }} name="calendar" size={16} />
-                                <Text>{formatDate(plannedDate)}</Text>
+                                <Text>{formatDate(newTask.date)}</Text>
                             </View>
                         )}
                         {checklistView()}
@@ -117,23 +122,6 @@ export default function TaskView({ task, plannedDate, onClose }: { task: Task; p
                     </View>
 
                 </View>
-
-
-
-                <Modal style={styles.modal}
-                    visible={addTaskModalVisible}
-                    transparent={true}
-                    animationType="slide"
-                    onRequestClose={() => {
-                        setAddTaskModalVisible(false)
-                        onClose();
-                    }}
-                >
-                    <NewTask task={task} onClose={() => {
-                        setAddTaskModalVisible(false)
-                        onClose();
-                    }} />
-                </Modal>
             </ScrollView>
         </View>
 
