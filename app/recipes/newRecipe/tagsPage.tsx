@@ -7,6 +7,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { default as React, useContext, useState } from "react";
 import { FlatList, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Dropdown } from 'react-native-element-dropdown';
 import { RecipeContext } from "../../context/recipeContext";
 import availableTags from "../../utils/availableTags";
 import ProgressBar from "./progressBar";
@@ -85,17 +86,40 @@ export default function TagsPage({ navigation }: Props) {
             </View>
             <ProgressBar currentStep={4} />
             <View>
-                <Text style={styles.textMedium}> Add Tag</Text>
-                <select style={styles.select} value={category} onChange={(e) => { setCategory(e.target.value), setTag(availableTags.find((t) => t.category === e.target.value)?.tags[0] ?? "") }}>
-                    {availableTags.map((tag) => (
-                        <option key={tag.category} value={tag.category}>{tag.category}</option>
-                    ))}
-                </select>
-                <select style={styles.select} value={tag} onChange={(e) => setTag(e.target.value)}>
-                    {availableTags.find((item) => item.category === category)?.tags.map((tag) => (
-                        <option key={tag} value={tag}>{tag}</option>
-                    ))}
-                </select>
+                <Text style={styles.textMedium}>Add Tag</Text>
+
+                <Dropdown
+                    style={styles.select}
+                    data={availableTags.map(tag => ({
+                        label: tag.category,
+                        value: tag.category
+                    }))}
+                    labelField="label"
+                    valueField="value"
+                    value={category}
+                    onChange={(item) => {
+                        setCategory(item.value);
+                        setTag(
+                            availableTags.find(t => t.category === item.value)?.tags[0] ?? ""
+                        );
+                    }}
+                />
+
+                <Dropdown
+                    style={styles.select}
+                    data={
+                        availableTags
+                            .find(item => item.category === category)
+                            ?.tags.map(tag => ({
+                                label: tag,
+                                value: tag
+                            })) ?? []
+                    }
+                    labelField="label"
+                    valueField="value"
+                    value={tag}
+                    onChange={(item) => setTag(item.value)}
+                />
             </View>
 
             <TouchableOpacity

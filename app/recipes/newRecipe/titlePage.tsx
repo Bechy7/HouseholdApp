@@ -1,9 +1,12 @@
 import { HomeContext } from "@/app/context/homeContext";
 import { Ionicons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { decode } from "base64-arraybuffer";
+import * as Crypto from 'expo-crypto';
+import * as FileSystem from 'expo-file-system/legacy';
 import * as ImagePicker from 'expo-image-picker';
 import React, { useContext } from "react";
-import { Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Image, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import styles from "../../../styles";
 import { supabase } from '../../../supabase';
 import { RecipeContext } from "../../context/recipeContext";
@@ -34,23 +37,33 @@ export default function TitlePage({ navigation }: Props) {
         const uri = result.assets[0].uri;
 
         try {
-            const response = await fetch(uri);
-            const blob = await response.blob();
+            const fileName = `Images/${Crypto.randomUUID()}.jpg`;
+            let fileData;
 
-            const filePath = `Images/${crypto.randomUUID()}.jpg`;
+            if (Platform.OS === "web") {
+                // Web supports blob directly
+                const response = await fetch(uri);
+                fileData = await response.blob();
+            } else {
+                // Android/iOS need base64 conversion
+                const base64 = await FileSystem.readAsStringAsync(uri, {
+                    encoding: FileSystem.EncodingType.Base64,
+                });
+
+                fileData = decode(base64);
+            }
 
             const { error } = await supabase.storage
-                .from('Images')
-                .upload(filePath, blob, {
-                    upsert: true, // replaces old image
-                    contentType: 'image/jpeg',
+                .from("Images")
+                .upload(fileName, fileData, {
+                    contentType: "image/jpeg",
                 });
 
             if (error) throw error;
 
             const { data } = supabase.storage
                 .from('Images')
-                .getPublicUrl(filePath);
+                .getPublicUrl(fileName);
 
             setNewRecipe({ ...newRecipe, imageUrl: data.publicUrl });
 
