@@ -34,7 +34,6 @@ export default StyleSheet.create({
         justifyContent: "center",
     },
     openRecipeModuleButton: {
-        padding: 12,
         backgroundColor: "#ffffffff",
         alignItems: "center",
         borderRadius: 20,

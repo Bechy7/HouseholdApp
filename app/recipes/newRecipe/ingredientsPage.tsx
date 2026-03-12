@@ -3,7 +3,7 @@ import FormRow from "@/app/utils/formRow";
 import { Ionicons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useContext, useState } from "react";
-import { FlatList, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { FlatList, Text, TextInput, TouchableOpacity, View } from "react-native";
 import styles from "../../../styles";
 import { RecipeContext } from "../../context/recipeContext";
 import { Ingredient } from "../../tabs/recipes";
@@ -84,27 +84,24 @@ export default function IngredientsPage({ navigation }: Props) {
                     <Text style={styles.textMedium}> Added ingredients</Text>
                 </View>
             )}
-            <ScrollView style={styles.scrollView} keyboardShouldPersistTaps="handled">
-                <View>
-                    <FlatList
-                        data={newRecipe.ingredients}
-                        keyExtractor={(item) => item.title}
-                        renderItem={({ item }) => (
-                            <View style={styles.listRow}>
-                                <View style={{ flex: 1 }}>
-                                    <Text style={{ fontSize: 18 }}>{item.title}</Text>
-                                    <Text style={{ fontWeight: "light", fontSize: 12, color: "gray" }}>{item.quantity} {item.unit}</Text>
-                                </View>
-                                <TouchableOpacity
-                                    style={styles.roundDeleteButton}
-                                    onPress={() => deleteIngredient(item.title)}>
-                                    <Ionicons name="trash" size={16} />
-                                </TouchableOpacity>
-                            </View>
-                        )}
-                    />
-                </View>
-            </ScrollView>
+            <FlatList
+                style={styles.scrollView}
+                data={newRecipe.ingredients}
+                keyExtractor={(item) => item.title}
+                renderItem={({ item }) => (
+                    <View style={styles.listRow}>
+                        <View style={{ flex: 1 }}>
+                            <Text style={{ fontSize: 18 }}>{item.title}</Text>
+                            <Text style={{ fontWeight: "light", fontSize: 12, color: "gray" }}>{item.quantity} {item.unit}</Text>
+                        </View>
+                        <TouchableOpacity
+                            style={styles.roundDeleteButton}
+                            onPress={() => deleteIngredient(item.title)}>
+                            <Ionicons name="trash" size={16} />
+                        </TouchableOpacity>
+                    </View>
+                )}
+            />
 
             <View style={styles.row}>
                 <TouchableOpacity

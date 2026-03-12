@@ -76,6 +76,7 @@ export default StyleSheet.create({
     },
     header: {
         fontSize: 24,
+        fontWeight: "bold"
     },
     infoBox: {
         flex: 1,

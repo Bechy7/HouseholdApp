@@ -2,7 +2,7 @@ import { HomeContext } from "@/app/context/homeContext";
 import { Ionicons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useContext, useState } from "react";
-import { FlatList, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { FlatList, Text, TextInput, TouchableOpacity, View } from "react-native";
 import styles from "../../../styles";
 import { RecipeContext } from "../../context/recipeContext";
 import ProgressBar from "./progressBar";
@@ -61,24 +61,22 @@ export default function NotesPage({ navigation }: Props) {
                     <Text style={styles.textMedium}> Added notes</Text>
                 </View>
             )}
-            <ScrollView style={styles.scrollView} keyboardShouldPersistTaps="handled">
-                <View>
-                    <FlatList
-                        data={newRecipe.notes}
-                        keyExtractor={(item) => item}
-                        renderItem={({ item }) => (
-                            <View style={styles.listRow}>
-                                <Text style={{ fontSize: 14, alignSelf: "flex-start" }}>{item}</Text>
-                                <TouchableOpacity
-                                    style={styles.roundDeleteButton}
-                                    onPress={() => deleteNote(item)}>
-                                    <Ionicons name="trash" size={16} />
-                                </TouchableOpacity>
-                            </View>
-                        )}
-                    />
-                </View>
-            </ScrollView>
+
+            <FlatList
+                style={styles.scrollView}
+                data={newRecipe.notes}
+                keyExtractor={(item) => item}
+                renderItem={({ item }) => (
+                    <View style={styles.listRow}>
+                        <Text style={{ fontSize: 14, alignSelf: "flex-start" }}>{item}</Text>
+                        <TouchableOpacity
+                            style={styles.roundDeleteButton}
+                            onPress={() => deleteNote(item)}>
+                            <Ionicons name="trash" size={16} />
+                        </TouchableOpacity>
+                    </View>
+                )}
+            />
 
             <View style={styles.row}>
                 <TouchableOpacity

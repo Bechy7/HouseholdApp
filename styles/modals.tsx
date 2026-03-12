@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 export default StyleSheet.create({
     modal: {
         backgroundColor: "#ffffffff",
-        padding: 24,
+        paddingVertical: 24,
         justifyContent: "flex-end",
         flex: 1
     },
@@ -11,7 +11,8 @@ export default StyleSheet.create({
         width: '100%',
         height: "100%",
         backgroundColor: '#F4F6F7',
-        padding: 24
+        paddingHorizontal: 24,
+        paddingVertical: 48
     },
     blurredBackground: {
         width: "100%",

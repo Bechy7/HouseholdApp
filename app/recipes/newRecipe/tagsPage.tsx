@@ -6,7 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { default as React, useContext, useState } from "react";
-import { FlatList, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 import { RecipeContext } from "../../context/recipeContext";
 import availableTags from "../../utils/availableTags";
@@ -128,8 +128,8 @@ export default function TagsPage({ navigation }: Props) {
                 <Text style={{ ...styles.textMedium, color: "white" }}>Add tag</Text>
             </TouchableOpacity>
 
-            <ScrollView style={styles.scrollView} keyboardShouldPersistTaps="handled">
                 <FlatList
+                    style={styles.scrollView}
                     data={newRecipe.tags}
                     keyExtractor={(item) => item.category}
                     renderItem={({ item }) => {
@@ -155,7 +155,6 @@ export default function TagsPage({ navigation }: Props) {
                         return (<></>)
                     }}
                 />
-            </ScrollView>
 
             <View style={styles.row}>
                 <TouchableOpacity

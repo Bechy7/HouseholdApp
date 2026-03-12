@@ -3,7 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { addDoc, collection, deleteDoc, doc, getDoc, onSnapshot, orderBy, query, serverTimestamp, Timestamp, where } from "firebase/firestore";
 import React, { useContext, useEffect, useState } from "react";
-import { FlatList, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { auth, db } from "../../firebaseConfig";
 import useHousehold from "../context/householdContext";
 import { TaskContext } from "../context/taskContext";
@@ -104,82 +104,90 @@ export default function TaskList({ navigation }: Props) {
         } as Task;
     };
 
-    const savedTasksView = () => {
-        const filteredTasks = tasks.filter((task) => task.saveTask)
-        return (
-            <FlatList
-                data={filteredTasks}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                    <TouchableOpacity style={styles.listRow} onPress={() => {
-                        setNewTask(item)
-                        navigation.navigate("taskView")
-                    }}>
-                        <View>
-                            <Text style={styles.textMedium}>{item.title}</Text>
-                        </View>
-                        <TouchableOpacity style={{ ...styles.addToCalenderButton, backgroundColor: "#806752" }} onPress={() => addPlannedTask(item)}>
-                            <Ionicons style={{ color: "white" }} name="calendar" size={16} />
-                        </TouchableOpacity>
-                    </TouchableOpacity>
+    const data = showSavedTasks
+        ? tasks.filter((task) => task.saveTask)
+        : plannedTasks.filter((task) => task.date);
+
+    const renderSavedTask = ({ item }: { item: Task }) => (
+        <TouchableOpacity
+            style={styles.listRow}
+            onPress={() => {
+                setNewTask(item);
+                navigation.navigate("taskView");
+            }}
+        >
+            <View>
+                <Text style={styles.textMedium}>{item.title}</Text>
+            </View>
+
+            <TouchableOpacity
+                style={{ ...styles.addToCalenderButton, backgroundColor: "#806752" }}
+                onPress={() => addPlannedTask(item)}
+            >
+                <Ionicons style={{ color: "white" }} name="calendar" size={16} />
+            </TouchableOpacity>
+        </TouchableOpacity>
+    );
+
+    const renderPlannedTask = ({ item }: { item: PlannedTask }) => (
+        <TouchableOpacity
+            style={styles.listRow}
+            onPress={async () => {
+                setNewTask({ ...(await getTaskFromPlannedTask(item)), date: item.date });
+                navigation.navigate("taskView");
+            }}
+        >
+            <View>
+                <Text style={styles.textMedium}>{item.title}</Text>
+
+                {item.date && (
+                    <View style={{ ...styles.row, marginTop: 8, justifyContent: "flex-start" }}>
+                        <Ionicons style={{ marginRight: 8 }} name="calendar" size={16} />
+                        <Text>{formatDate(item.date)}</Text>
+                    </View>
                 )}
-            />
-        )
-    }
+            </View>
 
-    const plannedTasksView = () => {
-        const filteredTasks = plannedTasks.filter((task) => task.date)
-        return (
-            <FlatList
-                data={filteredTasks}
+            <TouchableOpacity
+                style={{ ...styles.addToCalenderButton, backgroundColor: "#806752" }}
+                onPress={() => deletePlannedTask(item.id)}
+            >
+                <Ionicons style={{ color: "white" }} name="trash" size={16} />
+            </TouchableOpacity>
+        </TouchableOpacity>
+    );
+
+    const renderItem = showSavedTasks ? renderSavedTask : renderPlannedTask;
+
+    return (
+        <View style={styles.modalContainer}>
+            <View style={{ ...styles.row, marginBottom: 32 }}>
+                <Text style={styles.header}>Tasks</Text>
+                <TouchableOpacity style={styles.openRecipeModuleButton} onPress={() => {
+                    setNewTask(emptyTaskData)
+                    navigation.navigate("taskInfoPage")
+                }}>
+                    <Ionicons name="add" size={24} />
+                </TouchableOpacity>
+            </View>
+
+            <View style={styles.row}>
+                <TouchableOpacity style={{ flex: 1 }} onPress={() => setShowSavedTasks(false)}>
+                    <Text style={{ alignSelf: "center", fontWeight: showSavedTasks ? "normal" : "bold" }}>Planned tasks</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={{ flex: 1 }} onPress={() => setShowSavedTasks(true)}>
+                    <Text style={{ alignSelf: "center", fontWeight: showSavedTasks ? "bold" : "normal" }}>Saved tasks</Text>
+                </TouchableOpacity>
+            </View>
+            <ProgressBar currentStep={showSavedTasks ? 1 : 0} />
+
+            <FlatList<Task | PlannedTask>
+                style={styles.scrollView}
+                keyboardShouldPersistTaps="handled"
+                data={data}
                 keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                    <TouchableOpacity style={styles.listRow} onPress={async () => {
-                        setNewTask(await getTaskFromPlannedTask(item));
-                        navigation.navigate("taskView")
-                    }}>
-                        <View>
-                            <Text style={styles.textMedium}>{item.title}</Text>
-                            {item.date && (
-                                <View style={{ ...styles.row, marginTop: 8, justifyContent: "flex-start" }}>
-                                    <Ionicons style={{ marginRight: 8 }} name="calendar" size={16} />
-                                    <Text>{formatDate(item.date)}</Text>
-                                </View>
-                            )}
-
-                        </View>
-                        <TouchableOpacity style={{ ...styles.addToCalenderButton, backgroundColor: "#806752" }} onPress={() => deletePlannedTask(item.id)}>
-                            <Ionicons style={{ color: "white" }} name="trash" size={16} />
-                        </TouchableOpacity>
-                    </TouchableOpacity>
-                )}
+                renderItem={renderItem as any}
             />
-        )
-    }
-
-    return (<View style={styles.modalContainer}>
-        <View style={styles.row}>
-            <Text style={styles.title}>Tasks</Text>
-            <TouchableOpacity style={styles.openRecipeModuleButton} onPress={() => {
-                setNewTask(emptyTaskData)
-                navigation.navigate("taskInfoPage")
-            }}>
-                <Ionicons name="add" size={24} />
-            </TouchableOpacity>
         </View>
-
-        <View style={styles.row}>
-            <TouchableOpacity style={{ flex: 1 }} onPress={() => setShowSavedTasks(false)}>
-                <Text style={{ alignSelf: "center", fontWeight: showSavedTasks ? "normal" : "bold" }}>Planned tasks</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={{ flex: 1 }} onPress={() => setShowSavedTasks(true)}>
-                <Text style={{ alignSelf: "center", fontWeight: showSavedTasks ? "bold" : "normal" }}>Saved tasks</Text>
-            </TouchableOpacity>
-        </View>
-        <ProgressBar currentStep={showSavedTasks ? 1 : 0} />
-
-        <ScrollView style={styles.scrollView} keyboardShouldPersistTaps="handled">
-            {showSavedTasks ? savedTasksView() : plannedTasksView()}
-        </ScrollView>
-    </View>)
+    )
 }

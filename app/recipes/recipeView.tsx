@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { collection, doc, getDocs, query, serverTimestamp, where, writeBatch } from "firebase/firestore";
 import React, { useContext, useState } from "react";
-import { FlatList, ImageBackground, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ImageBackground, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { db } from "../../firebaseConfig";
 import styles from "../../styles";
 import { HomeContext } from "../context/homeContext";
@@ -90,24 +90,29 @@ export default function RecipeView({ navigation }: Props) {
             <View style={styles.box}>
                 <Text style={{ ...styles.title, marginTop: 0 }}>Ingredients ({newRecipe.ingredients.length})</Text>
                 <View>
-                    <FlatList
-                        data={newRecipe.ingredients}
-                        keyExtractor={(item) => item.title}
-                        renderItem={({ item }) => (
-                            <View style={styles.ingredientRow}>
-                                <Pressable style={styles.ingredientCheckbox}
-                                    onPress={() => toggleCheckbox(item.title)}>
-                                    {checkedIds.includes(item.title) &&
-                                        <View style={styles.smallCheckbox}>
-                                            <Ionicons name="checkbox" size={28}></Ionicons>
-                                        </View>}
-                                </Pressable>
-                                <View>
-                                    <Text style={{ fontSize: 16 }}>{item.title}</Text>
-                                    <Text style={{ fontSize: 12, color: "gray" }}>{Number(item.quantity) > 0 && Number(item.quantity) * portions / Number(newRecipe.portions)} {item.unit}</Text>
-                                </View>
+                    {newRecipe.ingredients.map((item) => (
+                        <View style={styles.ingredientRow} key={item.title}>
+                            <Pressable
+                                style={styles.ingredientCheckbox}
+                                onPress={() => toggleCheckbox(item.title)}
+                            >
+                                {checkedIds.includes(item.title) && (
+                                    <View style={styles.smallCheckbox}>
+                                        <Ionicons name="checkbox" size={28} />
+                                    </View>
+                                )}
+                            </Pressable>
+
+                            <View>
+                                <Text style={{ fontSize: 16 }}>{item.title}</Text>
+                                <Text style={{ fontSize: 12, color: "gray" }}>
+                                    {Number(item.quantity) > 0 &&
+                                        (Number(item.quantity) * portions) / Number(newRecipe.portions)}{" "}
+                                    {item.unit}
+                                </Text>
                             </View>
-                        )} />
+                        </View>
+                    ))}
                 </View>
                 <View style={{ ...styles.row, marginTop: 8 }}>
                     <View style={styles.quantityRow}>
@@ -142,18 +147,27 @@ export default function RecipeView({ navigation }: Props) {
             <View style={styles.box}>
                 <Text style={{ ...styles.title, marginTop: 0 }}>Preparation</Text>
                 <View>
-                    <FlatList
-                        data={newRecipe.preparationSteps}
-                        keyExtractor={(item) => item}
-                        renderItem={({ item }) => (
-                            <View style={{ ...styles.row, justifyContent: "flex-start" }}>
-                                <View style={styles.roundStepCounter}>
-                                    <Text style={{ fontWeight: "600" }}>{newRecipe.preparationSteps.indexOf(item) + 1}</Text>
-                                </View>
-                                <Text style={{ fontSize: 14, alignSelf: "flex-start", marginLeft: 8, marginBottom: 16 }}>{item}</Text>
+                    {newRecipe.preparationSteps.map((item, index) => (
+                        <View
+                            key={index}
+                            style={{ ...styles.row, justifyContent: "flex-start" }}
+                        >
+                            <View style={styles.roundStepCounter}>
+                                <Text style={{ fontWeight: "600" }}>{index + 1}</Text>
                             </View>
-                        )}
-                    />
+
+                            <Text
+                                style={{
+                                    fontSize: 14,
+                                    alignSelf: "flex-start",
+                                    marginLeft: 8,
+                                    marginBottom: 16,
+                                }}
+                            >
+                                {item}
+                            </Text>
+                        </View>
+                    ))}
                 </View>
             </View>)
     }
@@ -163,15 +177,20 @@ export default function RecipeView({ navigation }: Props) {
             <View style={styles.box}>
                 <Text style={{ ...styles.title, marginTop: 0 }}>Notes</Text>
                 <View>
-                    <FlatList
-                        data={newRecipe.notes}
-                        keyExtractor={(item) => item}
-                        renderItem={({ item }) => (
-                            <View style={styles.row}>
-                                <Text style={{ fontSize: 14, alignSelf: "flex-start", marginLeft: 8, marginBottom: 8 }}>• {item}</Text>
-                            </View>
-                        )}
-                    />
+                    {newRecipe.notes.map((item, index) => (
+                        <View style={styles.row} key={index}>
+                            <Text
+                                style={{
+                                    fontSize: 14,
+                                    alignSelf: "flex-start",
+                                    marginLeft: 8,
+                                    marginBottom: 8,
+                                }}
+                            >
+                                • {item}
+                            </Text>
+                        </View>
+                    ))}
                 </View>
             </View>)
     }
@@ -195,33 +214,25 @@ export default function RecipeView({ navigation }: Props) {
                     </Pressable>
                 </View>
 
-                {expanded && (
-                    <FlatList
-                        data={newRecipe.tags}
-                        keyExtractor={(item) => item.category}
-                        renderItem={({ item }) => {
-                            if (item.tags.length > 0) return (
-                                <View style={styles.listRow}>
-                                    <Text style={{ fontSize: 14, alignSelf: "flex-start" }}>{item.category}:</Text>
-                                    <FlatList
-                                        data={item.tags}
-                                        keyExtractor={(item) => item}
-                                        renderItem={({ item }) => (
-                                            <View style={styles.listRow}>
-                                                <Text style={{ fontSize: 14, alignSelf: "flex-start" }}>{item}</Text>
-                                            </View>
-                                        )}>
-                                    </FlatList>
+                {expanded &&
+                    newRecipe.tags.map((category) => {
+                        if (category.tags.length === 0) return null;
+
+                        return (
+                            <View key={category.category}>
+                                <View style={{ ...styles.row, justifyContent: "flex-start" }}>
+
+                                    <Text style={{ fontSize: 14, marginRight: 16 }}>{category.category}:</Text>
+                                    {category.tags.map((tag) => (
+                                        <View style={{ ...styles.listRow, height: 48, backgroundColor: "#806752" }} key={tag}>
+                                            <Text style={{ fontSize: 14, color: "white" }}>{tag}</Text>
+                                        </View>
+                                    ))}
                                 </View>
-                            )
-                            return (<></>)
-                        }}
-                    />
-                )}
-
-
+                            </View>
+                        );
+                    })}
             </View>
-
         )
     }
 
@@ -243,7 +254,7 @@ export default function RecipeView({ navigation }: Props) {
                     <Ionicons name="calendar" size={16} />
                 </TouchableOpacity>
 
-                <View style={{ ...styles.modalContainer, paddingHorizontal: 16, padding: 0 }}>
+                <View style={{ ...styles.modalContainer, paddingHorizontal: 16, paddingVertical: 0 }}>
                     <Text style={{ ...styles.title, marginTop: 0 }}> {newRecipe.title} </Text>
                     {infoBoxes()}
                     {ingredientView()}

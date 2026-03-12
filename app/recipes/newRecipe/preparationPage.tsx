@@ -2,7 +2,7 @@ import { HomeContext } from "@/app/context/homeContext";
 import { Ionicons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useContext, useState } from "react";
-import { FlatList, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { FlatList, Text, TextInput, TouchableOpacity, View } from "react-native";
 import styles from "../../../styles";
 import { RecipeContext } from "../../context/recipeContext";
 import ProgressBar from "./progressBar";
@@ -60,27 +60,24 @@ export default function PreparationPage({ navigation }: Props) {
                     <Text style={styles.textMedium}> Added preparation steps</Text>
                 </View>
             )}
-            <ScrollView style={styles.scrollView} keyboardShouldPersistTaps="handled">
-                <View>
-                    <FlatList
-                        data={newRecipe.preparationSteps}
-                        keyExtractor={(item) => item}
-                        renderItem={({ item }) => (
-                            <View style={styles.listRow}>
-                                <View style={styles.roundStepCounter}>
-                                    <Text style={{ fontWeight: "600" }}>{newRecipe.preparationSteps.indexOf(item) + 1}</Text>
-                                </View>
-                                <Text style={{ fontSize: 14, alignSelf: "flex-start" }}>{item}</Text>
-                                <TouchableOpacity
-                                    style={styles.roundDeleteButton}
-                                    onPress={() => deletePreparationStep(item)}>
-                                    <Ionicons name="trash" size={16} />
-                                </TouchableOpacity>
-                            </View>
-                        )}
-                    />
-                </View>
-            </ScrollView>
+            <FlatList
+                style={styles.scrollView}
+                data={newRecipe.preparationSteps}
+                keyExtractor={(item) => item}
+                renderItem={({ item }) => (
+                    <View style={styles.listRow}>
+                        <View style={styles.roundStepCounter}>
+                            <Text style={{ fontWeight: "600" }}>{newRecipe.preparationSteps.indexOf(item) + 1}</Text>
+                        </View>
+                        <Text style={{ fontSize: 14, alignSelf: "flex-start" }}>{item}</Text>
+                        <TouchableOpacity
+                            style={styles.roundDeleteButton}
+                            onPress={() => deletePreparationStep(item)}>
+                            <Ionicons name="trash" size={16} />
+                        </TouchableOpacity>
+                    </View>
+                )}
+            />
 
             <View style={styles.row}>
                 <TouchableOpacity

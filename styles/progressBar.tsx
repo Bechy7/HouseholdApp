@@ -40,7 +40,7 @@ export default StyleSheet.create({
   },
 
   lineActive: {
-    width: "100%",
+    width: 40,
     height: 8,
     borderRadius: 4,
     backgroundColor: "#806752",

@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { collection, doc, getDoc, onSnapshot, orderBy, query, Timestamp, where } from "firebase/firestore";
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import { FlatList, Image, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, Image, Pressable, Text, TouchableOpacity, View } from "react-native";
 import { auth, db } from "../../firebaseConfig";
 import styles from "../../styles";
 import { HomeContext } from "../context/homeContext";
@@ -364,50 +364,44 @@ export default function HomeView({ navigation }: Props) {
                 timeView == TimeState.Day ? 0 : timeView == TimeState.Week ? 1 : 2
             } />
 
-            <ScrollView>
-                {timeView == TimeState.Day &&
-                    <>
-                        <DayButtonsView />
-                        <ScrollView>
-                            {mealsDayView()}
-                            {taskDayView()}
-                        </ScrollView>
-                    </>
-                }
+            {timeView == TimeState.Day &&
+                <>
+                    <DayButtonsView />
+                    {mealsDayView()}
+                    {taskDayView()}
+                </>
+            }
 
-                {timeView == TimeState.Week &&
-                    <>
-                        <WeekButtonsView />
-                        <ScrollView>
-                            <View style={{ flexDirection: "row", width: 100, justifyContent: "space-between" }}>
-                                <View>
-                                    <TouchableOpacity style={{ flex: 1, marginBottom: 8 }} onPress={() => setDesire(DesireState.Meals)}>
-                                        <Text style={{ alignSelf: "flex-start", color: desire == DesireState.Meals ? "#806752" : "black" }}>Meals</Text>
-                                    </TouchableOpacity>
-                                    {desire == DesireState.Meals &&
-                                        <View style={styles.barContainer}>
-                                            <View style={styles.lineActive} />
-                                        </View>
-                                    }
+            {timeView == TimeState.Week &&
+                <>
+                    <WeekButtonsView />
+                    <View style={{ flexDirection: "row", width: 100, justifyContent: "space-between" }}>
+                        <View>
+                            <TouchableOpacity style={{ marginBottom: 8 }} onPress={() => setDesire(DesireState.Meals)}>
+                                <Text style={{ alignSelf: "flex-start", color: desire == DesireState.Meals ? "#806752" : "black" }}>Meals</Text>
+                            </TouchableOpacity>
+                            {desire == DesireState.Meals &&
+                                <View style={styles.barContainer}>
+                                    <View style={styles.lineActive} />
                                 </View>
+                            }
+                        </View>
 
-                                <View>
-                                    <TouchableOpacity style={{ flex: 1, marginBottom: 8 }} onPress={() => setDesire(DesireState.Tasks)}>
-                                        <Text style={{ alignSelf: "flex-start", color: desire == DesireState.Tasks ? "#806752" : "black" }}>Tasks</Text>
-                                    </TouchableOpacity>
-                                    {desire == DesireState.Tasks &&
-                                        <View style={styles.barContainer}>
-                                            <View style={styles.lineActive} />
-                                        </View>
-                                    }
+                        <View>
+                            <TouchableOpacity style={{ marginBottom: 8 }} onPress={() => setDesire(DesireState.Tasks)}>
+                                <Text style={{ alignSelf: "flex-start", color: desire == DesireState.Tasks ? "#806752" : "black" }}>Tasks</Text>
+                            </TouchableOpacity>
+                            {desire == DesireState.Tasks &&
+                                <View style={styles.barContainer}>
+                                    <View style={styles.lineActive} />
                                 </View>
-                            </View>
-                            {desire == DesireState.Meals && mealsWeekView()}
-                            {desire == DesireState.Tasks && taskWeekView()}
-                        </ScrollView>
-                    </>
-                }
-            </ScrollView>
+                            }
+                        </View>
+                    </View>
+                    {desire == DesireState.Meals && mealsWeekView()}
+                    {desire == DesireState.Tasks && taskWeekView()}
+                </>
+            }
         </View>
     )
 }
