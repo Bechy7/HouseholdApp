@@ -44,7 +44,6 @@ export default StyleSheet.create({
         justifyContent: "center",
     },
     addIngredientButton: {
-        padding: 24,
         alignItems: "center",
         borderRadius: 18,
         borderWidth: 1,
@@ -60,7 +59,6 @@ export default StyleSheet.create({
         borderRadius: 16,
     },
     listRow: {
-        flex: 1,
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",

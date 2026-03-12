@@ -5,7 +5,7 @@ import { useRoute } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Timestamp } from "firebase/firestore";
 import React, { useContext, useState } from "react";
-import { Platform, Pressable, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Platform, Pressable, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import styles from "../../../styles";
 import { TaskContext } from "../../context/taskContext";
 import ProgressBar from "./progressBar";
@@ -94,65 +94,64 @@ export default function TaskInfoPage({ navigation }: Props) {
 
     return (
         <View style={styles.modalContainer}>
-            <View style={styles.row}>
-                <Text style={styles.title}>Create a task</Text>
-                <TouchableOpacity style={styles.closeButton} onPress={() => navigation.goBack()}><Ionicons name="close" size={24} /></TouchableOpacity>
-            </View>
-            <View style={{ ...styles.row, paddingTop: 16 }}>
-                <View style={{ flex: 1 }}>
-                    <Text style={{ alignSelf: "center", fontWeight: "bold" }}>Task info</Text>
+            <ScrollView style={styles.scrollView} keyboardShouldPersistTaps="handled">
+                <View style={styles.row}>
+                    <Text style={styles.title}>Create a task</Text>
+                    <TouchableOpacity style={styles.closeButton} onPress={() => navigation.goBack()}><Ionicons name="close" size={24} /></TouchableOpacity>
                 </View>
-                <View style={{ flex: 1 }}>
-                    <Text style={{ alignSelf: "center" }}>Checklist</Text>
+                <View style={{ ...styles.row, paddingTop: 16 }}>
+                    <View style={{ flex: 1 }}>
+                        <Text style={{ alignSelf: "center", fontWeight: "bold" }}>Task info</Text>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                        <Text style={{ alignSelf: "center" }}>Checklist</Text>
+                    </View>
                 </View>
-            </View>
-            <ProgressBar currentStep={0} />
-            <View style={{ marginTop: 8 }}>
-                <Text style={styles.textMedium}> Task name *</Text>
-                <TextInput
-                    placeholder="Write name of the task"
-                    placeholderTextColor="gray"
-                    value={newTask.title}
-                    onChangeText={(text) => setNewTask({ ...newTask, title: text })}
-                    style={styles.textInput} />
-            </View>
+                <ProgressBar currentStep={0} />
+                <View style={{ marginTop: 8 }}>
+                    <Text style={styles.textMedium}> Task name *</Text>
+                    <TextInput
+                        placeholder="Write name of the task"
+                        placeholderTextColor="gray"
+                        value={newTask.title}
+                        onChangeText={(text) => setNewTask({ ...newTask, title: text })}
+                        style={styles.textInput} />
+                </View>
 
-            <View>
-                <Text style={styles.textMedium}> Date</Text>
-                {showCalendar()}
-            </View>
+                <View>
+                    <Text style={styles.textMedium}> Date</Text>
+                    {showCalendar()}
+                </View>
 
-            <View style={{ ...styles.row, justifyContent: "flex-start", marginTop: 16 }}>
-                <Pressable style={{ ...styles.ingredientCheckbox }}
-                    onPress={() => setNewTask({ ...newTask, repeatTask: !newTask.repeatTask })}>
-                    {newTask.repeatTask &&
-                        <View style={styles.smallCheckbox}>
-                            <Ionicons name="checkbox" size={28}></Ionicons>
-                        </View>}
-                </Pressable>
-                <Text style={styles.textMedium}>Repeat task</Text>
-            </View>
+                <View style={{ ...styles.row, justifyContent: "flex-start", marginTop: 16 }}>
+                    <Pressable style={{ ...styles.ingredientCheckbox }}
+                        onPress={() => setNewTask({ ...newTask, repeatTask: !newTask.repeatTask })}>
+                        {newTask.repeatTask &&
+                            <View style={styles.smallCheckbox}>
+                                <Ionicons name="checkbox" size={28}></Ionicons>
+                            </View>}
+                    </Pressable>
+                    <Text style={styles.textMedium}>Repeat task</Text>
+                </View>
 
-            <View style={{ ...styles.row, justifyContent: "flex-start", marginTop: 16 }}>
-                <Pressable style={{ ...styles.ingredientCheckbox }}
-                    onPress={() => setNewTask({ ...newTask, saveTask: !newTask.saveTask })}>
-                    {newTask.saveTask &&
-                        <View style={styles.smallCheckbox}>
-                            <Ionicons name="checkbox" size={28}></Ionicons>
-                        </View>}
-                </Pressable>
-                <Text style={styles.textMedium}>Add to saved tasks</Text>
-            </View>
+                <View style={{ ...styles.row, justifyContent: "flex-start", marginTop: 16 }}>
+                    <Pressable style={{ ...styles.ingredientCheckbox }}
+                        onPress={() => setNewTask({ ...newTask, saveTask: !newTask.saveTask })}>
+                        {newTask.saveTask &&
+                            <View style={styles.smallCheckbox}>
+                                <Ionicons name="checkbox" size={28}></Ionicons>
+                            </View>}
+                    </Pressable>
+                    <Text style={styles.textMedium}>Add to saved tasks</Text>
+                </View>
 
-            <View>
                 <TouchableOpacity
                     style={[{ ...styles.nextButton, backgroundColor: "gray" }, requiredFieldsFilled && styles.nextButton]}
                     disabled={!requiredFieldsFilled}
                     onPress={() => navigation.navigate("checklistPage")}>
                     <Text style={styles.textNextButton}>Next</Text>
                 </TouchableOpacity>
-            </View>
-
+            </ScrollView>
         </View>
     )
 }

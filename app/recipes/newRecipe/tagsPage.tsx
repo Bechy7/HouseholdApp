@@ -134,16 +134,16 @@ export default function TagsPage({ navigation }: Props) {
                     keyExtractor={(item) => item.category}
                     renderItem={({ item }) => {
                         if (item.tags.length > 0) return (
-                            <View style={styles.listRow}>
+                            <View style={{ ...styles.listRow, height: "auto" }}>
                                 <Text style={{ fontSize: 14, alignSelf: "flex-start" }}>{item.category}:</Text>
                                 <FlatList
                                     data={item.tags}
                                     keyExtractor={(item) => item}
                                     renderItem={({ item }) => (
-                                        <View style={styles.listRow}>
-                                            <Text style={{ fontSize: 14, alignSelf: "flex-start" }}>{item}</Text>
+                                        <View style={{ ...styles.listRow, height: 50 }}>
+                                            <Text style={{ fontSize: 14, alignSelf: "center" }}>{item}</Text>
                                             <TouchableOpacity
-                                                style={styles.roundDeleteButton}
+                                                style={{...styles.roundDeleteButton, marginLeft:4, alignSelf: "center" }}
                                                 onPress={() => deleteTag(item)}>
                                                 <Ionicons name="trash" size={16} />
                                             </TouchableOpacity>

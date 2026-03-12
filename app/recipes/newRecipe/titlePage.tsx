@@ -1,4 +1,5 @@
 import { HomeContext } from "@/app/context/homeContext";
+import FormRow from "@/app/utils/formRow";
 import { Ionicons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { decode } from "base64-arraybuffer";
@@ -114,27 +115,32 @@ export default function TitlePage({ navigation }: Props) {
                     <Text style={{ ...styles.textMedium, flex: 1, marginRight: 12 }}> Portions</Text>
                     <Text style={{ ...styles.textMedium, flex: 1 }}> Calories</Text>
                 </View>
-                <View style={styles.inputRow}>
-                    <TextInput
-                        placeholder="4"
-                        placeholderTextColor="gray"
-                        keyboardType="numeric"
-                        value={newRecipe.portions}
-                        onChangeText={(text) => {
-                            const filteredText = text.replace(/[^0-9]/g, "");
-                            setNewRecipe({ ...newRecipe, portions: filteredText })
-                        }}
-                        style={{ ...styles.textInput, marginRight: 12 }} />
-                    <TextInput
-                        placeholder="550"
-                        placeholderTextColor="gray"
-                        keyboardType="numeric"
-                        value={newRecipe.calories}
-                        onChangeText={(text) => {
-                            const filteredText = text.replace(/[^0-9]/g, "");
-                            setNewRecipe({ ...newRecipe, calories: filteredText })
-                        }}
-                        style={styles.textInput} />
+                <View style={styles.inputRow }>
+                    <FormRow>
+                        <TextInput
+                            placeholder="4"
+                            placeholderTextColor="gray"
+                            keyboardType="numeric"
+                            value={newRecipe.portions}
+                            onChangeText={(text) => {
+                                const filteredText = text.replace(/[^0-9]/g, "");
+                                setNewRecipe({ ...newRecipe, portions: filteredText });
+                            }}
+                            style={styles.textInput}
+                        />
+
+                        <TextInput
+                            placeholder="550"
+                            placeholderTextColor="gray"
+                            keyboardType="numeric"
+                            value={newRecipe.calories}
+                            onChangeText={(text) => {
+                                const filteredText = text.replace(/[^0-9]/g, "");
+                                setNewRecipe({ ...newRecipe, calories: filteredText });
+                            }}
+                            style={styles.textInput}
+                        />
+                    </FormRow>
                 </View>
 
                 <TouchableOpacity
@@ -143,7 +149,6 @@ export default function TitlePage({ navigation }: Props) {
                     onPress={() => navigation.navigate("ingredientsPage")}>
                     <Text style={styles.textNextButton}>Next</Text>
                 </TouchableOpacity>
-
             </ScrollView>
         </View>
     )

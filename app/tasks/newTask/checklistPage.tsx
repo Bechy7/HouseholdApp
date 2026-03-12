@@ -5,7 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { collection, doc, serverTimestamp, updateDoc, writeBatch } from "firebase/firestore";
 import React, { useContext, useState } from "react";
-import { FlatList, Pressable, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { FlatList, Pressable, Text, TextInput, TouchableOpacity, View } from "react-native";
 import styles from "../../../styles";
 import { TaskContext } from "../../context/taskContext";
 import ProgressBar from "./progressBar";
@@ -129,31 +129,37 @@ export default function ChecklistPage({ navigation }: Props) {
                     <Text style={styles.textMedium}> Checklist</Text>
                 </View>
             )}
-            <ScrollView style={styles.scrollView} keyboardShouldPersistTaps="handled">
-                <View>
-                    <FlatList
-                        data={newTask.checklist}
-                        keyExtractor={(item) => item.title}
-                        renderItem={({ item }) => (
-                            <View style={styles.listRow}>
-                                <Pressable style={styles.ingredientCheckbox}
-                                    onPress={() => toggleCheckbox(item.title)}>
-                                    {checkedIds.includes(item.title) &&
-                                        <View style={styles.smallCheckbox}>
-                                            <Ionicons name="checkbox" size={28}></Ionicons>
-                                        </View>}
-                                </Pressable>
-                                <Text style={{ fontSize: 16 }}>
-                                    {item.title}
-                                </Text>
-                                <TouchableOpacity style={{ ...styles.mediumRoundButton, backgroundColor: "#806752" }} onPress={() => deleteSubTask(item.title)}>
-                                    <Ionicons style={{ color: "white" }} name="trash" size={16} />
-                                </TouchableOpacity>
-                            </View>
-                        )}
-                    />
-                </View>
-            </ScrollView>
+            <FlatList
+                style={styles.scrollView}
+                data={newTask.checklist}
+                keyExtractor={(item) => item.title}
+                keyboardShouldPersistTaps="handled"
+                renderItem={({ item }) => (
+                    <View style={styles.listRow}>
+                        <Pressable
+                            style={styles.ingredientCheckbox}
+                            onPress={() => toggleCheckbox(item.title)}
+                        >
+                            {checkedIds.includes(item.title) && (
+                                <View style={styles.smallCheckbox}>
+                                    <Ionicons name="checkbox" size={28} />
+                                </View>
+                            )}
+                        </Pressable>
+
+                        <Text style={{ fontSize: 16 }}>
+                            {item.title}
+                        </Text>
+
+                        <TouchableOpacity
+                            style={{ ...styles.mediumRoundButton, backgroundColor: "#806752" }}
+                            onPress={() => deleteSubTask(item.title)}
+                        >
+                            <Ionicons style={{ color: "white" }} name="trash" size={16} />
+                        </TouchableOpacity>
+                    </View>
+                )}
+            />
 
             <View style={styles.row}>
                 <TouchableOpacity
@@ -168,7 +174,6 @@ export default function ChecklistPage({ navigation }: Props) {
                     <Text style={styles.textNextButton}>Save</Text>
                 </TouchableOpacity>
             </View>
-
         </View>
     )
 }

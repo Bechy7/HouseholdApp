@@ -97,6 +97,7 @@ export default StyleSheet.create({
     },
     inputRow: {
         flexDirection: "row",
+        alignItems: "center",
     },
     input: {
         borderWidth: 1,
@@ -146,16 +147,11 @@ export default StyleSheet.create({
         marginTop: 16
     },
     select: {
-        flex: 1,
         borderWidth: 1,
-        borderColor: "#000000ff",
+        borderColor: "#000",
         borderRadius: 24,
-        overflow: "hidden",
-        fontSize: 16,
         backgroundColor: "#fff",
         padding: 12,
-        width: "100%",
-        marginRight: 0,
         marginBottom: 11,
         marginTop: 10
     },

@@ -1,4 +1,5 @@
 import { HomeContext } from "@/app/context/homeContext";
+import FormRow from "@/app/utils/formRow";
 import { Ionicons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useContext, useState } from "react";
@@ -53,22 +54,24 @@ export default function IngredientsPage({ navigation }: Props) {
                     style={styles.textInput} />
             </View>
             <View style={styles.inputRow}>
-                <TextInput
-                    placeholder="Quantity"
-                    placeholderTextColor="gray"
-                    keyboardType="numeric"
-                    value={newIngredient.quantity}
-                    onChangeText={(text) => {
-                        const filteredText = text.replace(/[^0-9.]/g, "");
-                        setNewIngredient({ ...newIngredient, quantity: filteredText })
-                    }}
-                    style={{ ...styles.textInput, marginRight: 12 }} />
-                <TextInput
-                    placeholder="Name of unit"
-                    placeholderTextColor="gray"
-                    value={newIngredient.unit}
-                    onChangeText={(text) => setNewIngredient({ ...newIngredient, unit: text })}
-                    style={styles.textInput} />
+                <FormRow>
+                    <TextInput
+                        placeholder="Quantity"
+                        placeholderTextColor="gray"
+                        keyboardType="numeric"
+                        value={newIngredient.quantity}
+                        onChangeText={(text) => {
+                            const filteredText = text.replace(/[^0-9.]/g, "");
+                            setNewIngredient({ ...newIngredient, quantity: filteredText })
+                        }}
+                        style={{ ...styles.textInput, marginRight: 12 }} />
+                    <TextInput
+                        placeholder="Name of unit"
+                        placeholderTextColor="gray"
+                        value={newIngredient.unit}
+                        onChangeText={(text) => setNewIngredient({ ...newIngredient, unit: text })}
+                        style={styles.textInput} />
+                </FormRow>
             </View>
             <TouchableOpacity
                 style={styles.addIngredientButton}
