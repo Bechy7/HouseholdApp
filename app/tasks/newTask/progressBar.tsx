@@ -12,7 +12,7 @@ export default function ProgressBar({
     currentStep: number;
 }) {
     return (
-        <View style={{ padding: 8 }}>
+        <View style={{ paddingHorizontal: 8 }}>
             <View style={styles.barContainer}>
                 <View style={[styles.line, currentStep == 0 && styles.buttonLineActive]} />
                 <View style={[styles.line, currentStep == 1 && styles.buttonLineActive]} />
