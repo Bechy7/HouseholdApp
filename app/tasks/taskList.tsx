@@ -177,19 +177,29 @@ export default function TaskList({ navigation }: Props) {
             </View>
 
             <View style={styles.row}>
-                <TouchableOpacity style={{ flex: 1 }} onPress={() => setShowSavedTasks(false)}>
+                <TouchableOpacity style={{ flex: 1 }} hitSlop={{ top: 0, bottom: 40, left: 0, right: 0 }} onPress={() => setShowSavedTasks(false)}>
                     <Text style={{ alignSelf: "center", fontWeight: showSavedTasks ? "normal" : "bold" }}>Planned tasks</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={{ flex: 1 }} onPress={() => setShowSavedTasks(true)}>
+                <TouchableOpacity style={{ flex: 1 }} hitSlop={{ top: 0, bottom: 40, left: 0, right: 0 }} onPress={() => setShowSavedTasks(true)}>
                     <Text style={{ alignSelf: "center", fontWeight: showSavedTasks ? "bold" : "normal" }}>Saved tasks</Text>
                 </TouchableOpacity>
             </View>
-            <ProgressBar currentStep={showSavedTasks ? 1 : 0} />
+            <View pointerEvents="none">
+                <ProgressBar currentStep={showSavedTasks ? 1 : 0} />
+            </View>
 
             <FlatList<Task | PlannedTask>
                 style={styles.scrollView}
                 keyboardShouldPersistTaps="handled"
-                data={data}
+                data={data.filter((item) => {
+                    if (showSavedTasks) return true;
+                    const plannedTask = item as PlannedTask;
+                    return plannedTask.date?.toDate().getTime() >= new Date().setHours(0, 0, 0, 0);
+                }).sort((a, b) => {
+                    const aTime = showSavedTasks ? 0 : (a as PlannedTask).date?.toDate().getTime() || 0;
+                    const bTime = showSavedTasks ? 0 : (b as PlannedTask).date?.toDate().getTime() || 0;
+                    return aTime - bTime;
+                })}
                 keyExtractor={(item) => item.id}
                 renderItem={renderItem as any}
             />
