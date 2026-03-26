@@ -1,5 +1,6 @@
 import styles from "@/styles";
 import { Ionicons } from "@expo/vector-icons";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { addDoc, collection, deleteDoc, doc, getDoc, onSnapshot, orderBy, query, serverTimestamp, Timestamp, where } from "firebase/firestore";
 import React, { useContext, useEffect, useState } from "react";
@@ -14,14 +15,14 @@ type Props = NativeStackScreenProps<any>;
 export default function TaskList({ navigation }: Props) {
     const taskContext = useContext(TaskContext);
     if (!taskContext) return null;
-    const { newTask, setNewTask } = taskContext;
+    const { setNewTask } = taskContext;
     const { householdId } = useHousehold();
     const [tasks, setTasks] = useState<Task[]>([]);
     const [plannedTasks, setPlannedtasks] = useState<PlannedTask[]>([]);
-    const [task, setTask] = useState<Task>({ title: "", id: "", householdId, checklist: [], saveTask: false, repeatTask: false, finished: false });
-    const [plannedDate, setPlannedDate] = useState<Timestamp | null>(null)
-    const [addTaskModalVisible, setAddTaskModalVisible] = useState(false);
     const [showSavedTasks, setShowSavedTasks] = useState(false);
+    const [showPicker, setShowPicker] = useState(false);
+    const [selectedItem, setSelectedItem] = useState<Task | null>(null);
+
 
     useEffect(() => {
         const q = query(collection(db, "tasks"),
@@ -73,7 +74,7 @@ export default function TaskList({ navigation }: Props) {
         await deleteDoc(doc(db, "plannedTasks", id));
     };
 
-    const addPlannedTask = async (task: Task) => {
+    const addPlannedTask = async (task: Task, date: Timestamp) => {
         const user = auth.currentUser;
         if (!user) return;
         await addDoc(collection(db, "plannedTasks"), {
@@ -81,7 +82,7 @@ export default function TaskList({ navigation }: Props) {
             taskId: task.id,
             title: task.title,
             householdId: task.householdId,
-            date: Timestamp.now()
+            date
         });
     }
 
@@ -122,10 +123,14 @@ export default function TaskList({ navigation }: Props) {
 
             <TouchableOpacity
                 style={{ ...styles.addToCalenderButton, backgroundColor: "#806752" }}
-                onPress={() => addPlannedTask(item)}
+                onPress={() => {
+                    setSelectedItem(item);
+                    setShowPicker(true)
+                }}
             >
                 <Ionicons style={{ color: "white" }} name="calendar" size={16} />
             </TouchableOpacity>
+
         </TouchableOpacity>
     );
 
@@ -188,6 +193,20 @@ export default function TaskList({ navigation }: Props) {
                 keyExtractor={(item) => item.id}
                 renderItem={renderItem as any}
             />
+
+            {showPicker && (
+                <DateTimePicker
+                    value={new Date()}
+                    mode="date"
+                    display="default"
+                    onChange={(_, selectedDate) => {
+                        setShowPicker(false);
+                        if (selectedDate && selectedItem) {
+                            addPlannedTask(selectedItem, Timestamp.fromDate(selectedDate));
+                        }
+                    }}
+                />
+            )}
         </View>
     )
 }

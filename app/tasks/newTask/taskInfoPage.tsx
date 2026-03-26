@@ -1,7 +1,6 @@
 import { HomeContext } from "@/app/context/homeContext";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { useRoute } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Timestamp } from "firebase/firestore";
 import React, { useContext, useState } from "react";
@@ -19,7 +18,6 @@ export default function TaskInfoPage({ navigation }: Props) {
     const { newTask, setNewTask } = taskContext || homeContext!;
     const [showPicker, setShowPicker] = useState(false);
 
-    const route = useRoute();
     const requiredFieldsFilled = newTask.title.trim().length > 0;
 
     const formatDate = (ts: Timestamp) => {

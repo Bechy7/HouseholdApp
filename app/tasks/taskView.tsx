@@ -75,7 +75,7 @@ export default function TaskView({ navigation }: Props) {
                         >
                             {checkedIds.includes(item.title) && (
                                 <View style={styles.smallCheckbox}>
-                                    <Ionicons name="checkbox" size={28} />
+                                    <Ionicons style={{ width: 28, height: 28 }} name="checkbox" size={28} />
                                 </View>
                             )}
                         </Pressable>
