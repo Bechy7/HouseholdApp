@@ -1,4 +1,5 @@
 import { HomeContext } from "@/app/context/homeContext";
+import { TaskContext } from "@/app/context/taskContext";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -6,7 +7,6 @@ import { Timestamp } from "firebase/firestore";
 import React, { useContext, useState } from "react";
 import { Platform, Pressable, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import styles from "../../../styles";
-import { TaskContext } from "../../context/taskContext";
 import ProgressBar from "./progressBar";
 
 type Props = NativeStackScreenProps<any>;
@@ -14,7 +14,9 @@ type Props = NativeStackScreenProps<any>;
 export default function TaskInfoPage({ navigation }: Props) {
     const taskContext = useContext(TaskContext);
     const homeContext = useContext(HomeContext);
-    if (!taskContext && !homeContext) return null;
+    if (!taskContext && !homeContext) {
+        throw new Error("HomeContext and TaskContext are missing");
+    }
     const { newTask, setNewTask } = taskContext || homeContext!;
     const [showPicker, setShowPicker] = useState(false);
 

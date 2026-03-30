@@ -5,15 +5,17 @@ import React, { useContext, useState } from "react";
 import { Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { auth, db } from "../../firebaseConfig";
 import styles from "../../styles";
-import { HomeContext } from "../context/homeContext";
-import useHousehold from "../context/householdContext";
-import { TaskContext } from "../context/taskContext";
+import { HomeContext } from "@/app/context/homeContext";
+import useHousehold from "@/app/context/householdContext";
+import { TaskContext } from "@/app/context/taskContext";
 
 type Props = NativeStackScreenProps<any>;
 export default function TaskView({ navigation }: Props) {
     const taskContext = useContext(TaskContext);
     const homeContext = useContext(HomeContext);
-    if (!taskContext && !homeContext) return null;
+    if (!taskContext && !homeContext) {
+        throw new Error("HomeContext and TaskContext are missing");
+    }
     const { newTask } = taskContext || homeContext!;
     const [checkedIds, setCheckedIds] = useState<string[]>([]);
     const { householdId } = useHousehold();

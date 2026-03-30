@@ -10,7 +10,7 @@ import React, { useContext } from "react";
 import { Image, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import styles from "../../../styles";
 import { supabase } from '../../../supabase';
-import { RecipeContext } from "../../context/recipeContext";
+import { RecipeContext } from "@/app/context/recipeContext";
 import ProgressBar from "./progressBar";
 
 type Props = NativeStackScreenProps<any>;
@@ -18,7 +18,9 @@ type Props = NativeStackScreenProps<any>;
 export default function TitlePage({ navigation }: Props) {
     const recipeContext = useContext(RecipeContext);
     const homeContext = useContext(HomeContext);
-    if (!recipeContext && !homeContext) return null;
+    if (!recipeContext && !homeContext) {
+        throw new Error("HomeContext and RecipeContext are missing");
+    }
     const { newRecipe, setNewRecipe } = recipeContext || homeContext!;
 
     const requiredFieldsFilled = newRecipe.title.trim().length > 0;

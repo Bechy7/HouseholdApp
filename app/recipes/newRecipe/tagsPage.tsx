@@ -8,7 +8,7 @@ import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/fi
 import { default as React, useContext, useState } from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
-import { RecipeContext } from "../../context/recipeContext";
+import { RecipeContext } from "@/app/context/recipeContext";
 import availableTags from "../../utils/availableTags";
 import ProgressBar from "./progressBar";
 
@@ -17,7 +17,9 @@ type Props = NativeStackScreenProps<any>;
 export default function TagsPage({ navigation }: Props) {
     const recipeContext = useContext(RecipeContext);
     const homeContext = useContext(HomeContext);
-    if (!recipeContext && !homeContext) return null;
+    if (!recipeContext && !homeContext) {
+        throw new Error("HomeContext and RecipeContext are missing");
+    }
     const { newRecipe, setNewRecipe } = recipeContext || homeContext!;
     const { householdId } = useHousehold();
     const [category, setCategory] = useState(availableTags[0].category);

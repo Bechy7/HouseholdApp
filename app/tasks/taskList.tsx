@@ -6,15 +6,17 @@ import { addDoc, collection, deleteDoc, doc, getDoc, onSnapshot, orderBy, query,
 import React, { useContext, useEffect, useState } from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { auth, db } from "../../firebaseConfig";
-import useHousehold from "../context/householdContext";
-import { TaskContext } from "../context/taskContext";
+import useHousehold from "@/app/context/householdContext";
+import { TaskContext } from "@/app/context/taskContext";
 import { Checklist, emptyTaskData, PlannedTask, Task } from "../tabs/tasks";
 import ProgressBar from "./newTask/progressBar";
 
 type Props = NativeStackScreenProps<any>;
 export default function TaskList({ navigation }: Props) {
     const taskContext = useContext(TaskContext);
-    if (!taskContext) return null;
+    if (!taskContext) {
+        throw new Error("TaskContext is missing");
+    }
     const { setNewTask } = taskContext;
     const { householdId } = useHousehold();
     const [tasks, setTasks] = useState<Task[]>([]);
@@ -25,6 +27,8 @@ export default function TaskList({ navigation }: Props) {
 
 
     useEffect(() => {
+        if (!householdId) return;
+
         const q = query(collection(db, "tasks"),
             where("householdId", "==", householdId),
             orderBy("createdAt", "asc"));
@@ -46,9 +50,11 @@ export default function TaskList({ navigation }: Props) {
         });
 
         return () => unsubscribe();
-    }, []);
+    }, [householdId]);
 
     useEffect(() => {
+        if (!householdId) return;
+
         const q = query(collection(db, "plannedTasks"),
             where("householdId", "==", householdId),
             orderBy("createdAt", "asc"));
@@ -68,7 +74,7 @@ export default function TaskList({ navigation }: Props) {
         });
 
         return () => unsubscribe();
-    }, []);
+    }, [householdId]);
 
     const deletePlannedTask = async (id: string) => {
         await deleteDoc(doc(db, "plannedTasks", id));

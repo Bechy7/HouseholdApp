@@ -5,15 +5,17 @@ import React, { useContext, useState } from "react";
 import { ImageBackground, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { db } from "../../firebaseConfig";
 import styles from "../../styles";
-import { HomeContext } from "../context/homeContext";
-import useHousehold from "../context/householdContext";
-import { RecipeContext } from "../context/recipeContext";
+import { HomeContext } from "@/app/context/homeContext";
+import useHousehold from "@/app/context/householdContext";
+import { RecipeContext } from "@/app/context/recipeContext";
 
 type Props = NativeStackScreenProps<any>;
 export default function RecipeView({ navigation }: Props) {
     const recipeContext = useContext(RecipeContext);
     const homeContext = useContext(HomeContext);
-    if (!recipeContext && !homeContext) return null;
+    if (!recipeContext && !homeContext) {
+        throw new Error("HomeContext and RecipeContext are missing");
+    };
     const { newRecipe } = recipeContext || homeContext!;
 
     const [checkedIds, setCheckedIds] = useState<string[]>([]);

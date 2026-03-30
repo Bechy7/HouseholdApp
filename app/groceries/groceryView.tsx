@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { auth, db } from "../../firebaseConfig";
 import styles from "../../styles";
-import useHousehold from "../context/householdContext";
+import useHousehold from "@/app/context/householdContext";
 import { Grocery, stores } from "../tabs/groceries";
 
 export default function GroceryView({ grocery, onClose }: { grocery: Grocery; onClose: () => void }) {

@@ -7,7 +7,7 @@ import { collection, doc, serverTimestamp, updateDoc, writeBatch } from "firebas
 import React, { useContext, useState } from "react";
 import { FlatList, Pressable, Text, TextInput, TouchableOpacity, View } from "react-native";
 import styles from "../../../styles";
-import { TaskContext } from "../../context/taskContext";
+import { TaskContext } from "@/app/context/taskContext";
 import ProgressBar from "./progressBar";
 
 type Props = NativeStackScreenProps<any>;
@@ -15,7 +15,9 @@ type Props = NativeStackScreenProps<any>;
 export default function ChecklistPage({ navigation }: Props) {
     const taskContext = useContext(TaskContext);
     const homeContext = useContext(HomeContext);
-    if (!taskContext && !homeContext) return null;
+    if (!taskContext && !homeContext) {
+        throw new Error("HomeContext and TaskContext are missing");
+    }
     const { newTask, setNewTask } = taskContext || homeContext!;
     const [newSubTask, setNewSubTask] = useState("");
 

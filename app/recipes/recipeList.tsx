@@ -5,8 +5,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { FlatList, Image, Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { auth, db } from "../../firebaseConfig";
 import styles from "../../styles";
-import useHousehold from "../context/householdContext";
-import { RecipeContext } from "../context/recipeContext";
+import useHousehold from "@/app/context/householdContext";
+import { RecipeContext } from "@/app/context/recipeContext";
 import EmptyBox from "../images/emptyBox.png";
 import { emptyRecipeData, Recipe, Tag } from "../tabs/recipes";
 import sortOptions, { sortMethod } from "../utils/sortOptions";
@@ -14,7 +14,9 @@ import sortOptions, { sortMethod } from "../utils/sortOptions";
 type Props = NativeStackScreenProps<any>;
 export default function RecipeList({ navigation }: Props) {
     const recipeContext = useContext(RecipeContext);
-    if (!recipeContext) return null;
+    if (!recipeContext) {
+        throw new Error("RecipeContext is missing");
+    }
     const { setNewRecipe } = recipeContext;
 
     const [sortModalVisible, setSortModalVisible] = useState(false);
@@ -27,6 +29,8 @@ export default function RecipeList({ navigation }: Props) {
     const { householdId } = useHousehold();
 
     useEffect(() => {
+        if (!householdId) return;
+
         const q = query(collection(db, "recipes"),
             where("householdId", "==", householdId),
             orderBy("createdAt", "asc"));
@@ -70,7 +74,7 @@ export default function RecipeList({ navigation }: Props) {
         });
 
         return () => unsubscribe();
-    }, []);
+    }, [householdId]);
 
     const addMeal = async (recipe: Recipe) => {
         const user = auth.currentUser;

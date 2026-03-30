@@ -4,7 +4,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useContext, useState } from "react";
 import { FlatList, Text, TextInput, TouchableOpacity, View } from "react-native";
 import styles from "../../../styles";
-import { RecipeContext } from "../../context/recipeContext";
+import { RecipeContext } from "@/app/context/recipeContext";
 import ProgressBar from "./progressBar";
 
 type Props = NativeStackScreenProps<any>;
@@ -12,7 +12,9 @@ type Props = NativeStackScreenProps<any>;
 export default function PreparationPage({ navigation }: Props) {
     const recipeContext = useContext(RecipeContext);
     const homeContext = useContext(HomeContext);
-    if (!recipeContext && !homeContext) return null;
+    if (!recipeContext && !homeContext) {
+        throw new Error("HomeContext and RecipeContext are missing");
+    }
     const { newRecipe, setNewRecipe } = recipeContext || homeContext!;
     const [preparationStep, setPreparationStep] = useState("");
 

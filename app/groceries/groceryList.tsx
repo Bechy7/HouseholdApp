@@ -4,7 +4,7 @@ import { default as React, useEffect, useState } from "react";
 import { Modal, Pressable, SectionList, Text, TouchableOpacity, View } from "react-native";
 import { db } from "../../firebaseConfig";
 import styles from "../../styles";
-import useHousehold from "../context/householdContext";
+import useHousehold from "@/app/context/householdContext";
 import { Grocery, stores } from "../tabs/groceries";
 import defaultGroceries from "../utils/grocerySuggestion";
 import GroceryView from "./groceryView";
@@ -17,6 +17,8 @@ export default function GroceryList() {
     const [checkedIds, setCheckedIds] = useState<string[]>([]);
 
     useEffect(() => {
+        if (!householdId) return;
+
         const q = query(collection(db, "groceries"),
             where("householdId", "==", householdId),
             orderBy("createdAt", "asc"));
@@ -36,7 +38,7 @@ export default function GroceryList() {
         });
 
         return () => unsubscribe();
-    }, []);
+    }, [householdId]);
 
     const sections = stores
         .map((store) => {

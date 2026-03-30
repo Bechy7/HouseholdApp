@@ -5,8 +5,8 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import { FlatList, Image, Pressable, Text, TouchableOpacity, View } from "react-native";
 import { auth, db } from "../../firebaseConfig";
 import styles from "../../styles";
-import { HomeContext } from "../context/homeContext";
-import useHousehold from "../context/householdContext";
+import { HomeContext } from "@/app/context/homeContext";
+import useHousehold from "@/app/context/householdContext";
 import { emptyRecipeData, Meal, Recipe } from "../tabs/recipes";
 import { emptyTaskData, PlannedTask, Task } from "../tabs/tasks";
 import { getWeekDays, getWeekStart } from "../utils/dateHelper";
@@ -15,7 +15,9 @@ import ProgressBar from "./progressBar";
 type Props = NativeStackScreenProps<any>;
 export default function HomeView({ navigation }: Props) {
     const homeContext = useContext(HomeContext);
-    if (!homeContext) return null;
+    if (!homeContext) {
+        throw new Error("HomeContext is missing");
+    }
     const { setNewRecipe, setNewTask } = homeContext;
 
     enum TimeState { Day, Week, Month }
@@ -33,6 +35,8 @@ export default function HomeView({ navigation }: Props) {
     const { householdId } = useHousehold();
 
     useEffect(() => {
+        if (!householdId) return;
+
         const q = query(collection(db, "meals"),
             where("householdId", "==", householdId),
             orderBy("createdAt", "asc"));
@@ -63,9 +67,11 @@ export default function HomeView({ navigation }: Props) {
         });
 
         return () => unsubscribe();
-    }, []);
+    }, [householdId]);
 
     useEffect(() => {
+        if (!householdId) return;
+
         const q = query(collection(db, "plannedTasks"),
             where("householdId", "==", householdId),
             orderBy("createdAt", "asc"));
@@ -85,7 +91,7 @@ export default function HomeView({ navigation }: Props) {
         });
 
         return () => unsubscribe();
-    }, []);
+    }, [householdId]);
 
     const handleLogout = async () => {
         await auth.signOut();
