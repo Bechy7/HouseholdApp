@@ -1,10 +1,10 @@
+import useHousehold from "@/app/context/householdContext";
 import { Ionicons } from "@expo/vector-icons";
 import { collection, deleteDoc, doc, onSnapshot, orderBy, query, where } from "firebase/firestore";
 import { default as React, useEffect, useState } from "react";
 import { Modal, Pressable, SectionList, Text, TouchableOpacity, View } from "react-native";
 import { db } from "../../firebaseConfig";
 import styles from "../../styles";
-import useHousehold from "@/app/context/householdContext";
 import { Grocery, stores } from "../tabs/groceries";
 import defaultGroceries from "../utils/grocerySuggestion";
 import GroceryView from "./groceryView";
@@ -82,9 +82,12 @@ export default function GroceryList() {
                 keyboardShouldPersistTaps="handled"
 
                 renderSectionHeader={({ section }) => (
-                    <Text style={styles.title}>
-                        {section.title} ({section.data.length})
-                    </Text>
+                    sections[0].title !== "Other"
+                        ? (
+                            <Text style={styles.title}>
+                                {section.title} ({section.data.length})
+                            </Text>
+                        ) : null
                 )}
 
                 renderItem={({ item }) => (
