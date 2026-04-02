@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "961959543894",
+    "project_id": "householdapp-3202a",
+    "storage_bucket": "householdapp-3202a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:961959543894:android:198b12ad8d66ae388f27f7",
+        "android_client_info": {
+          "package_name": "com.bechy7.HouseholdApp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeLkZ1c1b3O_n9FQrqQnQ5K6_CpEqoupw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

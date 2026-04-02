@@ -8,9 +8,9 @@ const firebaseConfig = {
   apiKey: "AIzaSyBpUiHh9FEOUjITFJ0hRdtoCYFu7QNUDKg",
   authDomain: "householdapp-3202a.firebaseapp.com",
   projectId: "householdapp-3202a",
-  storageBucket: "householdapp-3202a.firebasestorage.app",
+  storageBucket: "householdapp-3202a.appspot.com",
   messagingSenderId: "961959543894",
-  appId: "1:961959543894:web:7a65190741eba47e8f27f7",
+  appId: "1:961959543894:android:198b12ad8d66ae388f27f7",
   measurementId: "G-5JQ4XCPT7M"
 };
 

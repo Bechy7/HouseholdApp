@@ -15,7 +15,7 @@ export default function PreparationPage({ navigation }: Props) {
     if (!recipeContext && !homeContext) {
         throw new Error("HomeContext and RecipeContext are missing");
     }
-    const { newRecipe, setNewRecipe } = recipeContext || homeContext!;
+    const { newRecipe, setNewRecipe } = (recipeContext || homeContext)!;
     const [preparationStep, setPreparationStep] = useState("");
 
     const addPreparationStep = async () => {

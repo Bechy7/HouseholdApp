@@ -17,7 +17,7 @@ export default function IngredientsPage({ navigation }: Props) {
     if (!recipeContext && !homeContext) {
         throw new Error("HomeContext and RecipeContext are missing");
     }
-    const { newRecipe, setNewRecipe } = recipeContext || homeContext!;
+    const { newRecipe, setNewRecipe } = (recipeContext || homeContext)!;
 
     const [newIngredient, setNewIngredient] = useState<Ingredient>({ title: "", quantity: "", unit: "" });
 

@@ -16,7 +16,7 @@ export default function TaskView({ navigation }: Props) {
     if (!taskContext && !homeContext) {
         throw new Error("HomeContext and TaskContext are missing");
     }
-    const { newTask } = taskContext || homeContext!;
+    const { newTask } = (taskContext || homeContext)!;
     const [checkedIds, setCheckedIds] = useState<string[]>([]);
     const { householdId } = useHousehold();
 

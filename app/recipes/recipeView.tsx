@@ -16,7 +16,7 @@ export default function RecipeView({ navigation }: Props) {
     if (!recipeContext && !homeContext) {
         throw new Error("HomeContext and RecipeContext are missing");
     };
-    const { newRecipe } = recipeContext || homeContext!;
+    const { newRecipe } = (recipeContext || homeContext)!;
 
     const [checkedIds, setCheckedIds] = useState<string[]>([]);
     const [portions, setPortions] = useState(Number(newRecipe.portions));

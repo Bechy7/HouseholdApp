@@ -15,7 +15,7 @@ export default function NotesPage({ navigation }: Props) {
     if (!recipeContext && !homeContext) {
         throw new Error("HomeContext and RecipeContext are missing");
     }
-    const { newRecipe, setNewRecipe } = recipeContext || homeContext!;
+    const { newRecipe, setNewRecipe } = (recipeContext || homeContext)!;
 
     const [note, setNote] = useState("");
 

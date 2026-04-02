@@ -20,7 +20,7 @@ export default function TagsPage({ navigation }: Props) {
     if (!recipeContext && !homeContext) {
         throw new Error("HomeContext and RecipeContext are missing");
     }
-    const { newRecipe, setNewRecipe } = recipeContext || homeContext!;
+    const { newRecipe, setNewRecipe } = (recipeContext || homeContext)!;
     const { householdId } = useHousehold();
     const [category, setCategory] = useState(availableTags[0].category);
     const [tag, setTag] = useState(availableTags[0].tags[0]);

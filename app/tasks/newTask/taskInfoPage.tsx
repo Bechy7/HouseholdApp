@@ -17,7 +17,7 @@ export default function TaskInfoPage({ navigation }: Props) {
     if (!taskContext && !homeContext) {
         throw new Error("HomeContext and TaskContext are missing");
     }
-    const { newTask, setNewTask } = taskContext || homeContext!;
+    const { newTask, setNewTask } = (taskContext || homeContext)!;
     const [showPicker, setShowPicker] = useState(false);
 
     const requiredFieldsFilled = newTask.title.trim().length > 0;

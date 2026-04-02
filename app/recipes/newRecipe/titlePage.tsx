@@ -21,7 +21,7 @@ export default function TitlePage({ navigation }: Props) {
     if (!recipeContext && !homeContext) {
         throw new Error("HomeContext and RecipeContext are missing");
     }
-    const { newRecipe, setNewRecipe } = recipeContext || homeContext!;
+    const { newRecipe, setNewRecipe } = (recipeContext || homeContext)!;
 
     const requiredFieldsFilled = newRecipe.title.trim().length > 0;
 

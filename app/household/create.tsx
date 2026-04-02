@@ -3,7 +3,7 @@ import { addDoc, collection } from "firebase/firestore";
 import { useState } from "react";
 import { Alert, Button, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { auth, db } from "../../firebaseConfig";
-import useHousehold from "../context/householdContext";
+import useHousehold from "@/app/context/householdContext";
 
 export default function CreateHouseholdScreen() {
     const [name, setName] = useState("");

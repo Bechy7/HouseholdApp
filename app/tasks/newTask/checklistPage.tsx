@@ -1,5 +1,6 @@
 import { HomeContext } from "@/app/context/homeContext";
 import useHousehold from "@/app/context/householdContext";
+import { TaskContext } from "@/app/context/taskContext";
 import { auth, db } from "@/firebaseConfig";
 import { Ionicons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -7,7 +8,6 @@ import { collection, doc, serverTimestamp, updateDoc, writeBatch } from "firebas
 import React, { useContext, useState } from "react";
 import { FlatList, Pressable, Text, TextInput, TouchableOpacity, View } from "react-native";
 import styles from "../../../styles";
-import { TaskContext } from "@/app/context/taskContext";
 import ProgressBar from "./progressBar";
 
 type Props = NativeStackScreenProps<any>;
@@ -18,7 +18,7 @@ export default function ChecklistPage({ navigation }: Props) {
     if (!taskContext && !homeContext) {
         throw new Error("HomeContext and TaskContext are missing");
     }
-    const { newTask, setNewTask } = taskContext || homeContext!;
+    const { newTask, setNewTask } = (taskContext || homeContext)!;
     const [newSubTask, setNewSubTask] = useState("");
 
     const { householdId } = useHousehold();
