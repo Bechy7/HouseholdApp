@@ -16,7 +16,7 @@ export default function RootLayout() {
     return () => unsubscribe();
   }, []);
 
-  if (loading) return null; // optional: add spinner
+  if (loading) return null;
 
   if (!user) return <LoginPage />;
 
