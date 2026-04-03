@@ -1,12 +1,12 @@
-import { Ionicons } from "@expo/vector-icons";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { collection, doc, getDoc, onSnapshot, orderBy, query, Timestamp, where } from "firebase/firestore";
-import React, { useContext, useEffect, useMemo, useState } from "react";
-import { FlatList, Image, Pressable, Text, TouchableOpacity, View } from "react-native";
-import { auth, db } from "../../firebaseConfig";
-import styles from "../../styles";
 import { HomeContext } from "@/app/context/homeContext";
 import useHousehold from "@/app/context/householdContext";
+import { Ionicons } from "@expo/vector-icons";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { collection, deleteDoc, doc, getDoc, onSnapshot, orderBy, query, Timestamp, where } from "firebase/firestore";
+import React, { useContext, useEffect, useMemo, useState } from "react";
+import { FlatList, Image, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { auth, db } from "../../firebaseConfig";
+import styles from "../../styles";
 import { emptyRecipeData, Meal, Recipe } from "../tabs/recipes";
 import { emptyTaskData, PlannedTask, Task } from "../tabs/tasks";
 import { getWeekDays, getWeekStart } from "../utils/dateHelper";
@@ -29,6 +29,7 @@ export default function HomeView({ navigation }: Props) {
     const [plannedTasks, setPlannedTasks] = useState<PlannedTask[]>([])
     const [checkedMeals, setCheckedMeals] = useState<string[]>([]);
     const [checkedTasks, setCheckedTasks] = useState<string[]>([]);
+    const [editMode, setEditMode] = useState(false);
     const [currentWeekStart, setCurrentWeekStart] = useState(getWeekStart(new Date()));
     const weekDays = useMemo(() => getWeekDays(currentWeekStart), [currentWeekStart]);
 
@@ -96,6 +97,14 @@ export default function HomeView({ navigation }: Props) {
     const handleLogout = async () => {
         await auth.signOut();
     };
+
+    const deleteMeal = async (id: string) => {
+        await deleteDoc(doc(db, "meals", id));
+    };
+
+    const deleteTask = async (id: string) => {
+        await deleteDoc(doc(db, "plannedTasks", id));
+    }
 
     const formatDate = (ts: Date) =>
         new Intl.DateTimeFormat("en-US", {
@@ -238,14 +247,33 @@ export default function HomeView({ navigation }: Props) {
                             <Text style={{ marginLeft: 4, fontWeight: "light", fontSize: 12 }}>{item.cookingTime || "0"} min</Text>
                         </Ionicons>
                     </View>
-                    <Pressable style={styles.checkbox}
-                        onPress={() => toggleMealsCheckbox(item.id)}>
-                        <View style={styles.smallCheckbox}>
-                            <Ionicons color={checkedMeals.includes(item.id) ? "#2EB23D" : "gray"} name="checkmark-circle" size={32}></Ionicons>
-                        </View>
-                    </Pressable>
-                </TouchableOpacity>
-            )} />
+                    {editMode ? (
+                        <>
+                            <Pressable style={{ ...styles.checkbox, width: 32, height: 32, borderRadius: 16, marginRight: 8, backgroundColor: "#6D3D14" }}
+                                onPress={() => ""}>
+                                <View style={styles.smallCheckbox}>
+                                    <Ionicons style={{ color: "white" }} name="calendar-outline" size={16}></Ionicons>
+                                </View>
+                            </Pressable>
+                            <Pressable style={{ ...styles.checkbox, width: 32, height: 32, borderRadius: 16, marginRight: 8, backgroundColor: "#6D3D14" }}
+                                onPress={() => deleteMeal(item.id)}>
+                                <View style={styles.smallCheckbox}>
+                                    <Ionicons style={{ color: "white" }} name="trash-outline" size={16}></Ionicons>
+                                </View>
+                            </Pressable>
+                        </>
+                    ) : (
+                        <Pressable style={styles.checkbox}
+                            onPress={() => toggleMealsCheckbox(item.id)}>
+                            <View style={styles.smallCheckbox}>
+                                <Ionicons color={checkedMeals.includes(item.id) ? "#2EB23D" : "gray"} name="checkmark-circle" size={32}></Ionicons>
+                            </View>
+                        </Pressable>
+                    )}
+
+                </TouchableOpacity >
+            )
+            } />
 
     const taskFlatList = (filteredTasks: PlannedTask[]) =>
         <FlatList
@@ -257,12 +285,33 @@ export default function HomeView({ navigation }: Props) {
                     navigation.navigate("taskView");
                 }}>
                     <Text style={{ ...styles.textMedium, marginLeft: 12 }}>{item.title}</Text>
-                    <Pressable style={styles.checkbox}
-                        onPress={() => toggleTasksCheckbox(item.id)}>
-                        <View style={styles.smallCheckbox}>
-                            <Ionicons color={checkedTasks.includes(item.id) ? "#2EB23D" : "gray"} name="checkmark-circle" size={32}></Ionicons>
-                        </View>
-                    </Pressable>
+                    <View style={styles.row}>
+                        {editMode ? (
+                            <>
+                                <Pressable style={{ ...styles.checkbox, width: 32, height: 32, borderRadius: 16, marginRight: 8, backgroundColor: "#6D3D14" }}
+                                    onPress={() => ""}>
+                                    <View style={styles.smallCheckbox}>
+                                        <Ionicons style={{ color: "white" }} name="calendar-outline" size={16}></Ionicons>
+                                    </View>
+                                </Pressable>
+                                <Pressable style={{ ...styles.checkbox, width: 32, height: 32, borderRadius: 16, marginRight: 8, backgroundColor: "#6D3D14" }}
+                                    onPress={() => deleteTask(item.id)}>
+                                    <View style={styles.smallCheckbox}>
+                                        <Ionicons style={{ color: "white" }} name="trash-outline" size={16}></Ionicons>
+                                    </View>
+                                </Pressable>
+                            </>
+                        ) : (
+                            <Pressable style={styles.checkbox}
+                                onPress={() => toggleTasksCheckbox(item.id)}>
+                                <View style={styles.smallCheckbox}>
+                                    <Ionicons color={checkedTasks.includes(item.id) ? "#2EB23D" : "gray"} name="checkmark-circle" size={32}></Ionicons>
+                                </View>
+                            </Pressable>
+                        )}
+                    </View>
+
+
                 </TouchableOpacity>
             )} />
 
@@ -343,11 +392,30 @@ export default function HomeView({ navigation }: Props) {
         <View style={styles.modalContainer}>
             <View style={styles.row}>
                 <Text style={styles.header}>Hi, USER 👋</Text>
-                <TouchableOpacity style={styles.openRecipeModuleButton} onPress={() => {
-                    // handleLogout();
-                }}>
-                    <Ionicons name="settings" size={24} />
-                </TouchableOpacity>
+                {editMode ? (
+                    <View style={styles.row}>
+                        <TouchableOpacity style={styles.addToShoppingListButton} onPress={() => {
+                            setEditMode(prev => !prev);
+                        }}>
+                            <Text style={styles.textNextButton}>Done</Text>
+                        </TouchableOpacity>
+                    </View>
+                ) : (
+                    <View style={styles.row}>
+                        <TouchableOpacity style={{ ...styles.openRecipeModuleButton, marginRight: 8 }} onPress={() => {
+                            setEditMode(prev => !prev);
+                        }}>
+                            <Ionicons name="pencil-outline" size={24} />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.openRecipeModuleButton} onPress={() => {
+                            // handleLogout();
+                        }}>
+                            <Ionicons name="settings" size={24} />
+                        </TouchableOpacity>
+                    </View>
+                )}
+
+
             </View>
 
             <View style={{ ...styles.row, marginTop: 8, marginBottom: 24, justifyContent: "flex-start" }}>
@@ -373,8 +441,10 @@ export default function HomeView({ navigation }: Props) {
             {timeView == TimeState.Day &&
                 <>
                     <DayButtonsView />
-                    {mealsDayView()}
-                    {taskDayView()}
+                    <ScrollView>
+                        {mealsDayView()}
+                        {taskDayView()}
+                    </ScrollView>
                 </>
             }
 
@@ -384,7 +454,7 @@ export default function HomeView({ navigation }: Props) {
                     <View style={{ flexDirection: "row", width: 100, justifyContent: "space-between" }}>
                         <View>
                             <TouchableOpacity style={{ marginBottom: 8 }} onPress={() => setDesire(DesireState.Meals)}>
-                                <Text style={{ alignSelf: "flex-start", color: desire == DesireState.Meals ? "#806752" : "black" }}>Meals</Text>
+                                <Text style={{ alignSelf: "flex-start", color: desire == DesireState.Meals ? "#6D3D14" : "black" }}>Meals</Text>
                             </TouchableOpacity>
                             {desire == DesireState.Meals &&
                                 <View style={styles.barContainer}>
@@ -395,7 +465,7 @@ export default function HomeView({ navigation }: Props) {
 
                         <View>
                             <TouchableOpacity style={{ marginBottom: 8 }} onPress={() => setDesire(DesireState.Tasks)}>
-                                <Text style={{ alignSelf: "flex-start", color: desire == DesireState.Tasks ? "#806752" : "black" }}>Tasks</Text>
+                                <Text style={{ alignSelf: "flex-start", color: desire == DesireState.Tasks ? "#6D3D14" : "black" }}>Tasks</Text>
                             </TouchableOpacity>
                             {desire == DesireState.Tasks &&
                                 <View style={styles.barContainer}>
@@ -404,8 +474,10 @@ export default function HomeView({ navigation }: Props) {
                             }
                         </View>
                     </View>
-                    {desire == DesireState.Meals && mealsWeekView()}
-                    {desire == DesireState.Tasks && taskWeekView()}
+                    <ScrollView>
+                        {desire == DesireState.Meals && mealsWeekView()}
+                        {desire == DesireState.Tasks && taskWeekView()}
+                    </ScrollView>
                 </>
             }
         </View>

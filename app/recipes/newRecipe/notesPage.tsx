@@ -1,10 +1,10 @@
 import { HomeContext } from "@/app/context/homeContext";
+import { RecipeContext } from "@/app/context/recipeContext";
 import { Ionicons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useContext, useState } from "react";
 import { FlatList, Text, TextInput, TouchableOpacity, View } from "react-native";
 import styles from "../../../styles";
-import { RecipeContext } from "@/app/context/recipeContext";
 import ProgressBar from "./progressBar";
 
 type Props = NativeStackScreenProps<any>;
@@ -74,7 +74,7 @@ export default function NotesPage({ navigation }: Props) {
                         <TouchableOpacity
                             style={styles.roundDeleteButton}
                             onPress={() => deleteNote(item)}>
-                            <Ionicons name="trash" size={16} />
+                            <Ionicons name="trash-outline" size={16} />
                         </TouchableOpacity>
                     </View>
                 )}

@@ -1,10 +1,10 @@
+import useHousehold from "@/app/context/householdContext";
 import { Ionicons } from "@expo/vector-icons";
 import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
 import React, { useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { auth, db } from "../../firebaseConfig";
 import styles from "../../styles";
-import useHousehold from "@/app/context/householdContext";
 import { Grocery, stores } from "../tabs/groceries";
 
 export default function GroceryView({ grocery, onClose }: { grocery: Grocery; onClose: () => void }) {
@@ -45,7 +45,7 @@ export default function GroceryView({ grocery, onClose }: { grocery: Grocery; on
     const storeList = (storePref: string) => {
         return (
             <View key={storePref}>
-                <TouchableOpacity style={[styles.storeButton, selectedStore == storePref && { backgroundColor: "#806752" }]} onPress={() => setSelectedStore(storePref)}>
+                <TouchableOpacity style={[styles.storeButton, selectedStore == storePref && { backgroundColor: "#6D3D14" }]} onPress={() => setSelectedStore(storePref)}>
                     <Text style={[selectedStore == storePref && { color: "white" }]}>{storePref}</Text>
                 </TouchableOpacity>
             </View>

@@ -1,3 +1,5 @@
+import useHousehold from "@/app/context/householdContext";
+import { TaskContext } from "@/app/context/taskContext";
 import styles from "@/styles";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -6,8 +8,6 @@ import { addDoc, collection, deleteDoc, doc, getDoc, onSnapshot, orderBy, query,
 import React, { useContext, useEffect, useState } from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { auth, db } from "../../firebaseConfig";
-import useHousehold from "@/app/context/householdContext";
-import { TaskContext } from "@/app/context/taskContext";
 import { Checklist, emptyTaskData, PlannedTask, Task } from "../tabs/tasks";
 import ProgressBar from "./newTask/progressBar";
 
@@ -128,7 +128,7 @@ export default function TaskList({ navigation }: Props) {
             </View>
 
             <TouchableOpacity
-                style={{ ...styles.addToCalenderButton, backgroundColor: "#806752" }}
+                style={{ ...styles.addToCalenderButton, backgroundColor: "#6D3D14" }}
                 onPress={() => {
                     setSelectedItem(item);
                     setShowPicker(true)
@@ -160,10 +160,10 @@ export default function TaskList({ navigation }: Props) {
             </View>
 
             <TouchableOpacity
-                style={{ ...styles.addToCalenderButton, backgroundColor: "#806752" }}
+                style={{ ...styles.addToCalenderButton, backgroundColor: "#6D3D14" }}
                 onPress={() => deletePlannedTask(item.id)}
             >
-                <Ionicons style={{ color: "white" }} name="trash" size={16} />
+                <Ionicons style={{ color: "white" }} name="trash-outline" size={16} />
             </TouchableOpacity>
         </TouchableOpacity>
     );

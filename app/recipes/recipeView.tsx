@@ -1,3 +1,6 @@
+import { HomeContext } from "@/app/context/homeContext";
+import useHousehold from "@/app/context/householdContext";
+import { RecipeContext } from "@/app/context/recipeContext";
 import { Ionicons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { collection, doc, getDocs, query, serverTimestamp, where, writeBatch } from "firebase/firestore";
@@ -5,9 +8,6 @@ import React, { useContext, useState } from "react";
 import { ImageBackground, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { db } from "../../firebaseConfig";
 import styles from "../../styles";
-import { HomeContext } from "@/app/context/homeContext";
-import useHousehold from "@/app/context/householdContext";
-import { RecipeContext } from "@/app/context/recipeContext";
 
 type Props = NativeStackScreenProps<any>;
 export default function RecipeView({ navigation }: Props) {
@@ -226,7 +226,7 @@ export default function RecipeView({ navigation }: Props) {
 
                                     <Text style={{ fontSize: 14, marginRight: 16 }}>{category.category}:</Text>
                                     {category.tags.map((tag) => (
-                                        <View style={{ ...styles.listRow, height: 48, backgroundColor: "#806752" }} key={tag}>
+                                        <View style={{ ...styles.listRow, height: 48, backgroundColor: "#6D3D14" }} key={tag}>
                                             <Text style={{ fontSize: 14, color: "white" }}>{tag}</Text>
                                         </View>
                                     ))}
@@ -245,8 +245,8 @@ export default function RecipeView({ navigation }: Props) {
                     <View style={styles.buttonRow}>
                         <TouchableOpacity style={styles.bigRoundButton} onPress={() => navigation.goBack()}><Ionicons name="chevron-back" size={16} /></TouchableOpacity>
                         <View style={styles.buttonRow}>
-                            <TouchableOpacity style={styles.bigRoundButton} onPress={() => navigation.navigate("titlePage")}><Ionicons name="pencil" size={16} /></TouchableOpacity>
-                            <TouchableOpacity style={styles.bigRoundButton} onPress={() => deleteRecipe()}><Ionicons name="trash" size={16} /></TouchableOpacity>
+                            <TouchableOpacity style={styles.bigRoundButton} onPress={() => navigation.navigate("titlePage")}><Ionicons name="pencil-outline" size={16} /></TouchableOpacity>
+                            <TouchableOpacity style={styles.bigRoundButton} onPress={() => deleteRecipe()}><Ionicons name="trash-outline" size={16} /></TouchableOpacity>
                         </View>
 
                     </View>

@@ -1,5 +1,6 @@
 import { HomeContext } from "@/app/context/homeContext";
 import useHousehold from "@/app/context/householdContext";
+import { RecipeContext } from "@/app/context/recipeContext";
 import { auth, db } from "@/firebaseConfig";
 import styles from "@/styles";
 import { Ionicons } from "@expo/vector-icons";
@@ -8,7 +9,6 @@ import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/fi
 import { default as React, useContext, useState } from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
-import { RecipeContext } from "@/app/context/recipeContext";
 import availableTags from "../../utils/availableTags";
 import ProgressBar from "./progressBar";
 
@@ -147,7 +147,7 @@ export default function TagsPage({ navigation }: Props) {
                                             <TouchableOpacity
                                                 style={{...styles.roundDeleteButton, marginLeft:4, alignSelf: "center" }}
                                                 onPress={() => deleteTag(item)}>
-                                                <Ionicons name="trash" size={16} />
+                                                <Ionicons name="trash-outline" size={16} />
                                             </TouchableOpacity>
                                         </View>
                                     )}>

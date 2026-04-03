@@ -82,7 +82,7 @@ export default function GroceryList() {
                 keyboardShouldPersistTaps="handled"
 
                 renderSectionHeader={({ section }) => (
-                    sections[0].title !== "Other"
+                    sections.length > 0 && sections[0].title !== "Other"
                         ? (
                             <Text style={styles.title}>
                                 {section.title} ({section.data.length})
@@ -92,46 +92,49 @@ export default function GroceryList() {
 
                 renderItem={({ item }) => (
                     <View style={styles.listRow}>
-                        <Pressable
-                            style={styles.ingredientCheckbox}
-                            onPress={() => toggleCheckbox(item.id)}
-                        >
-                            {checkedIds.includes(item.id) && (
-                                <View style={styles.smallCheckbox}>
-                                    <Ionicons name="checkbox" size={28} />
-                                </View>
-                            )}
-                        </Pressable>
+                        <View style={styles.row}>
+                            <Pressable
+                                style={styles.ingredientCheckbox}
+                                onPress={() => toggleCheckbox(item.id)}
+                            >
+                                {checkedIds.includes(item.id) && (
+                                    <View style={styles.smallCheckbox}>
+                                        <Ionicons name="checkbox" size={28} />
+                                    </View>
+                                )}
+                            </Pressable>
 
-                        <Text style={{ fontSize: 16 }}>
-                            <Text style={{ textDecorationLine: checkedIds.includes(item.id) ? "line-through" : "none" }}>
-                                {defaultGroceries.find((s) =>
-                                    s.label.toLowerCase().includes(item.title.toLowerCase())
-                                )?.emoji || "🛒"}{" "}
-                                {item.title}
+                            <Text style={{ fontSize: 16, marginRight: 8 }}>
+                                <Text style={{ textDecorationLine: checkedIds.includes(item.id) ? "line-through" : "none" }}>
+                                    {defaultGroceries.find((s) =>
+                                        s.label.toLowerCase().includes(item.title.toLowerCase())
+                                    )?.emoji || "🛒"}{" "}
+                                    {item.title}
+                                </Text>
                             </Text>
-                        </Text>
 
-                        <Text style={{ fontSize: 12, color: "gray" }}>
-                            {item.quantity}x
-                        </Text>
+                            <Text style={{ fontSize: 12, color: "gray" }}>
+                                {item.quantity}x
+                            </Text>
+                        </View>
+                        <View style={styles.row}>
+                            <TouchableOpacity
+                                style={{ ...styles.addToCalenderButton, backgroundColor: "#6D3D14" }}
+                                onPress={() => {
+                                    setGrosery(item);
+                                    setGroceryModalVisible(true);
+                                }}
+                            >
+                                <Ionicons style={{ color: "white" }} name="pencil" size={16} />
+                            </TouchableOpacity>
 
-                        <TouchableOpacity
-                            style={{ ...styles.addToCalenderButton, backgroundColor: "#806752" }}
-                            onPress={() => {
-                                setGrosery(item);
-                                setGroceryModalVisible(true);
-                            }}
-                        >
-                            <Ionicons style={{ color: "white" }} name="pencil" size={16} />
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            style={{ ...styles.addToCalenderButton, backgroundColor: "#806752" }}
-                            onPress={() => deleteGrocery(item.id)}
-                        >
-                            <Ionicons style={{ color: "white" }} name="trash" size={16} />
-                        </TouchableOpacity>
+                            <TouchableOpacity
+                                style={{ ...styles.addToCalenderButton, backgroundColor: "#6D3D14" }}
+                                onPress={() => deleteGrocery(item.id)}
+                            >
+                                <Ionicons style={{ color: "white" }} name="trash-outline" size={16} />
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 )}
             />

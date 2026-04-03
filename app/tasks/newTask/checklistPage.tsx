@@ -154,10 +154,10 @@ export default function ChecklistPage({ navigation }: Props) {
                         </Text>
 
                         <TouchableOpacity
-                            style={{ ...styles.mediumRoundButton, backgroundColor: "#806752" }}
+                            style={{ ...styles.mediumRoundButton, backgroundColor: "#6D3D14" }}
                             onPress={() => deleteSubTask(item.title)}
                         >
-                            <Ionicons style={{ color: "white" }} name="trash" size={16} />
+                            <Ionicons style={{ color: "white" }} name="trash-outline" size={16} />
                         </TouchableOpacity>
                     </View>
                 )}

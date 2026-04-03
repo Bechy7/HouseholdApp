@@ -1,3 +1,6 @@
+import { HomeContext } from "@/app/context/homeContext";
+import useHousehold from "@/app/context/householdContext";
+import { TaskContext } from "@/app/context/taskContext";
 import { Ionicons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { collection, doc, getDocs, query, Timestamp, updateDoc, where, writeBatch } from "firebase/firestore";
@@ -5,9 +8,6 @@ import React, { useContext, useState } from "react";
 import { Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { auth, db } from "../../firebaseConfig";
 import styles from "../../styles";
-import { HomeContext } from "@/app/context/homeContext";
-import useHousehold from "@/app/context/householdContext";
-import { TaskContext } from "@/app/context/taskContext";
 
 type Props = NativeStackScreenProps<any>;
 export default function TaskView({ navigation }: Props) {
@@ -89,7 +89,7 @@ export default function TaskView({ navigation }: Props) {
                         <View
                             style={{
                                 ...styles.mediumRoundButton,
-                                backgroundColor: "#806752",
+                                backgroundColor: "#6D3D14",
                             }}
                         >
                             <Ionicons name="person" color={"white"} />
@@ -107,8 +107,8 @@ export default function TaskView({ navigation }: Props) {
                     <View style={styles.buttonRow}>
                         <TouchableOpacity style={styles.bigRoundButton} onPress={() => navigation.goBack()}><Ionicons name="chevron-back" size={16} /></TouchableOpacity>
                         <View style={styles.buttonRow}>
-                            <TouchableOpacity style={styles.bigRoundButton} onPress={() => editTask()}><Ionicons name="pencil" size={16} /></TouchableOpacity>
-                            <TouchableOpacity style={styles.bigRoundButton} onPress={() => deleteTask()}><Ionicons name="trash" size={16} /></TouchableOpacity>
+                            <TouchableOpacity style={styles.bigRoundButton} onPress={() => editTask()}><Ionicons name="pencil-outline" size={16} /></TouchableOpacity>
+                            <TouchableOpacity style={styles.bigRoundButton} onPress={() => deleteTask()}><Ionicons name="trash-outline" size={16} /></TouchableOpacity>
                         </View>
                     </View>
 

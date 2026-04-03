@@ -46,14 +46,14 @@ export default StyleSheet.create({
         alignItems: "center",
         borderRadius: 18,
         borderWidth: 1,
-        backgroundColor: "#806752",
+        backgroundColor: "#6D3D14",
         justifyContent:"center",
         height:48
     },
     addToShoppingListButton: {
         paddingVertical: 12,
         paddingHorizontal: 24,
-        backgroundColor: "#806752",
+        backgroundColor: "#6D3D14",
         alignItems: "center",
         borderRadius: 16,
     },

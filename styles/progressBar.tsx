@@ -28,7 +28,7 @@ export default StyleSheet.create({
   },
 
   stepActive: {
-    backgroundColor: "#806752",
+    backgroundColor: "#6D3D14",
   },
 
   line: {
@@ -43,7 +43,7 @@ export default StyleSheet.create({
     width: 40,
     height: 8,
     borderRadius: 4,
-    backgroundColor: "#806752",
+    backgroundColor: "#6D3D14",
     marginRight: -4,
     zIndex: 999
   },
@@ -52,7 +52,7 @@ export default StyleSheet.create({
     width: "50%",
     height: 8,
     borderRadius: 4,
-    backgroundColor: "#806752",
+    backgroundColor: "#6D3D14",
     marginHorizontal: -4,
     zIndex: 999
   }

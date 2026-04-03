@@ -158,7 +158,7 @@ export default StyleSheet.create({
     },
     saveButton: {
         marginVertical: 24,
-        backgroundColor: "#806752",
+        backgroundColor: "#6D3D14",
         borderRadius: 16,
         height: 48,
         alignItems: "center",
