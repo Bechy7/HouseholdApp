@@ -2,7 +2,7 @@ import { HouseholdProvider } from "@/app/context/householdContext";
 import { Stack } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { auth } from "../firebaseConfig";
-import LoginPage from "./login";
+import IntroPage from "./intro";
 
 export default function RootLayout() {
   const [user, setUser] = useState<null | any>(null);
@@ -18,7 +18,7 @@ export default function RootLayout() {
 
   if (loading) return null;
 
-  if (!user) return <LoginPage />;
+  if (!user) return <IntroPage />;
 
   return (
     <HouseholdProvider>

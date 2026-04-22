@@ -1,3 +1,4 @@
+import { Colors } from "@/constants/theme";
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
@@ -34,7 +35,7 @@ export default StyleSheet.create({
         justifyContent: "center",
     },
     openRecipeModuleButton: {
-        backgroundColor: "#ffffffff",
+        backgroundColor: Colors.white,
         alignItems: "center",
         borderRadius: 20,
         boxShadow: "2px 2px 2px lightgray",
@@ -46,14 +47,14 @@ export default StyleSheet.create({
         alignItems: "center",
         borderRadius: 18,
         borderWidth: 1,
-        backgroundColor: "#6D3D14",
+        backgroundColor: Colors.primary,
         justifyContent:"center",
         height:48
     },
     addToShoppingListButton: {
         paddingVertical: 12,
         paddingHorizontal: 24,
-        backgroundColor: "#6D3D14",
+        backgroundColor: Colors.primary,
         alignItems: "center",
         borderRadius: 16,
     },

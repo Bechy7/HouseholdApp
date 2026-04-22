@@ -9,6 +9,7 @@ import React, { useContext, useState } from "react";
 import { FlatList, Pressable, Text, TextInput, TouchableOpacity, View } from "react-native";
 import styles from "../../../styles";
 import ProgressBar from "./progressBar";
+import { Colors } from "@/constants/theme";
 
 type Props = NativeStackScreenProps<any>;
 
@@ -154,7 +155,7 @@ export default function ChecklistPage({ navigation }: Props) {
                         </Text>
 
                         <TouchableOpacity
-                            style={{ ...styles.mediumRoundButton, backgroundColor: "#6D3D14" }}
+                            style={{ ...styles.mediumRoundButton, backgroundColor: Colors.primary }}
                             onPress={() => deleteSubTask(item.title)}
                         >
                             <Ionicons style={{ color: "white" }} name="trash-outline" size={16} />

@@ -1,9 +1,10 @@
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
 import { Button, StyleSheet, Text, TextInput, View } from "react-native";
-import { auth } from "../firebaseConfig";
+import { auth } from "../../firebaseConfig";
 
-export default function LoginPage() {
+export default function SignupPage({ navigation }: NativeStackScreenProps<any>) {
   const [email, setEmail] = useState("Testsen@hotmail.com");
   const [password, setPassword] = useState("ko28z3FagSGz");
   const [isRegister, setIsRegister] = useState(false);

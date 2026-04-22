@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import groceries from "./groceries";
+import intro from "./intro";
 import modals from "./modals";
 import progressBar from "./progressBar";
 import recipe from "./recipe";
@@ -10,5 +11,6 @@ export default StyleSheet.create({
     ...shared,
     ...groceries,
     ...recipe,
-    ...progressBar
+    ...progressBar,
+    ...intro
 });

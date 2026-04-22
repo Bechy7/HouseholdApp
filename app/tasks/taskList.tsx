@@ -10,6 +10,7 @@ import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { auth, db } from "../../firebaseConfig";
 import { Checklist, emptyTaskData, PlannedTask, Task } from "../tabs/tasks";
 import ProgressBar from "./newTask/progressBar";
+import { Colors } from "@/constants/theme";
 
 type Props = NativeStackScreenProps<any>;
 export default function TaskList({ navigation }: Props) {
@@ -128,7 +129,7 @@ export default function TaskList({ navigation }: Props) {
             </View>
 
             <TouchableOpacity
-                style={{ ...styles.addToCalenderButton, backgroundColor: "#6D3D14" }}
+                style={{ ...styles.addToCalenderButton, backgroundColor: Colors.primary }}
                 onPress={() => {
                     setSelectedItem(item);
                     setShowPicker(true)
@@ -160,7 +161,7 @@ export default function TaskList({ navigation }: Props) {
             </View>
 
             <TouchableOpacity
-                style={{ ...styles.addToCalenderButton, backgroundColor: "#6D3D14" }}
+                style={{ ...styles.addToCalenderButton, backgroundColor: Colors.primary }}
                 onPress={() => deletePlannedTask(item.id)}
             >
                 <Ionicons style={{ color: "white" }} name="trash-outline" size={16} />

@@ -8,6 +8,7 @@ import React, { useContext, useState } from "react";
 import { ImageBackground, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { db } from "../../firebaseConfig";
 import styles from "../../styles";
+import { Colors } from "@/constants/theme";
 
 type Props = NativeStackScreenProps<any>;
 export default function RecipeView({ navigation }: Props) {
@@ -226,7 +227,7 @@ export default function RecipeView({ navigation }: Props) {
 
                                     <Text style={{ fontSize: 14, marginRight: 16 }}>{category.category}:</Text>
                                     {category.tags.map((tag) => (
-                                        <View style={{ ...styles.listRow, height: 48, backgroundColor: "#6D3D14" }} key={tag}>
+                                        <View style={{ ...styles.listRow, height: 48, backgroundColor: Colors.primary }} key={tag}>
                                             <Text style={{ fontSize: 14, color: "white" }}>{tag}</Text>
                                         </View>
                                     ))}

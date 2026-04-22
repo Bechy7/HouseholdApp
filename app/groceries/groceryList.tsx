@@ -8,6 +8,7 @@ import styles from "../../styles";
 import { Grocery, stores } from "../tabs/groceries";
 import defaultGroceries from "../utils/grocerySuggestion";
 import GroceryView from "./groceryView";
+import { Colors } from "@/constants/theme";
 
 export default function GroceryList() {
     const { householdId } = useHousehold();
@@ -119,7 +120,7 @@ export default function GroceryList() {
                         </View>
                         <View style={styles.row}>
                             <TouchableOpacity
-                                style={{ ...styles.addToCalenderButton, backgroundColor: "#6D3D14" }}
+                                style={{ ...styles.addToCalenderButton, backgroundColor: Colors.primary }}
                                 onPress={() => {
                                     setGrosery(item);
                                     setGroceryModalVisible(true);
@@ -129,7 +130,7 @@ export default function GroceryList() {
                             </TouchableOpacity>
 
                             <TouchableOpacity
-                                style={{ ...styles.addToCalenderButton, backgroundColor: "#6D3D14" }}
+                                style={{ ...styles.addToCalenderButton, backgroundColor: Colors.primary }}
                                 onPress={() => deleteGrocery(item.id)}
                             >
                                 <Ionicons style={{ color: "white" }} name="trash-outline" size={16} />

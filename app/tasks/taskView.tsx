@@ -8,6 +8,7 @@ import React, { useContext, useState } from "react";
 import { Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { auth, db } from "../../firebaseConfig";
 import styles from "../../styles";
+import { Colors } from "@/constants/theme";
 
 type Props = NativeStackScreenProps<any>;
 export default function TaskView({ navigation }: Props) {
@@ -89,7 +90,7 @@ export default function TaskView({ navigation }: Props) {
                         <View
                             style={{
                                 ...styles.mediumRoundButton,
-                                backgroundColor: "#6D3D14",
+                                backgroundColor: Colors.primary,
                             }}
                         >
                             <Ionicons name="person" color={"white"} />

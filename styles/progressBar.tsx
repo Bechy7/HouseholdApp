@@ -1,3 +1,4 @@
+import { Colors } from "@/constants/theme";
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
@@ -28,7 +29,7 @@ export default StyleSheet.create({
   },
 
   stepActive: {
-    backgroundColor: "#6D3D14",
+    backgroundColor: Colors.primary,
   },
 
   line: {
@@ -43,7 +44,7 @@ export default StyleSheet.create({
     width: 40,
     height: 8,
     borderRadius: 4,
-    backgroundColor: "#6D3D14",
+    backgroundColor: Colors.primary,
     marginRight: -4,
     zIndex: 999
   },
@@ -52,7 +53,7 @@ export default StyleSheet.create({
     width: "50%",
     height: 8,
     borderRadius: 4,
-    backgroundColor: "#6D3D14",
+    backgroundColor: Colors.primary,
     marginHorizontal: -4,
     zIndex: 999
   }

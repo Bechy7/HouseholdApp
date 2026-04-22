@@ -1,8 +1,8 @@
+import useHousehold from "@/app/context/householdContext";
 import { router } from "expo-router";
 import { arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
 import { Button, StyleSheet, Text, TextInput, View } from "react-native";
-import { auth, db } from "../../firebaseConfig";
-import useHousehold from "@/app/context/householdContext";
+import { auth, db } from "../../../firebaseConfig";
 
 export default function JoinHousehold() {
     const { householdId, setHouseholdId } = useHousehold();

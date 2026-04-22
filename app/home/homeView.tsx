@@ -11,6 +11,7 @@ import { emptyRecipeData, Meal, Recipe } from "../tabs/recipes";
 import { emptyTaskData, PlannedTask, Task } from "../tabs/tasks";
 import { getWeekDays, getWeekStart } from "../utils/dateHelper";
 import ProgressBar from "./progressBar";
+import { Colors } from "@/constants/theme";
 
 type Props = NativeStackScreenProps<any>;
 export default function HomeView({ navigation }: Props) {
@@ -249,13 +250,13 @@ export default function HomeView({ navigation }: Props) {
                     </View>
                     {editMode ? (
                         <>
-                            <Pressable style={{ ...styles.checkbox, width: 32, height: 32, borderRadius: 16, marginRight: 8, backgroundColor: "#6D3D14" }}
+                            <Pressable style={{ ...styles.checkbox, width: 32, height: 32, borderRadius: 16, marginRight: 8, backgroundColor: Colors.primary }}
                                 onPress={() => ""}>
                                 <View style={styles.smallCheckbox}>
                                     <Ionicons style={{ color: "white" }} name="calendar-outline" size={16}></Ionicons>
                                 </View>
                             </Pressable>
-                            <Pressable style={{ ...styles.checkbox, width: 32, height: 32, borderRadius: 16, marginRight: 8, backgroundColor: "#6D3D14" }}
+                            <Pressable style={{ ...styles.checkbox, width: 32, height: 32, borderRadius: 16, marginRight: 8, backgroundColor: Colors.primary }}
                                 onPress={() => deleteMeal(item.id)}>
                                 <View style={styles.smallCheckbox}>
                                     <Ionicons style={{ color: "white" }} name="trash-outline" size={16}></Ionicons>
@@ -288,13 +289,13 @@ export default function HomeView({ navigation }: Props) {
                     <View style={styles.row}>
                         {editMode ? (
                             <>
-                                <Pressable style={{ ...styles.checkbox, width: 32, height: 32, borderRadius: 16, marginRight: 8, backgroundColor: "#6D3D14" }}
+                                <Pressable style={{ ...styles.checkbox, width: 32, height: 32, borderRadius: 16, marginRight: 8, backgroundColor: Colors.primary }}
                                     onPress={() => ""}>
                                     <View style={styles.smallCheckbox}>
                                         <Ionicons style={{ color: "white" }} name="calendar-outline" size={16}></Ionicons>
                                     </View>
                                 </Pressable>
-                                <Pressable style={{ ...styles.checkbox, width: 32, height: 32, borderRadius: 16, marginRight: 8, backgroundColor: "#6D3D14" }}
+                                <Pressable style={{ ...styles.checkbox, width: 32, height: 32, borderRadius: 16, marginRight: 8, backgroundColor: Colors.primary }}
                                     onPress={() => deleteTask(item.id)}>
                                     <View style={styles.smallCheckbox}>
                                         <Ionicons style={{ color: "white" }} name="trash-outline" size={16}></Ionicons>
@@ -454,7 +455,7 @@ export default function HomeView({ navigation }: Props) {
                     <View style={{ flexDirection: "row", width: 100, justifyContent: "space-between" }}>
                         <View>
                             <TouchableOpacity style={{ marginBottom: 8 }} onPress={() => setDesire(DesireState.Meals)}>
-                                <Text style={{ alignSelf: "flex-start", color: desire == DesireState.Meals ? "#6D3D14" : "black" }}>Meals</Text>
+                                <Text style={{ alignSelf: "flex-start", color: desire == DesireState.Meals ? Colors.primary : "black" }}>Meals</Text>
                             </TouchableOpacity>
                             {desire == DesireState.Meals &&
                                 <View style={styles.barContainer}>
@@ -465,7 +466,7 @@ export default function HomeView({ navigation }: Props) {
 
                         <View>
                             <TouchableOpacity style={{ marginBottom: 8 }} onPress={() => setDesire(DesireState.Tasks)}>
-                                <Text style={{ alignSelf: "flex-start", color: desire == DesireState.Tasks ? "#6D3D14" : "black" }}>Tasks</Text>
+                                <Text style={{ alignSelf: "flex-start", color: desire == DesireState.Tasks ? Colors.primary : "black" }}>Tasks</Text>
                             </TouchableOpacity>
                             {desire == DesireState.Tasks &&
                                 <View style={styles.barContainer}>

@@ -1,9 +1,10 @@
+import useHousehold from "@/app/context/householdContext";
+import { Colors } from "@/constants/theme";
 import { useRouter } from "expo-router";
 import { addDoc, collection } from "firebase/firestore";
 import { useState } from "react";
 import { Alert, Button, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { auth, db } from "../../firebaseConfig";
-import useHousehold from "@/app/context/householdContext";
+import { auth, db } from "../../../firebaseConfig";
 
 export default function CreateHouseholdScreen() {
     const [name, setName] = useState("");
@@ -81,8 +82,8 @@ const styles = StyleSheet.create({
         padding: 10,
         marginBottom: 10,
     },
-    modal:{backgroundColor: "#ffffffff", padding:24},
+    modal:{backgroundColor: Colors.white, padding:24},
     closeButton:{padding:12},
-    modal_container:{width: '100%', height:"100%", backgroundColor: '#ffffffff', padding: 24},
+    modal_container:{width: '100%', height:"100%", backgroundColor: Colors.white, padding: 24},
     addButton:{padding:12, backgroundColor: "#E0E0E0", alignItems:"center"},
 });

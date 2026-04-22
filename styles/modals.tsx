@@ -1,8 +1,9 @@
+import { Colors } from "@/constants/theme";
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
     modal: {
-        backgroundColor: "#ffffffff",
+        backgroundColor: Colors.white,
         paddingVertical: 24,
         justifyContent: "flex-end",
         flex: 1
@@ -25,7 +26,7 @@ export default StyleSheet.create({
 
     //Sort and filter
     sortContainer: {
-        backgroundColor: "#fff",
+        backgroundColor: Colors.white,
         padding: 24,
         borderTopLeftRadius: 12,
         borderTopRightRadius: 12,
@@ -77,14 +78,14 @@ export default StyleSheet.create({
         borderRadius: 10,
         zIndex: 1000,
         alignItems: "center",
-        shadowColor: "#000",
+        shadowColor: Colors.black,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.3,
         shadowRadius: 4,
         elevation: 5,
     },
     toastText: {
-        color: "#fff",
+        color: Colors.white,
         fontSize: 16,
         fontWeight: "600",
     },

@@ -6,6 +6,7 @@ import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { auth, db } from "../../firebaseConfig";
 import styles from "../../styles";
 import { Grocery, stores } from "../tabs/groceries";
+import { Colors } from "@/constants/theme";
 
 export default function GroceryView({ grocery, onClose }: { grocery: Grocery; onClose: () => void }) {
     const { householdId } = useHousehold();
@@ -45,7 +46,7 @@ export default function GroceryView({ grocery, onClose }: { grocery: Grocery; on
     const storeList = (storePref: string) => {
         return (
             <View key={storePref}>
-                <TouchableOpacity style={[styles.storeButton, selectedStore == storePref && { backgroundColor: "#6D3D14" }]} onPress={() => setSelectedStore(storePref)}>
+                <TouchableOpacity style={[styles.storeButton, selectedStore == storePref && { backgroundColor: Colors.primary }]} onPress={() => setSelectedStore(storePref)}>
                     <Text style={[selectedStore == storePref && { color: "white" }]}>{storePref}</Text>
                 </TouchableOpacity>
             </View>

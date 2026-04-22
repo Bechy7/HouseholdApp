@@ -1,3 +1,4 @@
+import { Colors } from "@/constants/theme";
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
@@ -149,16 +150,16 @@ export default StyleSheet.create({
     },
     select: {
         borderWidth: 1,
-        borderColor: "#000",
+        borderColor: Colors.black,
         borderRadius: 24,
-        backgroundColor: "#fff",
+        backgroundColor: Colors.white,
         padding: 12,
         marginBottom: 11,
         marginTop: 10
     },
     saveButton: {
         marginVertical: 24,
-        backgroundColor: "#6D3D14",
+        backgroundColor: Colors.primary,
         borderRadius: 16,
         height: 48,
         alignItems: "center",
@@ -166,13 +167,13 @@ export default StyleSheet.create({
     },
     textInput: {
         borderWidth: 1,
-        borderColor: "#000000ff",
+        borderColor: Colors.black,
         borderRadius: 20,
         padding: 12,
         overflow: "hidden",
         marginBottom: 16,
         fontSize: 16,
-        backgroundColor: "#fff",
+        backgroundColor: Colors.white,
         marginVertical: 12,
         width: "100%",
         height: 44
@@ -224,5 +225,8 @@ export default StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
     },
-
+    backgroundImage: {
+        width: "100%",
+        height: "100%",
+    }
 });
