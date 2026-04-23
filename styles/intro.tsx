@@ -8,10 +8,15 @@ export default StyleSheet.create({
         paddingVertical: 50,
         paddingHorizontal: 20,
     },
-    introLogo: {
+    logo: {
         width: 156,
         height: 156,
         marginBottom: 20,
+    },
+    logoMini: {
+        width: 32,
+        height: 32,
+        marginRight: 8
     },
     introText: {
         fontSize: 36,
@@ -38,5 +43,14 @@ export default StyleSheet.create({
         paddingVertical: 12,
         borderRadius: 16,
         alignItems: "center",
+    },
+    inputLogin: {
+        borderWidth: 1,
+        borderColor: "black",
+        borderRadius: 12,
+        padding: 10,
+        marginBottom: 16,
+        backgroundColor: "white",
+        marginVertical: 8
     },
 });

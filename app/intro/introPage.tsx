@@ -5,7 +5,6 @@ import React from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import logo from "../../assets/images/custom/logo.png";
 
-
 type Props = NativeStackScreenProps<any>;
 export default function IntroPage({ navigation }: Props) {
   return (
@@ -13,7 +12,7 @@ export default function IntroPage({ navigation }: Props) {
       <View style={{ alignItems: "center", marginTop: 100 }}>
         <Image
           source={logo}
-          style={styles.introLogo}
+          style={styles.logo}
           resizeMode="contain"
         />
         <Text style={{ ...styles.introText, color: Colors.white, marginBottom: 20 }}>Houziee</Text>

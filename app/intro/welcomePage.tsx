@@ -14,7 +14,7 @@ export default function WelcomePage({ navigation }: Props) {
         <View style={{alignItems: "center"}}>
           <Image
             source={logo}
-            style={styles.introLogo}
+            style={styles.logo}
             resizeMode="contain"
           />
           <Text style={{ ...styles.textMedium, textAlign: "center" }}>Welcome to</Text>

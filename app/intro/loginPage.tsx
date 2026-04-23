@@ -1,71 +1,89 @@
+import { Colors } from "@/constants/theme";
+import styles from "@/styles";
+import { Ionicons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
-import { Button, StyleSheet, Text, TextInput, View } from "react-native";
+import { Image, ImageBackground, Pressable, Text, TextInput, View } from "react-native";
+import loginBackground from "../../assets/images/custom/loginBackground.png";
+import logo from "../../assets/images/custom/logo.png";
 import { auth } from "../../firebaseConfig";
 
 export default function LoginPage({ navigation }: NativeStackScreenProps<any>) {
   const [email, setEmail] = useState("Testsen@hotmail.com");
   const [password, setPassword] = useState("ko28z3FagSGz");
-  const [isRegister, setIsRegister] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleAuth = async () => {
+  const handleLogin = async () => {
     setLoading(true);
     setError("");
     try {
-      if (isRegister) {
-        await createUserWithEmailAndPassword(auth, email, password);
-      } else {
-        await signInWithEmailAndPassword(auth, email, password);
-      }
+      await signInWithEmailAndPassword(auth, email, password);
     } catch (err: any) {
       setError(err.message);
     } finally {
       setLoading(false);
+      navigation.navigate("householdPage");
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{isRegister ? "Register" : "Login"}</Text>
-      {error ? <Text style={styles.error}>{error}</Text> : null}
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-      <Button
-        title={loading ? "Loading..." : isRegister ? "Sign Up" : "Login"}
-        onPress={handleAuth}
-      />
-      <Button
-        title={isRegister ? "Have an account? Login" : "No account? Register"}
-        onPress={() => setIsRegister(!isRegister)}
-      />
-    </View>
+    <ImageBackground source={loginBackground} style={styles.backgroundImage}>
+      <View style={styles.introContainer}>
+        <View>
+          <View style={{ ...styles.row, justifyContent: "center", marginBottom: 40 }}>
+            <Image
+              source={logo}
+              style={styles.logoMini}
+              resizeMode="contain"
+            />
+            <Text style={styles.textMedium}>Houziee</Text>
+          </View>
+          <Pressable
+            style={{ ...styles.mediumRoundButton, backgroundColor: Colors.white, marginBottom: 16 }}
+            onPress={() => { navigation.navigate("welcomePage") }}
+          >
+            <Ionicons style={{ color: "black" }} name="arrow-back" size={16} />
+          </Pressable>
+          <Text style={styles.textMediumBig}>Log in</Text>
+        </View>
+        <View>
+          {error ? <Text style={{ color: "red", marginBottom: 10 }}>{error}</Text> : null}
+          <Text style={styles.textMedium}>Email</Text>
+          <TextInput
+            style={styles.inputLogin}
+            placeholder="Type your email"
+            placeholderTextColor="gray"
+            value={email}
+            onChangeText={setEmail}
+            autoCapitalize="none"
+          />
+          <Text style={styles.textMedium}>Password</Text>
+          <TextInput
+            style={styles.inputLogin}
+            placeholder="Type your password"
+            placeholderTextColor="gray"
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
+          />
+          <Pressable
+            style={{ ...styles.nextButton, backgroundColor: Colors.primary, marginTop: 16 }}
+            onPress={handleLogin}>
+            <Text style={{ ...styles.textMedium, color: Colors.white }}>{loading ? "Loading..." : "Log in"}</Text>
+          </Pressable>
+
+        </View>
+        <View style={{ ...styles.row, justifyContent: "center" }}>
+          <Text>Don't have an account yet? </Text>
+          <Pressable onPress={() => navigation.navigate("signupPage")}>
+            <Text style={{ textDecorationLine: 'underline', color: Colors.primary }}>Sign Up</Text>
+          </Pressable>
+        </View>
+
+      </View>
+    </ImageBackground>
+
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", padding: 20 },
-  title: { fontSize: 24, marginBottom: 20, textAlign: "center" },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 10,
-  },
-  error: { color: "red", marginBottom: 10 },
-});

@@ -1,3 +1,5 @@
+import useHousehold from "@/app/context/householdContext";
+import { RecipeContext } from "@/app/context/recipeContext";
 import { Ionicons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { addDoc, collection, onSnapshot, orderBy, query, serverTimestamp, Timestamp, where } from "firebase/firestore";
@@ -5,8 +7,6 @@ import React, { useContext, useEffect, useState } from "react";
 import { FlatList, Image, Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { auth, db } from "../../firebaseConfig";
 import styles from "../../styles";
-import useHousehold from "@/app/context/householdContext";
-import { RecipeContext } from "@/app/context/recipeContext";
 import EmptyBox from "../images/emptyBox.png";
 import { emptyRecipeData, Recipe, Tag } from "../tabs/recipes";
 import sortOptions, { sortMethod } from "../utils/sortOptions";
@@ -174,7 +174,7 @@ export default function RecipeList({ navigation }: Props) {
                             <TextInput
                                 style={{ paddingLeft: 8, flex: 1 }}
                                 placeholder="Search here"
-                                placeholderTextColor={"gray"}
+                                placeholderTextColor="gray"
                                 value={searchRecipe}
                                 onChangeText={setSearchRecipe}
                             />

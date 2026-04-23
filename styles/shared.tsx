@@ -182,6 +182,10 @@ export default StyleSheet.create({
         fontSize: 16,
         fontWeight: 600
     },
+    textMediumBig: {
+        fontSize: 32,
+        fontWeight: 600
+    },
     textNextButton: {
         fontSize: 16,
         fontWeight: 600,
